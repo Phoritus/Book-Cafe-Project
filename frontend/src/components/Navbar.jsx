@@ -1,19 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-    import { useAuthStore } from '../store/authStore';
-import { Coffee, LogOut, User, BookOpen, Calendar } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
+import { Coffee, BookOpen, Calendar } from 'lucide-react';
 
-const Navbar: React.FC = () => {
-  const { isAuthenticated, user, logout } = useAuthStore();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-    navigate('/');
-  };
-
+const Navbar = () => {
   return (
     <nav className="bg-white/90 backdrop-blur-md border-b border-cream-300 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,51 +29,22 @@ const Navbar: React.FC = () => {
               <Calendar className="h-4 w-4" />
               <span>Room Availability</span>
             </Link>
-            {isAuthenticated && (
-              <Link 
-                to="/booking" 
-                className="btn-primary text-sm"
-              >
-                Book Room
-              </Link>
-            )}
           </div>
 
           {/* Auth Section */}
-          <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <Link 
-                  to="/dashboard" 
-                  className="flex items-center space-x-2 text-darkBrown-500 hover:text-brown-600 transition-colors"
-                >
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">{user?.email}</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-1 text-darkBrown-500 hover:text-red-600 transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <Link 
-                  to="/login" 
-                  className="text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
-                >
-                  Login
-                </Link>
-                <Link 
-                  to="/register" 
-                  className="btn-primary text-sm"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
+          <div className="flex items-center space-x-3">
+            <Link 
+              to="/login" 
+              className="text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
+            >
+              Login
+            </Link>
+            <Link 
+              to="/register" 
+              className="btn-primary text-sm"
+            >
+              Register
+            </Link>
           </div>
         </div>
 
@@ -105,14 +65,6 @@ const Navbar: React.FC = () => {
               <Calendar className="h-4 w-4" />
               <span>Check Availability</span>
             </Link>
-            {isAuthenticated && (
-              <Link 
-                to="/booking" 
-                className="btn-primary text-sm inline-flex items-center justify-center py-2"
-              >
-                Book Room
-              </Link>
-            )}
           </div>
         </div>
       </div>
