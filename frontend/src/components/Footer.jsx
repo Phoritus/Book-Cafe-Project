@@ -11,7 +11,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-2">Book Café</h3>
             <p className="text-sm mb-1">Where literature meets comfort</p>
-            <p className="text-sm mb-1">Made with ❤️ for book lovers</p>
+            <p className="text-sm mb-1">Made with for book lovers</p>
             <p className="text-xs mt-2">© 2025 Book Café. All rights reserved.</p>
           </div>
 
@@ -20,7 +20,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-2">Visit Us</h3>
             <p className="flex items-center text-sm mb-1">
               <MapPin className="w-4 h-4 mr-2" /> 
-              Location : 123 Writers' Alley, Fiction Street, Imaginaria District, Bangkok 10110
+              Location : 123 Writers' Alley, Fiction Street,Imaginaria District,Bangkok 10110
             </p>
             <p className="flex items-center text-sm">
               <Clock className="w-4 h-4 mr-2" /> 
