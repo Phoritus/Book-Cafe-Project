@@ -296,6 +296,61 @@ body {
   50% { transform: translateY(-5px); }
 }
 
+@theme {
+  /* 🎨 Book Café Custom Color Palette */
+  --color-cream-50: #FDFCF8;
+  --color-cream-100: #F5F2E8;
+  --color-cream-200: #EDE7D3;
+  --color-cream-300: #E4DCBE;
+  --color-cream-400: #DCD2A9;
+  --color-cream-500: #D3C794;
+  --color-cream-600: #C4B67E;
+  --color-cream-700: #B4A569;
+  --color-cream-800: #A49454;
+  --color-cream-900: #94833F;
+
+  --color-brown-50: #FAF6F2;
+  --color-brown-100: #F0E6D6;
+  --color-brown-200: #E1CCAD;
+  --color-brown-300: #D1B284;
+  --color-brown-400: #C2985B;
+  --color-brown-500: #B37E32;
+  --color-brown-600: #9A6A2B;
+  --color-brown-700: #815624;
+  --color-brown-800: #68421D;
+  --color-brown-900: #4F2E16;
+
+  --color-darkBrown-50: #F7F3F0;
+  --color-darkBrown-100: #E8DDD6;
+  --color-darkBrown-200: #D1BAAD;
+  --color-darkBrown-300: #BA9784;
+  --color-darkBrown-400: #A3745B;
+  --color-darkBrown-500: #8B4513;
+  --color-darkBrown-600: #793D10;
+  --color-darkBrown-700: #67350E;
+  --color-darkBrown-800: #552D0B;
+  --color-darkBrown-900: #432509;
+
+  --color-gold-50: #FEFCF3;
+  --color-gold-100: #FDF5D7;
+  --color-gold-200: #FBEBAF;
+  --color-gold-300: #F9E187;
+  --color-gold-400: #F7D75F;
+  --color-gold-500: #DAA520;
+  --color-gold-600: #C8941D;
+  --color-gold-700: #B6831A;
+  --color-gold-800: #A47217;
+  --color-gold-900: #926114;
+
+  /* Font family */
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-display: "Playfair Display", serif;
+
+  /* Shadow */
+  --shadow-soft: 0 4px 20px rgba(139, 69, 19, 0.1);
+  --shadow-warm: 0 8px 32px rgba(218, 165, 32, 0.2);
+}
+
 .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
 .animate-slide-up { animation: slideUp 0.3s ease-out; }
 .animate-bounce-subtle { animation: bounceSubtle 2s infinite; }
