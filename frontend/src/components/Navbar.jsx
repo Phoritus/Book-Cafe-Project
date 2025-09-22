@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Coffee,
-  LogOut,
-  User,
-  BookOpen,
-  Calendar,
-  Menu,
-  X,
-  CoffeeIcon,
-  HomeIcon,
+import {Coffee,LogOut,User,BookOpen,Calendar,Menu,X,CoffeeIcon,HomeIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import logo from "../assets/Coffee.svg";
@@ -48,7 +39,7 @@ const Navbar = () => {
             className="flex items-center space-x-2 text-brown-600 hover:text-brown-700 transition-colors"
             onClick={closeMobileMenu}
           >
-            <img src={logo} alt="Logo" className="h-8 w-8" />
+            < img src={logo} alt="Logo"className="h-8 w-8" />
             <span className="text-xl font-display font-semibold">
               Book Café
             </span>

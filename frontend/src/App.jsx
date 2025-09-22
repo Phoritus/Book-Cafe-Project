@@ -1,28 +1,24 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css'
-
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
+import HomePage from './pages/HomePage.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div>
-      <Router>
-        <div className="min-h-screen bg-cream-50">
-          <Navbar />
-          <main className="flex-1">
-            <Routes>
-
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </div>
-  )
+    <Router>
+      <div className="min-h-screen bg-cream-50 flex flex-col">
+        <Navbar />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
