@@ -5,7 +5,7 @@ import logo from "../assets/mail.svg";
 const Footer = () => {
   return (
     <footer className="bg-[#86422A] text-white py-6">
-      <div className="max-w-7xl h-[200px] mx-auto px-4 sm:px-6 lg:px-8 flex justify-between">
+      <div className="max-w-7xl h-[150px] mx-auto px-4 sm:px-6 lg:px-8 flex justify-between">
         
         {/* Column 1: Book Café */}
         <div className="flex flex-col space-y-2 leading-relaxed">
