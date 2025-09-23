@@ -5,7 +5,7 @@ import successIcon from "../assets/Success.svg";
 import { ArrowLeft } from 'lucide-react';
 
 const EditBook = () => {
-    const isAuthenticated = false; // ตั้งค่า default ไปก่อน
+    const isAuthenticated = false;
     const [name, setName] = useState('');
     const [category, setCategory] = useState('Academic');
     const categories = ['Academic', 'Documentary', 'Novels', 'Comics', 'Other'];

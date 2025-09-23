@@ -57,7 +57,7 @@ export async function testConnection() {
   }
 }
 // Generic query helper (use this in models):
-//   const [rows] = await query('SELECT * FROM Person WHERE id = ?', [id]);
+//   const [rows] = await query('SELECT * FROM person WHERE person_id = ?', [id]);
 export async function query(sql, params = []) {
   return pool.execute(sql, params);
 }

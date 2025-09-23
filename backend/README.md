@@ -21,7 +21,7 @@ backend/
     config/        # DB pool & env loading
     controllers/   # Route handlers
     middleware/    # auth + validate
-    models/        # DB queries (Person, Booking_Room, etc.)
+  models/        # DB queries (person, booking_room, etc.)
     routes/        # Express routers
     services/      # email service
     utils/         # helpers (jwt, password)
