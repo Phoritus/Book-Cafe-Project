@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage.jsx';
 import EditBook from './pages/EditBook.jsx';
 import Login from './pages/Login.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
-import EditProfile from './components/EditProfile.jsx';
+import EditProfile from './pages/EditProfile.jsx';
 
 function App() {
   return (
