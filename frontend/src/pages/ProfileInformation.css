@@ -26,11 +26,12 @@
 /* Header Styles */
 .profile-header {
   text-align: center;
+  /* padding: 3rem 2rem; */
 }
 
 .profile-icon {
-  width: 5rem;
-  height: 5rem;
+  /* width: 3rem;
+  height: 3rem; */
   border-radius: 50%;
   margin: 0 auto 1.5rem;
   display: flex;
@@ -61,7 +62,7 @@
 .profile-item {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
   font-size: 30px;
 }
 
@@ -161,8 +162,8 @@
 .setting-icon {
   width: 2.5rem;
   height: 2.5rem;
-  background-color: #fef7ed;
-  border-radius: 0.5rem;
+  /* background-color: #fef7ed; */
+  /* border-radius: 0.5rem; */
   display: flex;
   align-items: center;
   justify-content: center;

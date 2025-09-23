@@ -21,15 +21,47 @@ const ProfileInformation = () => {
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 100);
   }, []);
-
+const HexIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 120 40"
+    width="40"
+    height="30"
+    aria-hidden="true"
+  >
+    <defs>
+      <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="1" stdDeviation="1.2" floodColor="#000" floodOpacity="0.18" />
+      </filter>
+    </defs>
+    <g fill="#c7a451" filter="url(#softShadow)">
+      <polygon points="26,20 23,14.8 17,14.8 14,20 17,25.2 23,25.2" />
+      <polygon points="66,20 63,14.8 57,14.8 54,20 57,25.2 63,25.2" />
+      <polygon points="106,20 103,14.8 97,14.8 94,20 97,25.2 103,25.2" />
+    </g>
+  </svg>
+);
   const handleEditProfile = () => alert('Edit Profile functionality would be implemented here');
   const profileData = [
-    { label: 'Title', value: 'Ms.', icon: '⋯' },
-    { label: 'Phone', value: '080-000-0000', icon: '📞' },
-    { label: 'First Name', value: 'Alice', icon: '⋯' },
-    { label: 'National ID', value: '1-2345-67890-12-3', icon: '💳' },
-    { label: 'Last Name', value: 'Wonderman', icon: '⋯' },
-    { label: 'Date of Birth', value: '15 / 08 / 1996', icon: '📅' },
+    { label: 'Title', value: 'Ms.', icon: <HexIcon /> },
+    { label: 'Phone', value: '080-000-0000', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" stroke="#c7a451" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.89.72 2.78a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45c.89.35 1.82.59 2.78.72A2 2 0 0 1 22 16.92z"/>
+</svg>
+) },
+    { label: 'First Name', value: 'Alice', icon: <HexIcon /> },
+    { label: 'National ID', value: '1-2345-67890-12-3', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="none" stroke="#c7a451" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+  <rect x="3" y="7" width="18" height="10" rx="2" ry="2"/>
+  <line x1="3" y1="11" x2="21" y2="11"/>
+</svg>
+) },
+    { label: 'Last Name', value: 'Wonderman', icon: <HexIcon /> },
+    { label: 'Date of Birth', value: '15 / 08 / 1996', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" stroke="#c7a451" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+  <line x1="16" y1="2" x2="16" y2="6"/>
+  <line x1="8" y1="2" x2="8" y2="6"/>
+  <line x1="3" y1="10" x2="21" y2="10"/>
+</svg>
+) },
   ];
 
   return (
@@ -63,7 +95,12 @@ const ProfileInformation = () => {
           <div className="account-settings">
             <div className="setting-item">
               <div className="setting-info">
-                <div className="setting-icon">📧</div>
+                <div className="setting-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#c7a451" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 4h16v16H4z"/>
+                             <path d="M4 4l8 8 8-8"/>
+                            </svg>
+                </div>
                 <div>
                   <p className="setting-title">Email</p>
                   <p className="setting-description">demo@example.com</p>
@@ -74,7 +111,12 @@ const ProfileInformation = () => {
 
             <div className="setting-item last">
               <div className="setting-info">
-                <div className="setting-icon">🔒</div>
+                <div className="setting-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" stroke="#c7a451" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <rect x="4" y="11" width="16" height="11" rx="2" ry="2"/>
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                          </svg>
+                </div>
                 <div>
                   <p className="setting-title">Password</p>
                   <p className="setting-description">********</p>
