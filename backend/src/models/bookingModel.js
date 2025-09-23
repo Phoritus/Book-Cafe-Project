@@ -5,7 +5,7 @@ import { query } from '../config/db.js';
 // Time window (startTime/endTime) used only if both have values; simplified assumption.
 
 export async function hasOverlap({ room_number, checkIn, checkOut, startTime = null, endTime = null }) {
-  let sql = `SELECT 1 FROM Booking_Room 
+  let sql = `SELECT 1 FROM booking_room 
              WHERE room_number = ?
                AND NOT (checkOut < ? OR checkIn > ?)`; // date range overlap
   const params = [room_number, checkIn, checkOut];
@@ -28,7 +28,7 @@ export async function createBooking({ person_id, room_number, checkIn, checkOut,
     err.status = 409;
     throw err;
   }
-  const sql = `INSERT INTO Booking_Room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode)
+  const sql = `INSERT INTO booking_room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
   const params = [person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode];
   const [result] = await query(sql, params);
@@ -36,17 +36,17 @@ export async function createBooking({ person_id, room_number, checkIn, checkOut,
 }
 
 export async function getBookingById(booking_id) {
-  const [rows] = await query('SELECT * FROM Booking_Room WHERE booking_id = ? LIMIT 1', [booking_id]);
+  const [rows] = await query('SELECT * FROM booking_room WHERE booking_id = ? LIMIT 1', [booking_id]);
   return rows[0] || null;
 }
 
 export async function listBookingsByPerson(person_id) {
-  const [rows] = await query('SELECT * FROM Booking_Room WHERE person_id = ? ORDER BY checkIn DESC', [person_id]);
+  const [rows] = await query('SELECT * FROM booking_room WHERE person_id = ? ORDER BY checkIn DESC', [person_id]);
   return rows;
 }
 
 export async function listBookingsByRoom(room_number) {
-  const [rows] = await query('SELECT * FROM Booking_Room WHERE room_number = ? ORDER BY checkIn DESC', [room_number]);
+  const [rows] = await query('SELECT * FROM booking_room WHERE room_number = ? ORDER BY checkIn DESC', [room_number]);
   return rows;
 }
 
@@ -60,6 +60,12 @@ export async function deleteBooking(booking_id, requesterPersonId, isAdmin = fal
       throw err;
     }
   }
-  const [result] = await query('DELETE FROM Booking_Room WHERE booking_id = ?', [booking_id]);
+  const [result] = await query('DELETE FROM booking_room WHERE booking_id = ?', [booking_id]);
+  return result.affectedRows > 0;
+}
+
+// Assign a qrCode to a booking if not already present
+export async function assignBookingQrCode(booking_id, qrCode) {
+  const [result] = await query('UPDATE booking_room SET qrCode = ? WHERE booking_id = ? AND (qrCode IS NULL OR qrCode = "")', [qrCode, booking_id]);
   return result.affectedRows > 0;
 }

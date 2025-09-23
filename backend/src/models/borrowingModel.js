@@ -24,7 +24,7 @@ export async function borrowBook({ book_id, citizen_id }) {
   }
 
   // Insert record
-  const sql = `INSERT INTO Borrowing_Record (book_id, citizen_id) VALUES (?, ?)`;
+  const sql = `INSERT INTO borrowing_record (book_id, citizen_id) VALUES (?, ?)`;
   await query(sql, [book_id, citizen_id]);
   await updateBookStatus(book_id, 'borrowed');
   return await listBorrowingByCitizen(citizen_id);
@@ -32,7 +32,7 @@ export async function borrowBook({ book_id, citizen_id }) {
 
 export async function returnBook({ record_id }) {
   // Find record
-  const [rows] = await query('SELECT * FROM Borrowing_Record WHERE record_id = ? LIMIT 1', [record_id]);
+  const [rows] = await query('SELECT * FROM borrowing_record WHERE record_id = ? LIMIT 1', [record_id]);
   const record = rows[0];
   if (!record) {
     const err = new Error('Borrowing record not found');
@@ -45,9 +45,9 @@ export async function returnBook({ record_id }) {
     throw err;
   }
 
-  await query('UPDATE Borrowing_Record SET returnTime = NOW() WHERE record_id = ?', [record_id]);
+  await query('UPDATE borrowing_record SET returnTime = NOW() WHERE record_id = ?', [record_id]);
   // Check if any other active borrowing for this book exists; if none -> mark available
-  const [stillBorrowed] = await query('SELECT 1 FROM Borrowing_Record WHERE book_id = ? AND returnTime IS NULL LIMIT 1', [record.book_id]);
+  const [stillBorrowed] = await query('SELECT 1 FROM borrowing_record WHERE book_id = ? AND returnTime IS NULL LIMIT 1', [record.book_id]);
   if (stillBorrowed.length === 0) {
     await updateBookStatus(record.book_id, 'available');
   }
@@ -55,6 +55,6 @@ export async function returnBook({ record_id }) {
 }
 
 export async function listBorrowingByCitizen(citizen_id) {
-  const [rows] = await query('SELECT * FROM Borrowing_Record WHERE citizen_id = ? ORDER BY borrowTime DESC', [citizen_id]);
+  const [rows] = await query('SELECT * FROM borrowing_record WHERE citizen_id = ? ORDER BY borrowTime DESC', [citizen_id]);
   return rows;
 }
