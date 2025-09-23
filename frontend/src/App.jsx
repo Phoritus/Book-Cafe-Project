@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.jsx';
 import EditBook from './pages/EditBook.jsx';
 import Login from './pages/Login.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import EditProfile from './pages/EditProfile.jsx';
 
 function App() {
   return (
@@ -15,9 +16,10 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/edit-book" element={<EditBook />} />
-            <Route path="/Login" element={<Login />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<RegisterPage />} />
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
-            <Route path="/register" element={<RegisterPage/>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
