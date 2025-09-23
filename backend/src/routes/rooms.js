@@ -1,6 +1,7 @@
 import express from 'express';
 import { auth, requireRole } from '../middleware/auth.js';
 import { getAllRooms, createRoomHandler, patchRoomStatus, getRoomById } from '../controllers/roomController.js';
+import { validateCreateRoom } from '../middleware/validate.js';
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.get('/', getAllRooms);
 
 // POST /rooms (admin only)
-router.post('/', auth, requireRole('admin'), createRoomHandler);
+router.post('/', auth, requireRole('admin'), validateCreateRoom, createRoomHandler);
 
 // PATCH /rooms/:room_number/status (admin)
 router.patch('/:room_number/status', auth, requireRole('admin'), patchRoomStatus);

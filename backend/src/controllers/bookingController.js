@@ -1,11 +1,13 @@
-import { createBooking, listBookingsByPerson, deleteBooking } from '../models/bookingModel.js';
+import { createBooking, listBookingsByPerson, deleteBooking, getBookingById } from '../models/bookingModel.js';
 import { query } from '../config/db.js';
 
 export async function createBookingHandler(req, res) {
   try {
-    const { room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode } = req.body;
-    if (!room_number || !checkIn || !checkOut || totalPrice == null) {
-      return res.status(400).json({ error: true, message: 'Missing required fields' });
+    let { room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode } = req.body;
+    if (!qrCode) {
+      const ts = Date.now().toString(36).toUpperCase();
+      const rnd = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      qrCode = `QR-${ts}-${rnd}`;
     }
     const booking = await createBooking({
       person_id: req.user.id,
