@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {Coffee,LogOut,User,BookOpen,Calendar,Menu,X,CoffeeIcon,HomeIcon,
+import {
+  Coffee,
+  LogOut,
+  User,
+  BookOpen,
+  Calendar,
+  Menu,
+  X,
+  CoffeeIcon,
+  HomeIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import logo from "../assets/Coffee.svg";
@@ -11,7 +20,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const logout = () => {
-    setIsAuthenticated(false);
+    // TODO: implement setIsAuthenticated from context/auth state
     setUser(null);
   };
 
@@ -39,8 +48,8 @@ const Navbar = () => {
             className="flex items-center space-x-2 text-brown-600 hover:text-brown-700 transition-colors"
             onClick={closeMobileMenu}
           >
-            < img src={logo} alt="Logo"className="h-8 w-8" />
-            <span className="text-3xl font-crimson font-semibold ">
+            <img src={logo} alt="Logo" className="h-8 w-8" />
+            <span className="text-4xl font-crimson font-semibold">
               Book Café
             </span>
           </Link>
