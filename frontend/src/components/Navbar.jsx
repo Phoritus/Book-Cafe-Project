@@ -33,6 +33,8 @@ const Navbar = () => {
 
           {/* Auth Section */}
           <div className="flex items-center space-x-3">
+            <Link className="text-sm text-darkBrown-600 font-medium hidden md:inline">
+            </Link>
             <Link 
               to="/login" 
               className="text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
@@ -64,6 +66,12 @@ const Navbar = () => {
             >
               <Calendar className="h-4 w-4" />
               <span>Check Availability</span>
+            </Link>
+            <Link 
+              to="/edit-profile" 
+              className="text-darkBrown-500 hover:text-brown-600 transition-colors font-medium flex items-center space-x-2 py-2"
+            >
+              <span>Edit Profile</span>
             </Link>
           </div>
         </div>
