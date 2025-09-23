@@ -44,10 +44,10 @@ function rangeToDates(range, start, end) {
 export async function dailyBookings(req, res) {
   try {
     const date = parseDate(req.query.date) || todayISO();
-    // room_number is stored directly as a string in Booking_Room (no separate Room FK table used here)
+  // room_number is stored directly as a string in booking_room (no separate room FK table used here)
     // Count bookings where the requested date falls within the inclusive checkIn-checkOut window.
-    const sql = `SELECT room_number, COUNT(booking_id) AS bookings
-                 FROM Booking_Room
+  const sql = `SELECT room_number, COUNT(booking_id) AS bookings
+         FROM booking_room
                  WHERE ? BETWEEN checkIn AND checkOut
                  GROUP BY room_number
                  ORDER BY room_number`;
@@ -77,8 +77,8 @@ export async function mostBookedRooms(req, res) {
       return res.status(400).json({ error: true, message: 'Range too large (max 180 days)' });
     }
   // Overlap logic: booking is counted if (checkIn <= end) AND (checkOut >= start)
-    const sql = `SELECT room_number, COUNT(booking_id) AS bookings
-                 FROM Booking_Room
+  const sql = `SELECT room_number, COUNT(booking_id) AS bookings
+         FROM booking_room
                  WHERE checkIn <= ? AND checkOut >= ?
                  GROUP BY room_number
                  HAVING bookings > 0
