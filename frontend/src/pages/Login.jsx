@@ -33,7 +33,7 @@ function Login() {
     if (Object.keys(newErrors).length === 0) {
       console.log('Login attempt:', { email, password });
       setTimeout(() => {
-        setLoginError('Invalid email/phone or password. Please check your credentials and try again.');
+        setLoginError('Incorrect email/phone or password. Please try again.');
       }, 500);
     }
   };
@@ -111,7 +111,7 @@ function Login() {
                 onClick={togglePasswordVisibility}
                 className="password-toggle"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
               </button>
             </div>
             {errors.password && (
