@@ -22,5 +22,5 @@ export async function purgeExpiredRegistrationCodes() {
 }
 
 export async function deleteVerificationEntry(email) {
-  await query('UPDATE person SET verifyCode = NULL WHERE email = ?', [email]);
+  await query('UPDATE Person SET verifyCode = NULL WHERE email = ?', [email]);
 }

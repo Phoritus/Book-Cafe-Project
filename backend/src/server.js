@@ -1,5 +1,6 @@
 import express from 'express';
 import { testConnection } from './config/db.js';
+import { verifyRequiredEnv, DEFAULT_REQUIRED_ENV } from './utils/envCheck.js';
 import authRoutes from './routes/auth.js';
 import roomRoutes from './routes/rooms.js';
 import bookingRoutes from './routes/bookings.js';
@@ -34,6 +35,13 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
+// Verify required env vars first
+const envResult = verifyRequiredEnv(DEFAULT_REQUIRED_ENV);
+if (!envResult.ok) {
+  console.error('[STARTUP] Aborting due to missing env vars.');
+  process.exit(1);
+}
 
 // Start server after DB test
 testConnection()
