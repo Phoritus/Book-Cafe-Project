@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { Eye, EyeOff, Coffee } from 'lucide-react';
+import logo from "../assets/Coffee.svg";
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -45,10 +46,8 @@ function Login() {
     <div className="login-container">
       <div className="login-wrapper">
         {/* Logo */}
-        <div className="logo-container">
-          <div className="logo">
-            ☕
-          </div>
+        <div className="animate-fade-in">
+          <img src={logo} alt="Logo" className="h-16 w-16 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
         </div>
 
         {/* Welcome Text */}
