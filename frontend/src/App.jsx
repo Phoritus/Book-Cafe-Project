@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
+import EditBook from './pages/EditBook.jsx';
+import login from './pages/Login.jsx';
+import Login from './pages/Login.jsx';
 
 function App() {
   return (
@@ -11,6 +14,8 @@ function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/edit-book" element={<EditBook />} />
+            <Route path="/Login" element={<Login />} />
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

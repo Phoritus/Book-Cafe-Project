@@ -46,7 +46,7 @@
 }
 
 .welcome-subtitle {
-  color: #8B7355;
+  color: #8b7355;
   font-size: 1rem;
   font-family: Georgia, serif;
   margin: 0;
@@ -92,7 +92,7 @@
 }
 
 .form-input:focus {
-  border-color: #8B5A40;
+  border-color: #8b5a40;
   box-shadow: 0 0 0 3px rgba(139, 90, 64, 0.1);
   background: #ffffff;
 }
@@ -103,6 +103,7 @@
 
 .password-container {
   position: relative;
+  overflow: hidden;
 }
 
 .password-input {
@@ -116,7 +117,7 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #8B7355;
+  color: #8b7355;
   cursor: pointer;
   padding: 4px;
   font-size: 1.1rem;
@@ -125,7 +126,7 @@
 }
 
 .password-toggle:hover {
-  color: #8B5A40;
+  color: #8b5a40;
 }
 
 .error-message {
@@ -153,7 +154,7 @@
 .signin-button {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #8B5A40, #A67251);
+  background: linear-gradient(135deg, #8b5a40, #a67251);
   color: white;
   border: none;
   border-radius: 12px;
@@ -182,19 +183,19 @@
 
 .forgot-password-link {
   font-size: 0.95rem;
-  color: #8B7355;
+  color: #8b7355;
   text-decoration: none;
   font-family: Georgia, serif;
   transition: color 0.2s ease;
 }
 
 .forgot-password-link:hover {
-  color: #86422A;
+  color: #86422a;
   text-decoration: underline;
 }
 
 .forgot-password-highlight {
-  color: #86422A;
+  color: #86422a;
 }
 
 /* Mobile Responsive */
@@ -231,5 +232,27 @@
   .signin-button {
     padding: 14px;
     font-size: 1rem;
+  }
+
+  input[type="password"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+  }
+
+  input[type="password"]::-webkit-credentials-auto-fill-button,
+  input[type="password"]::-webkit-password-toggle-button {
+    display: none !important;
   }
 }
