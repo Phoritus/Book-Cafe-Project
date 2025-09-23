@@ -3,7 +3,6 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import EditBook from './pages/EditBook.jsx';
-import login from './pages/Login.jsx';
 import Login from './pages/Login.jsx';
 
 function App() {
