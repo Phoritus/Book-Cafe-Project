@@ -5,6 +5,7 @@ import roomRoutes from './routes/rooms.js';
 import bookingRoutes from './routes/bookings.js';
 import bookRoutes from './routes/books.js';
 import borrowingRoutes from './routes/borrowing.js';
+import dashboardRoutes from './routes/dashboard.js';
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use('/rooms', roomRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/books', bookRoutes);
 app.use('/borrowing', borrowingRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Simple 404
 app.use((req, res, next) => {
