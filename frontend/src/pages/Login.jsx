@@ -137,9 +137,9 @@ function Login() {
 
           {/* Forgot Password Link */}
           <div className="forgot-password-container">
-            <a href="#" className="forgot-password-link">
-              Forgot your password? <span className="forgot-password-highlight">Reset Password</span>
-            </a>
+            <span className="forgot-password-link">
+              Forgot your password? <a href="/" className="forgot-password-highlight">Reset Password</a>
+            </span>
           </div>
         </div>
       </div>
