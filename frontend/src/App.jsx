@@ -4,6 +4,7 @@ import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import EditBook from './pages/EditBook.jsx';
 import Login from './pages/Login.jsx';
+import RegisterPage from './pages/RegisterPage.jsx';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/edit-book" element={<EditBook />} />
             <Route path="/Login" element={<Login />} />
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
+            <Route path="/register" element={<RegisterPage/>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

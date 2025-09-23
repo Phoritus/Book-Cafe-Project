@@ -1,0 +1,40 @@
+.Container{
+    background-color: #F6F3ED;
+}
+.Show{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+    margin: 50px;
+    
+}
+
+img{
+    width: 55px;
+    height: 55px;
+}
+
+.H1-show{
+    font-family:'CrimsonText';
+    font-size: 36px;
+}
+
+.P-show{
+    font-family: 'Intel';
+    font-size: 16px;
+}
+
+.Reg-container{
+    width: 566px;
+    height: 1007px;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    background-color: #FBFBFB;
+    border-radius: 20px;
+
+    
+    
+}
