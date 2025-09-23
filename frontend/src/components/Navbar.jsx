@@ -40,7 +40,7 @@ const Navbar = () => {
             onClick={closeMobileMenu}
           >
             < img src={logo} alt="Logo"className="h-8 w-8" />
-            <span className="text-4xl font-crimson font-semibold">
+            <span className="text-3xl font-crimson font-semibold ">
               Book Café
             </span>
           </Link>
