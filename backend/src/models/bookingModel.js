@@ -63,3 +63,9 @@ export async function deleteBooking(booking_id, requesterPersonId, isAdmin = fal
   const [result] = await query('DELETE FROM Booking_Room WHERE booking_id = ?', [booking_id]);
   return result.affectedRows > 0;
 }
+
+// Assign a qrCode to a booking if not already present
+export async function assignBookingQrCode(booking_id, qrCode) {
+  const [result] = await query('UPDATE Booking_Room SET qrCode = ? WHERE booking_id = ? AND (qrCode IS NULL OR qrCode = "")', [qrCode, booking_id]);
+  return result.affectedRows > 0;
+}
