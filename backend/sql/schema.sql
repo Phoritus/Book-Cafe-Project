@@ -6,15 +6,15 @@
 -- USE Book_Store;
 
 SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS Borrowing_Record;
-DROP TABLE IF EXISTS Booking_Room;
-DROP TABLE IF EXISTS Book;
-DROP TABLE IF EXISTS Room;
-DROP TABLE IF EXISTS Person;
+DROP TABLE IF EXISTS borrowing_record;
+DROP TABLE IF EXISTS booking_room;
+DROP TABLE IF EXISTS book;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS person;
 SET FOREIGN_KEY_CHECKS=1;
 
--- Person (customers / members)
-CREATE TABLE Person (
+-- person (customers / members)
+CREATE TABLE person (
   person_id INT PRIMARY KEY AUTO_INCREMENT,
   firstname VARCHAR(50) NOT NULL,
   lastname VARCHAR(50) NOT NULL,
@@ -29,8 +29,8 @@ CREATE TABLE Person (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Room (rooms) – using string primary key room_number
-CREATE TABLE Room (
+-- room (rooms) – using string primary key room_number
+CREATE TABLE room (
   room_number VARCHAR(10) PRIMARY KEY,
   price DECIMAL(10,2) NOT NULL,
   room_status ENUM('available','occupied','booked') DEFAULT 'available',
@@ -39,8 +39,8 @@ CREATE TABLE Room (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Booking of rooms (many bookings per person/room)
-CREATE TABLE Book_Room (
+-- booking_room (many bookings per person/room)
+CREATE TABLE booking_room (
   booking_id INT PRIMARY KEY AUTO_INCREMENT,
   person_id INT NOT NULL,
   room_number VARCHAR(10) NOT NULL,
@@ -50,9 +50,9 @@ CREATE TABLE Book_Room (
   endTime TIME,
   totalPrice DECIMAL(10,2) NOT NULL,
   qrCode VARCHAR(255),
-  FOREIGN KEY (person_id) REFERENCES Person(person_id)
+  FOREIGN KEY (person_id) REFERENCES person(person_id)
     ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (room_number) REFERENCES Room(room_number)
+  FOREIGN KEY (room_number) REFERENCES room(room_number)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT check_dates CHECK (checkOut >= checkIn),
   INDEX idx_booking_dates (checkIn, checkOut),
@@ -60,8 +60,8 @@ CREATE TABLE Book_Room (
   INDEX idx_booking_room (room_number)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Book catalog
-CREATE TABLE Book (
+-- book catalog
+CREATE TABLE book (
   book_id VARCHAR(20) PRIMARY KEY,
   book_name VARCHAR(255) NOT NULL,
   book_status ENUM('available','borrowed') DEFAULT 'available',
@@ -70,14 +70,14 @@ CREATE TABLE Book (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Borrowing records (book loans)
-CREATE TABLE Borrowing_Record (
+-- borrowing_record (book loans)
+CREATE TABLE borrowing_record (
   record_id INT PRIMARY KEY AUTO_INCREMENT,
   book_id VARCHAR(20) NOT NULL,
   citizen_id VARCHAR(13) NOT NULL,
   borrowTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   returnTime DATETIME,
-  FOREIGN KEY (book_id) REFERENCES Book(book_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE CASCADE ON UPDATE CASCADE,
   INDEX idx_borrow_book (book_id),
   INDEX idx_borrow_citizen (citizen_id),
   INDEX idx_borrow_time (borrowTime),
@@ -85,14 +85,14 @@ CREATE TABLE Borrowing_Record (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Helpful indexes
-CREATE INDEX idx_person_email ON Person(email);
-CREATE INDEX idx_person_citizen ON Person(citizen_id);
-CREATE INDEX idx_room_status ON Room(room_status);
-CREATE INDEX idx_book_status ON Book(book_status);
-CREATE INDEX idx_book_category ON Book(category);
+CREATE INDEX idx_person_email ON person(email);
+CREATE INDEX idx_person_citizen ON person(citizen_id);
+CREATE INDEX idx_room_status ON room(room_status);
+CREATE INDEX idx_book_status ON book(book_status);
+CREATE INDEX idx_book_category ON book(category);
 
-/* NOTE: If you want stronger referential integrity for Borrowing_Record -> Person
-   you can add:  ALTER TABLE Borrowing_Record ADD CONSTRAINT fk_borrow_citizen
-                 FOREIGN KEY (citizen_id) REFERENCES Person(citizen_id);
+/* NOTE: If you want stronger referential integrity for borrowing_record -> person
+  you can add:  ALTER TABLE borrowing_record ADD CONSTRAINT fk_borrow_citizen
+            FOREIGN KEY (citizen_id) REFERENCES person(citizen_id);
    (Omitted for now because citizen_id may be NULL for legacy imports.) */
 

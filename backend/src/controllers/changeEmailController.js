@@ -8,7 +8,7 @@ function randomCode(len = 6) {
 }
 
 // POST /auth/change-email/request { currentEmail, newEmail }
-export async function requestChangeEmail(req, res) {
+export async function   requestChangeEmail(req, res) {
   try {
     const { currentEmail, newEmail } = req.body;
     if (!currentEmail || !newEmail) {

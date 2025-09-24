@@ -1,20 +1,6 @@
 import nodemailer from 'nodemailer';
 
-/* Gmail-only Nodemailer Service
-   Required env:
-     MAIL_USER  -> your Gmail address
-     MAIL_PASS  -> 16-char App Password (NOT normal password)
-   Optional:
-     DEBUG_EMAIL=true  -> verbose logs
-*/
-
-const debugEmail = process.env.DEBUG_EMAIL === 'true';
-const needed = ['MAIL_USER', 'MAIL_PASS'];
-const missing = needed.filter(v => !process.env[v]);
-if (missing.length) {
-  console.error('[emailService] Missing env vars:', missing.join(', '));
-  throw new Error('Email service not configured (Gmail)');
-}
+const debugEmail = process.env.DEBUG_EMAIL === 'false';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',

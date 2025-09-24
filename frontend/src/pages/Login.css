@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Noto+Sans+Thai+Looped:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+Thai:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+Thai+Looped:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+Thai:wght@100..900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #F6F3ED;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 450px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-container {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.welcome-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #53311C;
+  letter-spacing: -0.5px;
+  font-family: 'Crimson Text', serif;
+}
+
+.welcome-subtitle {
+  color: #BC956B;
+  font-size: 1rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+}
+
+.form-container {
+  background: #FBFBFB;
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(139, 90, 64, 0.1);
+  border: 1px solid rgba(139, 90, 64, 0.1);
+  padding: 40px 30px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #53311C;
+  margin-bottom: 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid #e8ddd4;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #ffffff;
+  color: #4a3429;
+  outline: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+  color: #B6B1AA;
+}
+
+.form-input:focus {
+  border-color: #8b5a40;
+  box-shadow: 0 0 0 3px rgba(139, 90, 64, 0.1);
+  background: #ffffff;
+}
+
+.form-input.error {
+  border-color: #f87171;
+}
+
+.password-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.password-input {
+  padding-right: 50px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #BC956B;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #8b5a40;
+}
+
+.error-message {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: #dc2626;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.login-error {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.login-error-text {
+  font-size: 0.875rem;
+  color: #b91c1c;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+}
+
+.signin-button {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #86422A, #86422A);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 90, 64, 0.3);
+  font-family: 'Inter', system-ui, sans-serif;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.signin-button:hover {
+  background: linear-gradient(135deg, #86422A, #86422A);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(139, 90, 64, 0.4);
+}
+
+.signin-button:active {
+  transform: translateY(0);
+}
+
+.forgot-password-container {
+  text-align: center;
+}
+
+.forgot-password-link {
+  font-size: 0.95rem;
+  color: #BC956B;
+  text-decoration: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: color 0.2s ease;
+}
+
+.forgot-password-highlight:hover {
+  color: #86422a;
+  text-decoration: underline;
+}
+
+.forgot-password-highlight {
+  color: #BC956B;
+  font-weight: 600;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 15px;
+  }
+  .form-container {
+    padding: 30px 25px;
+    border-radius: 15px;
+  }
+  .welcome-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+  .welcome-title {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+  .welcome-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+  }
+  .form-input {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+  .signin-button {
+    padding: 14px;
+    font-size: 1rem;
+  }
+
+  input[type="password"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  input[type="password"]::-webkit-textfield-decoration-container {
+    display: none !important;
+  }
+
+  input[type="password"]::-webkit-credentials-auto-fill-button,
+  input[type="password"]::-webkit-password-toggle-button {
+    display: none !important;
+  }
+}
