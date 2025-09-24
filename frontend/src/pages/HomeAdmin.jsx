@@ -27,8 +27,8 @@ const HomeAdmin = () => {
                 <>
                 
                   {/*Room Booking*/}
-                  <Link to="/roombooking" className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2">
-                   <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-1 animate-bounce-subtle"/>
+                  <Link to="/roombooking" className="block rounded-2xl shadow-md p-6 bg-white btn-primary text-center hover:shadow-lg transition px-2">
+                   <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-1 "/>
                     <h4 className="text-sm font-semibold text-brown-800 mb-1">
                         Room Booking 
                     </h4>
@@ -38,8 +38,8 @@ const HomeAdmin = () => {
                   </Link>
                    
                    {/*Dashboard */}
-                  <Link to="/bookingdashbord" className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2">
-                   <ChartLine className="h-8 w-8 mx-auto text-brown-500 mb-1 animate-bounce-subtle"/>
+                  <Link to="/bookingdashbord" className="block rounded-2xl shadow-md p-6 bg-white btn-primary text-center hover:shadow-lg transition px-2">
+                   <ChartLine className="h-8 w-8 mx-auto text-brown-500 mb-1 "/>
                     <h4 className="text-sm font-semibold text-brown-800 mb-1">
                         Room Booking Dashboard
                     </h4>
@@ -49,8 +49,8 @@ const HomeAdmin = () => {
                   </Link>
                   
                   {/*Lending*/}
-                  <Link to="/lending" className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2">
-                    <BookOpen className="h-8 w-8 mx-auto text-brown-500 mb-1 animate-bounce-subtle"/>
+                  <Link to="/lending" className="block rounded-2xl shadow-md p-6 bg-white btn-primary text-center hover:shadow-lg transition px-2">
+                    <BookOpen className="h-8 w-8 mx-auto text-brown-500 mb-1 "/>
                     <h3 className="text-sm font-semibold text-brown-800 mb-1">
                         Book Lending
                     </h3>
@@ -60,8 +60,8 @@ const HomeAdmin = () => {
                   </Link>
                   
                   {/*Borrowing Dashboard*/}
-                  <Link to="/borrowdashbord" className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2">
-                   <ChartLine className="h-8 w-8 mx-auto text-brown-500 mb-1 animate-bounce-subtle"/>
+                  <Link to="/borrowdashbord" className="block rounded-2xl shadow-md p-6 bg-white  btn-primary text-center hover:shadow-lg transition px-2">
+                   <ChartLine className="h-8 w-8 mx-auto text-brown-500 mb-1 "/>
                     <h4 className="text-sm font-semibold text-brown-800 mb-1 whitespace-nowrap">
                         Book Borrowing Dashboard
                     </h4>
