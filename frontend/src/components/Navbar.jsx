@@ -1,152 +1,164 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Coffee,
-  LogOut,
-  User,
-  BookOpen,
-  Calendar,
-  Menu,
-  X,
-  CoffeeIcon,
-  HomeIcon,
-} from "lucide-react";
-import toast from "react-hot-toast";
-import logo from "../assets/Coffee.svg";
+  // src/components/Navbar.jsx
+  import React, { useState } from "react";
+  import { Link, useNavigate } from "react-router-dom";
+  import { HomeIcon, BookOpen, Menu, X,Book,LogOut,User } from "lucide-react";
+  import logo from "../assets/Coffee.svg";
+  import { useAuthStore } from "../store/authStore";
+  import toast from "react-hot-toast";
 
-const Navbar = () => {
-  const [user, setUser] = useState(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const navigate = useNavigate();
+  const Navbar = () => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const navigate = useNavigate();
+    const { isAuthenticated, role, user, logout } = useAuthStore();
 
-  const logout = () => {
-    // TODO: implement setIsAuthenticated from context/auth state
-    setUser(null);
-  };
+    const handleLogout = () => {
+      logout();
+      toast.success("Logged out successfully");
+      navigate("/");
+    };
 
-  const handleLogout = () => {
-    logout();
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
+    const toggleMobileMenu = () => setMobileOpen(!mobileOpen);
+    const closeMobileMenu = () => setMobileOpen(false);
 
-  const toggleMobileMenu = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setMobileOpen(false);
-  };
-
-  return (
-    <nav className="bg-white shadow-md border-b border-cream-300 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    return (
+      <nav className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center space-x-2 text-brown-600 hover:text-brown-700 transition-colors"
+            className="flex items-center gap-2"
             onClick={closeMobileMenu}
           >
             <img src={logo} alt="Logo" className="h-8 w-8" />
-            <span className="text-4xl font-crimson font-semibold">
+            <span className="text-3xl font-crimson text-brown-600">
               Book Café
             </span>
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link
-              to="/Home"
-              className="flex items-center gap-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
-            >
-              <HomeIcon className="h-4 w-4" />
-              <span>Home</span>
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/Home" className="flex items-center gap-1">
+              <HomeIcon className="h-4 w-4" /> Home
             </Link>
-
-            <Link
-              to="/Room"
-              className="flex items-center gap-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
-            >
-              <BookOpen className="h-4 w-4" />
-              <span>Room</span>
+            <Link to="/Room" className="flex items-center gap-1">
+              <BookOpen className="h-4 w-4" /> Room
             </Link>
+            {/* แสดง Book Room เฉพาะ admin เท่านั้น */}
+            {isAuthenticated && role === 'admin' && (
+              <Link
+                to="/booking" className=" flex items-center gap-1 ">
+                <Book className="h-4 w-4" /> Book
+              </Link>
+            )}
           </div>
 
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
-            >
-              Login
-            </Link>
-            <Link to="/register" className="btn-primary text-sm">
-              Register
-            </Link>
-          </div>
-
-          {/* Mobile Hamburger Button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="text-darkBrown-500 hover:text-brown-600 transition-colors p-2"
-              aria-label="Toggle mobile menu"
-            >
-              {mobileOpen ? (
-                <X className="h-6 w-6" />
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            {!isAuthenticated ? (
+              <>
+                <Link to="/login" className="text-brown-600 hover:text-brown-700">
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-brown-500 text-white px-3 py-1 rounded hover:bg-brown-600"
+                >
+                  Register
+                </Link>
+              </>
               ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              <div className="flex items-center gap-3">
+                {/* User Info */}
+                <div className="text-right">
+                  <div className="flex items-center gap-1 text-sm  text-darkBrown-500">
+                    <User className="h-4 w-4" />
+                    <span>{user?.email || ''}</span>
+                </div>
+                <Link
+                  onClick={handleLogout}
+                  className=" flex items-center gap-1 px-3 py-1 rounded text-darkBrown-500">
+                  <LogOut className="h-4 w-4" /> Logout
+                </Link> 
+              </div>
+              </div>)}
+          </div>
+
+          {/* Mobile Hamburger */}
+          <div className="md:hidden">
+            <button onClick={toggleMobileMenu}>
+              {mobileOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-cream-300 z-40">
-            <div className="px-4 py-4 space-y-4">
-              {/* Mobile Navigation Links */}
+          <div className="md:hidden bg-white shadow-lg border-t py-2">
+            <Link
+              to="/Home"
+              className="block px-4 py-2"
+              onClick={closeMobileMenu}
+            >
+              Home
+            </Link>
+            <Link
+              to="/Room"
+              className="block px-4 py-2"
+              onClick={closeMobileMenu}
+            >
+              Room
+            </Link>
+            {/* แสดง Book Room ใน mobile menu เฉพาะ admin เท่านั้น */}
+            {isAuthenticated && role === 'admin' && (
               <Link
-                to="/Home"
-                className="flex items-center space-x-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium py-2"
+                to="/booking"
+                className="block px-4 py-2"
                 onClick={closeMobileMenu}
               >
-                <HomeIcon className="h-4 w-4" />
-                <span>Home</span>
+                Book
               </Link>
-              <Link
-                to="/Room"
-                className="flex items-center space-x-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium py-2"
-                onClick={closeMobileMenu}
-              >
-                <BookOpen className="h-4 w-4" />
-                <span>Room</span>
-              </Link>
+            )}
 
-              {/* Mobile Auth Links */}
-              <div className="pt-4 border-t border-cream-200 space-y-3">
+            {!isAuthenticated ? (
+              <>
                 <Link
                   to="/login"
-                  className="block text-darkBrown-500 hover:text-brown-600 transition-colors font-medium py-2"
+                  className="block px-4 py-2"
                   onClick={closeMobileMenu}
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="btn-primary text-sm inline-block"
+                  className="block px-4 py-2"
                   onClick={closeMobileMenu}
                 >
                   Register
                 </Link>
+              </>
+            ) : (
+              <div>
+                {/* User Info in Mobile */}
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <div className="text-xm text-darkBrown-500">
+                    {user?.email || ''}
+                  </div>
+                </div>
+                <Link
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                  className="text-left px-4 py-2"
+                >
+                  Logout
+                </Link>
               </div>
-            </div>
+            )}
           </div>
         )}
-      </div>
-    </nav>
-  );
-};
+      </nav>
+    );
+  };
 
-export default Navbar;
+  export default Navbar;
