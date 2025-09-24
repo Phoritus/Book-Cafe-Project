@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {  Calendar,  Clock } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
-import BookLending from './BookLending.jsx';
 
 const HomePage = () => {
   const isAuthenticated = false; // ตั้งค่า default ไปก่อน
