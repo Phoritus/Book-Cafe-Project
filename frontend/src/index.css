@@ -346,6 +346,7 @@ body {
   --font-sans: Inter, system-ui, sans-serif;
   --font-display: "Playfair Display", serif;
   --font-crimson: 'Crimson Text', serif;
+  
 
   /* Shadow */
   --shadow-soft: 0 4px 20px rgba(139, 69, 19, 0.1);
