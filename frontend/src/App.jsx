@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage.jsx';
 import EditProfile from './pages/EditProfile.jsx';
 import HomeAdmin from './pages/HomeAdmin.jsx';
 import HomeCustomer from './pages/HomeCustomer.jsx';
+import BookLending from './pages/BookLending.jsx';
 
 function RequireRole({ role, children }) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -43,6 +44,14 @@ function App() {
               element={
                 <RequireRole role="user">
                   <HomeCustomer />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/lending"
+              element={
+                <RequireRole role="admin">
+                  <BookLending />
                 </RequireRole>
               }
             />
