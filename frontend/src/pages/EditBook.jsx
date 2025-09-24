@@ -4,8 +4,6 @@ import arrow from "../assets/Arrowcategory.svg";
 import successIcon from "../assets/Success.svg";
 import { ArrowLeft } from 'lucide-react';
 
-const API_URL = 'https://api-book-cafe.onrender.com/auth/login';
-
 const EditBook = () => {
     const isAuthenticated = false;
     const [name, setName] = useState('');

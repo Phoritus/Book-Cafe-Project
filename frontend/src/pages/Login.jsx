@@ -3,6 +3,7 @@ import axios from 'axios';
 import './Login.css';
 import { Eye, EyeOff, Coffee } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = 'https://api-book-cafe.onrender.com/auth/login';
 
@@ -13,6 +14,7 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,8 +46,12 @@ function Login() {
       }
       localStorage.setItem('accessToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      console.log('Login successful:', data);
-      // TODO: redirect, e.g., window.location.href = '/dashboard';
+      const role = data.user?.role;
+      if (role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/customer', { replace: true });
+      }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setLoginError(err.response.data.message);
