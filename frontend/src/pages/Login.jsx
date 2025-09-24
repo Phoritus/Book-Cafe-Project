@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Login.css';
 import { Eye, EyeOff, Coffee } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from "../store/authStore";
+
+const API_URL = 'https://api-book-cafe.onrender.com/auth/login';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -9,10 +14,12 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const authStore = useAuthStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
     const newErrors = {};
     setLoginError('');
 
@@ -30,11 +37,32 @@ function Login() {
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Login attempt:', { email, password });
-      setTimeout(() => {
-        setLoginError('Invalid email/phone or password. Please check your credentials and try again.');
-      }, 500);
+    if (Object.keys(newErrors).length > 0) return; // stop if validation errors
+
+    setLoading(true);
+    try {
+      const { data } = await axios.post(API_URL, { email, password });
+      // Expected shape: { token, user: { id, email, role } }
+      if (!data || !data.token || !data.user) {
+        throw new Error('Unexpected response format');
+      }
+      localStorage.setItem('accessToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      authStore.login(data.user);
+      const role = data.user?.role;
+      if (role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/customer', { replace: true });
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setLoginError(err.response.data.message);
+      } else {
+        setLoginError(err.message || 'Login failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,7 +139,7 @@ function Login() {
                 onClick={togglePasswordVisibility}
                 className="password-toggle"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeOff size={23} /> : <Eye size={23} />}
               </button>
             </div>
             {errors.password && (
@@ -131,15 +159,16 @@ function Login() {
             type="button"
             onClick={handleSubmit}
             className="signin-button"
+            disabled={loading}
           >
-            Sign In
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
 
           {/* Forgot Password Link */}
           <div className="forgot-password-container">
-            <a href="#" className="forgot-password-link">
-              Forgot your password? <span className="forgot-password-highlight">Reset Password</span>
-            </a>
+            <span className="forgot-password-link">
+              Forgot your password? <a href="/" className="forgot-password-highlight">Reset Password</a>
+            </span>
           </div>
         </div>
       </div>

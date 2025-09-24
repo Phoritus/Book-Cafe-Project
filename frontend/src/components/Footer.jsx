@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Clock, Phone } from "lucide-react";
+import { MapPin, Clock, Phone,Mail} from "lucide-react";
 import logo from "../assets/mail.svg";
 
 const Footer = () => {
@@ -37,7 +37,7 @@ const Footer = () => {
             Tel : 020 - 123 - 4567
           </p>
           <p className="flex items-center text-sm gap-x-3">
-            <img src={logo} alt="Mail" className="w-4 h-4" />
+            <Mail className="w-4 h-4" />
             Email : contact@bookcafe.com
           </p>
         </div>

@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { testConnection } from './config/db.js';
 import { verifyRequiredEnv, DEFAULT_REQUIRED_ENV } from './utils/envCheck.js';
 import authRoutes from './routes/auth.js';
@@ -7,12 +8,17 @@ import bookingRoutes from './routes/bookings.js';
 import bookRoutes from './routes/books.js';
 import borrowingRoutes from './routes/borrowing.js';
 import dashboardRoutes from './routes/dashboard.js';
+import { corsOptions } from './config/corsOptionsControllers.js';
 
 const app = express();
 app.use(express.json());
 
 // Health check
 app.get('/health', (req, res) => res.json({ ok: true }));
+
+// CORS preflight
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Routes
 app.use('/auth', authRoutes);

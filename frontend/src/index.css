@@ -345,15 +345,14 @@ body {
   /* Font family */
   --font-sans: Inter, system-ui, sans-serif;
   --font-display: "Playfair Display", serif;
+  --font-crimson: 'Crimson Text', serif;
+  
 
   /* Shadow */
   --shadow-soft: 0 4px 20px rgba(139, 69, 19, 0.1);
   --shadow-warm: 0 8px 32px rgba(218, 165, 32, 0.2);
 }
 
-.font-crimson {
-  font-family: 'Crimson Text', serif;
-}
 
 .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
 .animate-slide-up { animation: slideUp 0.3s ease-out; }

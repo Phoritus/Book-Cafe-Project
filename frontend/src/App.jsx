@@ -5,6 +5,17 @@ import HomePage from './pages/HomePage.jsx';
 import EditBook from './pages/EditBook.jsx';
 import Login from './pages/Login.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import EditProfile from './pages/EditProfile.jsx';
+import HomeAdmin from './pages/HomeAdmin.jsx';
+import HomeCustomer from './pages/HomeCustomer.jsx';
+import BookLending from './pages/BookLending.jsx';
+
+function RequireRole({ role, children }) {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (!user) return <Navigate to="/login" replace />;
+  if (role && user.role !== role) return <Navigate to="/" replace />;
+  return children;
+}
 
 function App() {
   return (
@@ -15,9 +26,37 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/edit-book" element={<EditBook />} />
-            <Route path="/Login" element={<Login />} />
+            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<RegisterPage />} />
+
+            {/* Role-based homes */}
+            <Route
+              path="/admin"
+              element={
+                <RequireRole role="admin">
+                  <HomeAdmin />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/customer"
+              element={
+                <RequireRole role="user">
+                  <HomeCustomer />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/lending"
+              element={
+                <RequireRole role="admin">
+                  <BookLending />
+                </RequireRole>
+              }
+            />
+
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
-            <Route path="/register" element={<RegisterPage/>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

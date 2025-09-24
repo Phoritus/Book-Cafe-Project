@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Noto+Sans+Thai+Looped:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+Thai:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+Thai+Looped:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+Thai:wght@100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -10,8 +13,8 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: #f7f3f0;
-  font-family: Georgia, serif;
+  background: #F6F3ED;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .login-wrapper {
@@ -33,27 +36,26 @@
 
 .welcome-container {
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
 }
 
 .welcome-title {
   font-size: 2.2rem;
-  font-weight: 600;
-  color: #4a3429;
-  margin-bottom: 8px;
+  font-weight: bold;
+  color: #53311C;
   letter-spacing: -0.5px;
-  font-family: Georgia, serif;
+  font-family: 'Crimson Text', serif;
 }
 
 .welcome-subtitle {
-  color: #8b7355;
+  color: #BC956B;
   font-size: 1rem;
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
 }
 
 .form-container {
-  background: rgba(255, 255, 255, 0.95);
+  background: #FBFBFB;
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(139, 90, 64, 0.1);
@@ -69,9 +71,9 @@
   display: block;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #4a3429;
+  color: #53311C;
   margin-bottom: 8px;
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .form-input {
@@ -80,15 +82,15 @@
   border: 2px solid #e8ddd4;
   border-radius: 12px;
   font-size: 1rem;
-  background: #fefcfb;
+  background: #ffffff;
   color: #4a3429;
   outline: none;
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
   transition: all 0.3s ease;
 }
 
 .form-input::placeholder {
-  color: #b5a596;
+  color: #B6B1AA;
 }
 
 .form-input:focus {
@@ -117,7 +119,7 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #8b7355;
+  color: #BC956B;
   cursor: pointer;
   padding: 4px;
   font-size: 1.1rem;
@@ -133,7 +135,7 @@
   margin-top: 8px;
   font-size: 0.875rem;
   color: #dc2626;
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .login-error {
@@ -147,14 +149,14 @@
 .login-error-text {
   font-size: 0.875rem;
   color: #b91c1c;
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
   margin: 0;
 }
 
 .signin-button {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #8b5a40, #a67251);
+  background: linear-gradient(135deg, #86422A, #86422A);
   color: white;
   border: none;
   border-radius: 12px;
@@ -162,13 +164,13 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(139, 90, 64, 0.3);
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
   margin-bottom: 20px;
   transition: all 0.3s ease;
 }
 
 .signin-button:hover {
-  background: linear-gradient(135deg, #7a4f37, #956247);
+  background: linear-gradient(135deg, #86422A, #86422A);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(139, 90, 64, 0.4);
 }
@@ -183,19 +185,20 @@
 
 .forgot-password-link {
   font-size: 0.95rem;
-  color: #8b7355;
+  color: #BC956B;
   text-decoration: none;
-  font-family: Georgia, serif;
+  font-family: 'Inter', system-ui, sans-serif;
   transition: color 0.2s ease;
 }
 
-.forgot-password-link:hover {
+.forgot-password-highlight:hover {
   color: #86422a;
   text-decoration: underline;
 }
 
 .forgot-password-highlight {
-  color: #86422a;
+  color: #BC956B;
+  font-weight: 600;
 }
 
 /* Mobile Responsive */

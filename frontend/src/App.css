@@ -1,11 +1,17 @@
 /* Book Café App Styles */
 
+/* Apply site defaults */
 #root {
   max-width: 100%;
   margin: 0;
   padding: 0;
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Utility class to apply Crimson Text */
+.font-crimson {
+  font-family: 'Crimson Text', serif;
 }
 
 /* Page container for consistent layout */
@@ -36,3 +42,5 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #7A3D11;
 }
+
+ 
