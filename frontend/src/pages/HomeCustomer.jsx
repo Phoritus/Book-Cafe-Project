@@ -26,8 +26,8 @@ const HomePage = () => {
               {!isAuthenticated ? (
                 <>
                   {/*Room Booking*/}
-                  <Link to="/roombooking" className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2">
-                    <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-1 animate-bounce-subtle"/>
+                  <Link to="/roombooking" className="block rounded-2xl shadow-md p-6 bg-white btn-primary text-center hover:shadow-lg transition px-2">
+                    <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-2 "/>
                     <h3 className="text-sm font-semibold text-brown-800 mb-1">
                         Room Booking
                     </h3>
@@ -37,8 +37,8 @@ const HomePage = () => {
                   </Link>
                   
                   {/*Upcoming Booking*/}
-                  <Link to="/upcomingbooking" className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2">
-                    <Clock className="h-8 w-8 mx-auto text-brown-500 mb-1 animate-bounce-subtle"/>
+                  <Link to="/upcomingbooking" className="block rounded-2xl shadow-md p-6 bg-white btn-primary text-center hover:shadow-lg transition px-2">
+                    <Clock className="h-8 w-8 mx-auto text-brown-500 mb-2 "/>
                     <h3 className="text-sm font-semibold text-brown-800 mb-1">
                         Upcoming Booking
                     </h3>
