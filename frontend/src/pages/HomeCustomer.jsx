@@ -36,6 +36,7 @@ const HomePage = () => {
                     className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2"
                   >
                     <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-1" />
+
                     <h3 className="text-sm font-semibold text-brown-800 mb-1">
                       Room Booking
                     </h3>
@@ -43,6 +44,7 @@ const HomePage = () => {
                       Reserve your perfect study space
                     </p>
                   </Link>
+
 
                   {/* Upcoming Booking */}
                   <Link
