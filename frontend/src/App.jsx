@@ -8,6 +8,8 @@ import RegisterPage from './pages/RegisterPage.jsx';
 import EditProfile from './pages/EditProfile.jsx';
 import HomeAdmin from './pages/HomeAdmin.jsx';
 import HomeCustomer from './pages/HomeCustomer.jsx';
+import FillBookRoompage from './pages/FillBookRoompage.jsx';
+import Upcoming from './pages/Upcoming.jsx';
 import BookLending from './pages/BookLending.jsx';
 import ChooseRoom from './pages/ChooseRoom.jsx';
 import RoomBooking from './pages/RoomBooking.jsx';
@@ -31,9 +33,11 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
-            
-            {/* Public routes that don't require authentication */}
+              {/* Public routes that don't require authentication */}
             <Route path="/choose-room" element={<ChooseRoom />} />
+            <Route path="/fill-book-room" element={<FillBookRoompage />} />
+            <Route path="/upcoming" element={<Upcoming />} />
+              
             {/* Role-based homes */}
             <Route
               path="/admin"

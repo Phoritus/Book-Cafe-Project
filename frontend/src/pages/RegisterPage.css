@@ -1,40 +1,280 @@
-.Container{
-    background-color: #F6F3ED;
+@import url("https://cdn.syncfusion.com/ej2/material.css");
+.Container {
+    min-height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    background: #F6F3ED;
+    
+
 }
-.Show{
+
+.Reg-container select,
+.Reg-container input[type="text"] {
+    border: 1px solid #8B5A40;
+    border-radius: 10px;
+    padding: 8px 6px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.Reg-wrap {
+    /* outline: 1px solid red; */
+    display: center;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+
+
+}
+
+.Show {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     gap: 12px;
     margin: 50px;
-    
+    /* outline: 1px solid red; */
+
 }
 
-img{
+img {
     width: 55px;
     height: 55px;
 }
 
-.H1-show{
-    font-family:'CrimsonText';
+.H1-show {
+    font-family: 'CrimsonText';
     font-size: 36px;
 }
 
-.P-show{
-    font-family: 'Intel';
+.P-show {
+    font-family: 'Inter';
     font-size: 16px;
 }
 
-.Reg-container{
+.Reg-container {
+    font-family: 'Inter';
+    font-size: 15px;
     width: 566px;
     height: 1007px;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     margin: auto;
     background-color: #FBFBFB;
     border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(139, 90, 64, 0.1);
+    /* outline: 1px solid red; */
 
-    
-    
+
+
+}
+
+.Reg-up {
+    margin: 0 auto;
+    /* outline: 1px solid red; */
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.Reg-up label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.Reg-up div {
+    margin-right: 10px;
+}
+
+.Reg-up select {
+    text-align: center;
+    width: 98px;
+    height: 50px;
+}
+
+.Reg-up input {
+    width: 175px;
+    height: 50px;
+}
+
+
+button {
+    margin: 0 auto;
+    margin-top: 43px;
+    background: #86422A;
+    border: 1px solid #86422A;
+    border-radius: 10px;
+    width: 475px;
+    height: 56px;
+    color: #FFFFFf;
+}
+
+
+.Reg-body {
+    font-family: 'Inter';
+    font-size: 15px;
+    text-decoration: none;
+    width: 475px;
+    height: 685px;
+    margin: 0 auto;
+    margin-top: 43px;
+    /* outline: 1px solid red; */
+}
+
+.Reg-body div:not(.exclude) {
+    width: 474px;
+
+    margin-bottom: 25px;
+    display: block;
+}
+
+.Reg-body input {
+    margin-top: 4px;
+    width: 474px;
+    height: 50px;
+}
+
+.Login {
+    color: #BC956B;
+    text-decoration: solid;
+    display: flex;
+    margin: 0 auto;
+    margin-top: 10px;
+    justify-content: space-around;
+}
+
+
+.Login label {
+    margin-right: 10px;
+}
+
+
+
+.sendCode{
+    overflow: hidden;
+    height: 77px;
+}
+.sendCode div{
+    display: flex;
+}
+
+.sendCode input {
+  flex: 1;
+  margin: 0;
+  padding: 10px;
+  height: 50px;
+  border: 1px solid #d3b9ab;
+  border-right: none;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  outline: none;
+  font-size: 14px;
+}
+
+
+.sendCode button {
+    margin: 0;
+    width: 152px;
+    height: 50px;
+    padding: 10px 10px;
+    border: 1px solid #d3b9ab;
+    background-color: #f5eeeb;
+    color: #6a2c1b;
+    cursor: pointer;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.sendCode button:hover {
+  background-color: #e6d7d0;
+}
+
+/* DatePicker Input Styling */
+.react-datepicker-wrapper {
+    width: 474px;
+}
+
+.react-datepicker__input-container input {
+    width: 474px !important;
+    height: 50px !important;
+    margin-top: 4px;
+    border: 1px solid #8B5A40 !important;
+    border-radius: 10px !important;
+    padding: 8px 6px !important;
+    background: #fff !important;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-family: 'Inter';
+}
+
+/* Calendar Popup Styling */
+.my-custom-calendar {
+    background-color: #ffffff !important;  /* พื้นหลังสีขาวทึบ */
+    border: 2px solid #8B5A40 !important;  /* ขอบสีน้ำตาล */
+    border-radius: 10px !important;        /* มุมโค้ง */
+    padding: 10px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important; /* เงา */
+}
+
+.my-custom-calendar .react-datepicker__header {
+    background-color: #86422A !important; /* หัวปฏิทินสีน้ำตาล */
+    border-bottom: 1px solid #8B5A40 !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.my-custom-calendar .react-datepicker__current-month {
+    color: white !important; /* ข้อความเดือน/ปีสีขาว */
+    font-weight: bold !important;
+}
+
+.my-custom-calendar .react-datepicker__day-name {
+    color: white !important; /* ชื่อวันสีขาว */
+    font-weight: bold !important;
+}
+
+.my-custom-calendar .react-datepicker__navigation {
+    top: 13px !important;
+}
+
+.my-custom-calendar .react-datepicker__navigation--previous {
+    border-right-color: white !important;
+}
+
+.my-custom-calendar .react-datepicker__navigation--next {
+    border-left-color: white !important;
+}
+
+.my-custom-calendar .react-datepicker__day {
+    background-color: #ffffff !important; /* พื้นหลังวันสีขาว */
+    color: #333 !important;
+    border-radius: 4px !important;
+    margin: 2px !important;
+}
+
+.my-custom-calendar .react-datepicker__day:hover {
+    background-color: #f5eeeb !important; /* เมื่อ hover */
+    color: #6a2c1b !important;
+}
+
+.my-custom-calendar .react-datepicker__day--selected {
+    background-color: #86422A !important;  /* วันที่ถูกเลือกสีน้ำตาล */
+    color: white !important;
+    border-radius: 50% !important;
+    font-weight: bold !important;
+}
+
+.my-custom-calendar .react-datepicker__day--today {
+    background-color: #BC956B !important; /* วันนี้สีน้ำตาลอ่อน */
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.my-custom-calendar .react-datepicker__month-container {
+    background-color: #ffffff !important; /* พื้นหลังเดือนสีขาว */
 }
