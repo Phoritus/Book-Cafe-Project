@@ -10,7 +10,7 @@ import HomeAdmin from './pages/HomeAdmin.jsx';
 import HomeCustomer from './pages/HomeCustomer.jsx';
 import FillBookRoompage from './pages/FillBookRoompage.jsx';
 import Upcoming from './pages/Upcoming.jsx';
-
+import BookLending from './pages/BookLending.jsx';
 
 function RequireRole({ role, children }) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -48,6 +48,14 @@ function App() {
               element={
                 <RequireRole role="user">
                   <HomeCustomer />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/lending"
+              element={
+                <RequireRole role="admin">
+                  <BookLending />
                 </RequireRole>
               }
             />
