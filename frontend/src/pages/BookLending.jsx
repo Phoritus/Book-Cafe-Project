@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../BookLending.css";
+import "./BookLending.css";
 
 export default function BookLending() {
   // state สำหรับ borrowed books

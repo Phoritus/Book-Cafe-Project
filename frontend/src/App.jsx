@@ -10,7 +10,9 @@ import HomeAdmin from './pages/HomeAdmin.jsx';
 import HomeCustomer from './pages/HomeCustomer.jsx';
 import FillBookRoompage from './pages/FillBookRoompage.jsx';
 import Upcoming from './pages/Upcoming.jsx';
-
+import BookLending from './pages/BookLending.jsx';
+import ChooseRoom from './pages/ChooseRoom.jsx';
+import RoomBooking from './pages/RoomBooking.jsx';
 
 function RequireRole({ role, children }) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -31,9 +33,11 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
+              {/* Public routes that don't require authentication */}
+            <Route path="/choose-room" element={<ChooseRoom />} />
             <Route path="/fill-book-room" element={<FillBookRoompage />} />
             <Route path="/upcoming" element={<Upcoming />} />
-
+              
             {/* Role-based homes */}
             <Route
               path="/admin"
@@ -48,6 +52,14 @@ function App() {
               element={
                 <RequireRole role="user">
                   <HomeCustomer />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/lending"
+              element={
+                <RequireRole role="admin">
+                  <BookLending />
                 </RequireRole>
               }
             />
