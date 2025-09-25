@@ -9,6 +9,8 @@ import EditProfile from './pages/EditProfile.jsx';
 import HomeAdmin from './pages/HomeAdmin.jsx';
 import HomeCustomer from './pages/HomeCustomer.jsx';
 import BookLending from './pages/BookLending.jsx';
+import ChooseRoom from './pages/ChooseRoom.jsx';
+import RoomBooking from './pages/RoomBooking.jsx';
 
 function RequireRole({ role, children }) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -29,7 +31,9 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
-
+            
+            {/* Public routes that don't require authentication */}
+            <Route path="/choose-room" element={<ChooseRoom />} />
             {/* Role-based homes */}
             <Route
               path="/admin"
