@@ -35,16 +35,16 @@ function RoomBooking() {
           background-color: #F6F3ED;
           padding: 20px;
         }
-        .booking-container {
-          max-width: 480px;
-          margin: 0 auto;
-          background-color: #f5f5f5;
+    .booking-container {
+      max-width: 755px;
+      margin: 0 auto;
         }
         .header {
           display: flex;
           align-items: flex-start;
           gap: 16px;
           margin-bottom: 24px;
+          margin-top: 50px;
         }
         .back-button {
           background: none;
@@ -56,6 +56,9 @@ function RoomBooking() {
           align-items: center;
           justify-content: center;
           margin-top: 4px;
+          position: absolute;
+          left: -200px;
+          top: 0;
         }
         .back-button:hover {
           background-color: rgba(139, 69, 19, 0.1);
@@ -82,18 +85,27 @@ function RoomBooking() {
           background-color: white;
           border-radius: 16px;
           overflow: hidden;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           margin-bottom: 24px;
+          height: 800px; /* card total height */
         }
         .room-image {
           width: 100%;
-          height: 200px;
+          height: 365.63px; /* image height as requested */
           overflow: hidden;
         }
         .room-image img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+        }
+        @media (max-width: 1024px) {
+          .room-image { height: 700px; }
+        }
+        @media (max-width: 768px) {
+          .room-image { height: 520px; }
+        }
+        @media (max-width: 480px) {
+          .room-image { height: 300px; }
         }
           .room-info {
             position: relative;
@@ -153,18 +165,34 @@ function RoomBooking() {
           grid-template-columns: repeat(3, 1fr);
           gap: 12px;
           padding: 20px;
+          margin-top: 20px; /* move down */
+          align-items: start;
+        }
+
+        /* align each timeslot to the start (left) of its grid cell */
+        .time-slot {
+          justify-self: start;
         }
         .time-slot {
-          padding: 12px 8px;
+          /* fixed size as requested */
+          width: 173.34px;
+          height: 55.19px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           border: 1px solid #ddd;
           border-radius: 8px;
           background-color: white;
-          font-size: 12px;
-          font-weight: 500;
+          font-size: 16px; /* increased text size */
+          font-weight: 400; /* Inter regular */
+          font-family: 'Inter', sans-serif;
           color: #333;
           cursor: pointer;
           transition: all 0.2s ease;
           text-align: center;
+          padding: 0 12px; /* keep some horizontal breathing room */
+          margin: 12px; /* add margin around each slot */
+          box-sizing: border-box;
         }
         .time-slot:hover:not(:disabled) {
           border-color: #86422A;
@@ -222,8 +250,11 @@ function RoomBooking() {
             padding: 16px;
           }
           .time-slot {
-            padding: 10px 6px;
-            font-size: 11px;
+            width: 100%;
+            height: 48px;
+            font-size: 14px;
+            padding: 0 8px;
+            margin: 6px 0; /* smaller vertical margin on mobile */
           }
           .title {
             font-size: 17px;
@@ -233,38 +264,47 @@ function RoomBooking() {
             font-size: 13px;
           }
         }
+
+        /* Portrait / vertical orientation: bring back button into view and reduce size */
+        @media (orientation: portrait) {
+          .back-button {
+            left: 0;
+            top: -140; /* moved up further on vertical screens */
+          }
+          .back-button img {
+            width: 32px;
+            height: 32px;
+          }
+        }
       `}</style>
 
-  <div className="booking-container w-full max-w-md mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6">
-          <header className="header flex items-center gap-4 mb-6 relative">
-              <button className="back-button" style={{ position: 'absolute', left: -100, top: 0 }} onClick={() => window.history.back()}>
-                <img src={ArrowBack} alt="Back" style={{ width: 50, height: 50 }} />
+  <div className="booking-header">
+    <header className="header flex items-center gap-4 mb-6 relative">
+              <button className="back-button" onClick={() => window.history.back()}>
+                <img src={ArrowBack} alt="Back" />
               </button>
             <div className="header-content flex-1">
               <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Room Booking Schedule</h1>
               <p className="subtitle text-base sm:text-lg text-[#BC956B] text-center font-inter">Please select your preferred time for booking</p>
             </div>
           </header>
+  <div className="booking-container w-full max-w-md mx-auto rounded-2xl p-4 sm:p-6">
 
-        <div className="room-card mt-4 rounded-2xl overflow-hidden shadow">
-          <div className="room-image w-full h-48 sm:h-56 md:h-64 overflow-hidden">
+  <div className="room-card mt-4 rounded-2xl overflow-hidden">
+          <div className="room-image w-full h-48 sm:h-56 md:h-64 overflow-hidden relative rounded-t-2xl">
             <img
               src={roomImage}
               alt="Conference Room"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
-          </div>
-
-          <div className="room-info relative flex justify-between items-start px-5 py-4" style={{ background: 'none' }}>
-            <img src={roomImage} alt="bg" className="room-info-bg absolute left-0 top-0 w-full h-full object-cover object-bottom blur-sm opacity-20 z-0" />
-            <div className="room-info-content relative z-10 w-full flex justify-between items-start">
-              <div className="room-details">
-                <h2 className="room-name text-base sm:text-lg font-semibold text-[#53311C] mb-1">Room 4</h2>
-                <p className="room-capacity text-sm sm:text-base text-[#53311C]">Room for 10 people</p>
+            <div className="absolute left-0 bottom-0 w-full z-10" style={{ height: '25%', background: 'rgba(255, 255, 255, 0.5)', borderRadius: '0', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '16px' }}>
+              <div style={{ color: '#53311C', fontFamily: 'Inter, sans-serif' }}>
+                <h2 style={{ fontSize: '20px', fontWeight: 400, margin: 0 }}>Room 4</h2>
+                <p style={{ fontSize: '20px', margin: 0 }}>Room for 10 people</p>
               </div>
-              <div className="room-price text-right">
-                <span className="price text-sm sm:text-base text-[#53311C] font-medium">50 THB / Hour</span>
+              <div style={{ color: '#53311C', textAlign: 'right', fontFamily: 'Inter, sans-serif' }}>
+                <span style={{ fontSize: '20px', fontWeight: 400 }}>50 THB / Hour</span>
               </div>
             </div>
           </div>
@@ -299,6 +339,7 @@ function RoomBooking() {
         </a>
       </div>
     </div>
+  </div>
   );
 }
 
