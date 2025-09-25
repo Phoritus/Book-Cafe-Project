@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Login.css';
-import { Eye, EyeOff, Coffee } from 'lucide-react';
+import { Eye, EyeOff} from 'lucide-react';
 import logo from "../assets/Coffee.svg";
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from "../store/authStore";
