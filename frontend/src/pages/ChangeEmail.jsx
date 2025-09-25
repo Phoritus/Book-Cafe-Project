@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './ChangeEmail.css';
 import logo from "../assets/Coffee.svg";
+import { ArrowLeft } from 'lucide-react';
 
 function ChangeEmail() {
   const [currentEmail, setCurrentEmail] = useState('');
@@ -9,6 +10,7 @@ function ChangeEmail() {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // ✅ success หรือ error
+  
 
   const handleSendCode = () => {
     if (!newEmail.trim()) {
@@ -54,6 +56,9 @@ function ChangeEmail() {
   return (
     <div className="login-container">
       <div className="login-wrapper">
+          <div className="absolute top-25 left-25 cursor-pointer z-30" onClick={() => window.history.back()}>
+              <ArrowLeft size={40} color="#86422A" />
+          </div>
         {/* Logo */}
         <div className="animate-fade-in">
           <img
