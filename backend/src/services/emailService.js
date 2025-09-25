@@ -13,16 +13,16 @@ if (missing.length) {
 // Primary transporter: SSL 465
 const primaryTransporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // Gmail SSL
-  auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
-  pool: true,
-  maxConnections: 3,
-  maxMessages: 50,
-  // Timeouts (ms)
-  connectionTimeout: 15_000,
-  greetingTimeout: 10_000,
-  socketTimeout: 20_000,
+  port: 587,
+  secure: false,
+  requireTLS: true, // use STARTTLS
+  logger: true,
+  debug: true,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
+  
 });
 
 // Fallback transporter: STARTTLS 587 (some hosts block 465 but allow 587)
