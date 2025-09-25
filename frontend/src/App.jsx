@@ -6,6 +6,20 @@ import EditBook from './pages/EditBook.jsx';
 import Login from './pages/Login.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import EditProfile from './pages/EditProfile.jsx';
+import HomeAdmin from './pages/HomeAdmin.jsx';
+import HomeCustomer from './pages/HomeCustomer.jsx';
+import FillBookRoompage from './pages/FillBookRoompage.jsx';
+import Upcoming from './pages/Upcoming.jsx';
+import BookLending from './pages/BookLending.jsx';
+import ChooseRoom from './pages/ChooseRoom.jsx';
+import RoomBooking from './pages/RoomBooking.jsx';
+
+function RequireRole({ role, children }) {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (!user) return <Navigate to="/login" replace />;
+  if (role && user.role !== role) return <Navigate to="/" replace />;
+  return children;
+}
 
 function App() {
   return (
@@ -19,6 +33,37 @@ function App() {
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
+              {/* Public routes that don't require authentication */}
+            <Route path="/choose-room" element={<ChooseRoom />} />
+            <Route path="/fill-book-room" element={<FillBookRoompage />} />
+            <Route path="/upcoming" element={<Upcoming />} />
+              
+            {/* Role-based homes */}
+            <Route
+              path="/admin"
+              element={
+                <RequireRole role="admin">
+                  <HomeAdmin />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/customer"
+              element={
+                <RequireRole role="user">
+                  <HomeCustomer />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/lending"
+              element={
+                <RequireRole role="admin">
+                  <BookLending />
+                </RequireRole>
+              }
+            />
+
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
