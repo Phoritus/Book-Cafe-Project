@@ -130,7 +130,7 @@ const Navbar = () => {
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2 text-sm text-darkBrown-500 max-w-[220px]">
                 <User className="h-4 w-4 shrink-0" />
-                <span className="truncate" title={user?.email || ''}>{user?.email || ''}</span>
+                <span className="truncate text-[15px]" title={user?.email || ''}>{user?.email || ''}</span>
               </div>
               {/* Icon + text logout */}
               <div
