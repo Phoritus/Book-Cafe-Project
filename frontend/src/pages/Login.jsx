@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
 import { Eye, EyeOff, Coffee } from 'lucide-react';
@@ -167,8 +168,9 @@ function Login() {
           {/* Forgot Password Link */}
           <div className="forgot-password-container">
             <span className="forgot-password-link">
-              Forgot your password? <a href="/" className="forgot-password-highlight">Reset Password</a>
+              Forgot your password?
             </span>
+            <span className='forgot-password-link'><Link to="/reset-password" className="forgot-password-highlight">Reset Password</Link></span>
           </div>
         </div>
       </div>

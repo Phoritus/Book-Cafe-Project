@@ -18,12 +18,12 @@ function Upcoming() {
                 {/* Main Booking Card */}
                 <div className="bg-white rounded-2xl shadow-md p-6 mt-8 w-full max-w-sm mx-auto flex flex-col items-center font-Inter">
                     {/* Room Name */}
-                    <h2 className="text-3xl text-sm text-[#53311C] mb-6">
+                    <h2 className="text-3xl text-[#53311C] mb-6">
                         Room 4
                     </h2>
 
                     {/* Booking Details Grid */}
-                    <div className="grid grid-cols-2 gap-y-10 gap-x-12 mb-6 text-sm text-[#B37E32]  w-full text-sm">
+                    <div className="grid grid-cols-2 gap-y-10 gap-x-12 mb-6 text-sm text-[#B37E32]  w-full">
                         <div>
                             <div className=" mb-4">Date</div>
                             <div className=" pb-4 mb-4 text-[#3C2415]">11 / 09 / 2025</div>

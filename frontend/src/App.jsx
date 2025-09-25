@@ -15,6 +15,7 @@ import ChooseRoom from './pages/ChooseRoom.jsx';
 import RoomBooking from './pages/RoomBooking.jsx';
 import Roomdashboard from './pages/RoomBoard.jsx';
 import BookBorrowingDashboard from './pages/BookBorrowingDashboard.jsx';
+import ResetPassword from './pages/Resetpassword.jsx';
 
 function RequireRole({ role, children }) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -42,6 +43,7 @@ function App() {
             <Route path="/edit-book" element={<EditBook />} />
             <Route path="/edit-profile" element={<EditProfile />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/register" element={<RegisterPage />} />
               {/* Public routes that don't require authentication */}
             <Route path="/choose-room" element={<ChooseRoom />} />
