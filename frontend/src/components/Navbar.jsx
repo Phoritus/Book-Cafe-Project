@@ -132,13 +132,18 @@ const Navbar = () => {
                 <User className="h-4 w-4 shrink-0" />
                 <span className="truncate" title={user?.email || ''}>{user?.email || ''}</span>
               </div>
-              <button
-                type="button"
+              {/* Icon + text logout */}
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Logout"
                 onClick={handleLogout}
-                className="flex items-center gap-1 text-sm text-darkBrown-500 hover:text-brown-700 transition"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLogout(); } }}
+                className="flex items-center gap-1 text-sm text-darkBrown-500 hover:text-brown-700 cursor-pointer transition"
               >
-                <LogOut className="h-4 w-4" /> Logout
-              </button>
+                <LogOut className="h-5 w-5" />
+                <span>Log out</span>
+              </div>
             </div>
           )}
         </div>
@@ -146,16 +151,15 @@ const Navbar = () => {
         {/* Mobile Hamburger */}
         <div className="md:hidden">
           <div className="md:hidden absolute right-4 top-3 -translate-y-1/2">
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            aria-label="Toggle menu"
-            className="p-2 text-brown-600 inline-flex items-center justify-center w-auto !shadow-none !rounded-none focus:outline-none"
-            // ถ้าต้องการเอา override แบบ inline ใช้ style ด้วย (ไม่สามารถใช้ !important ใน style ได้เสมอ)
-            style={{ background: "transparent", border: 0, boxShadow: "none", outline: "none", width: "auto" }}
-          >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+              className="p-2 text-brown-600 inline-flex items-center justify-center w-auto !shadow-none !rounded-none focus:outline-none"
+              style={{ background: "transparent", border: 0, boxShadow: "none", outline: "none", width: "auto" }}
+            >
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </div>
