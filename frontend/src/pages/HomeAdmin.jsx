@@ -48,7 +48,7 @@ const HomeAdmin = () => {
 
                     {/* Dashboard */}
                     <Link
-                      to="/bookingdashbord"
+                      to="/roombookingdashboard"
                       className="card w-[270px] min-h-[175px] flex flex-col items-center text-center px-7 py-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
                     >
                       <ChartLine className="h-8 w-8 text-brown-500 mx-auto mb-4" />
@@ -76,7 +76,7 @@ const HomeAdmin = () => {
 
                     {/* Borrowing Dashboard */}
                     <Link
-                      to="/borrowdashbord"
+                      to="/bookborrowingdashboard"
                       className="card w-[270px] min-h-[175px] flex flex-col items-center text-center px-7 py-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
                     >
                       <ChartLine className="h-8 w-8 text-brown-500 mx-auto mb-4" />
