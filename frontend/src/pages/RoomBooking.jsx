@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import roomImage from "../assets/10p_room.jpg";
 import ArrowBack from "../assets/ArrowBack.svg";
+import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 function RoomBooking() {
+  const location = useLocation();
+  const { room } = location.state || {};
   const timeSlots = [
     { time: "08:00 - 09:00", available: true },
     { time: "09:00 - 10:00", available: true },
@@ -28,7 +33,7 @@ function RoomBooking() {
   };
 
   return (
-  <div className="app w-full min-h-screen bg-[#F6F3ED] px-4 py-6 flex justify-center items-center">
+    <div className="app w-full min-h-screen bg-[#F6F3ED] px-4 py-6 flex justify-center items-center">
       <style>{`
         .app {
           min-height: 100vh;
@@ -235,21 +240,21 @@ function RoomBooking() {
         }
       `}</style>
 
-  <div className="booking-container w-full max-w-md mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6">
-          <header className="header flex items-center gap-4 mb-6 relative">
-              <button className="back-button" style={{ position: 'absolute', left: -100, top: 0 }} onClick={() => window.history.back()}>
-                <img src={ArrowBack} alt="Back" style={{ width: 50, height: 50 }} />
-              </button>
-            <div className="header-content flex-1">
-              <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Room Booking Schedule</h1>
-              <p className="subtitle text-base sm:text-lg text-[#BC956B] text-center font-inter">Please select your preferred time for booking</p>
-            </div>
-          </header>
+      <div className="booking-container w-full max-w-md mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6">
+        <header className="header flex items-center gap-4 mb-6 relative">
+          <button className="back-button" style={{ position: 'absolute', left: -100, top: 0 }} onClick={() => window.history.back()}>
+            <img src={ArrowBack} alt="Back" style={{ width: 50, height: 50 }} />
+          </button>
+          <div className="header-content flex-1">
+            <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Room Booking Schedule</h1>
+            <p className="subtitle text-base sm:text-lg text-[#BC956B] text-center font-inter">Please select your preferred time for booking</p>
+          </div>
+        </header>
 
         <div className="room-card mt-4 rounded-2xl overflow-hidden shadow">
           <div className="room-image w-full h-48 sm:h-56 md:h-64 overflow-hidden">
             <img
-              src={roomImage}
+              src={room.image}
               alt="Conference Room"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
@@ -257,10 +262,10 @@ function RoomBooking() {
           </div>
 
           <div className="room-info relative flex justify-between items-start px-5 py-4" style={{ background: 'none' }}>
-            <img src={roomImage} alt="bg" className="room-info-bg absolute left-0 top-0 w-full h-full object-cover object-bottom blur-sm opacity-20 z-0" />
+            <img src={room.image} alt="bg" className="room-info-bg absolute left-0 top-0 w-full h-full object-cover object-bottom blur-sm opacity-20 z-0" />
             <div className="room-info-content relative z-10 w-full flex justify-between items-start">
               <div className="room-details">
-                <h2 className="room-name text-base sm:text-lg font-semibold text-[#53311C] mb-1">Room 4</h2>
+                <h2 className="room-name text-base sm:text-lg font-semibold text-[#53311C] mb-1">{room.name}</h2>
                 <p className="room-capacity text-sm sm:text-base text-[#53311C]">Room for 10 people</p>
               </div>
               <div className="room-price text-right">
@@ -273,9 +278,8 @@ function RoomBooking() {
             {timeSlots.map((slot, index) => (
               <button
                 key={index}
-                className={`time-slot px-2 py-2 sm:px-4 sm:py-2 rounded-lg border text-xs sm:text-sm font-medium transition-colors text-center ${
-                  !slot.available ? "booked" : ""
-                } ${selectedTimeSlots.includes(slot.time) ? "selected" : ""}`}
+                className={`time-slot px-2 py-2 sm:px-4 sm:py-2 rounded-lg border text-xs sm:text-sm font-medium transition-colors text-center ${!slot.available ? "booked" : ""
+                  } ${selectedTimeSlots.includes(slot.time) ? "selected" : ""}`}
                 onClick={() => toggleTime(slot)}
                 disabled={!slot.available}
               >
@@ -285,7 +289,7 @@ function RoomBooking() {
           </div>
         </div>
 
-        <a href="/" className="continue-button w-full bg-[#86422A] text-white rounded-xl py-4 px-6 text-lg font-semibold flex items-center justify-center gap-2 mt-4 transition hover:bg-[#7a3d0f]">
+        <Link to="/fill-book-room" state={{ selectedTimeSlots, room }} className="continue-button w-full bg-[#86422A] text-white rounded-xl py-4 px-6 text-lg font-semibold flex items-center justify-center gap-2 mt-4 transition hover:bg-[#7a3d0f]">
           Continue
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path
@@ -296,7 +300,7 @@ function RoomBooking() {
               strokeLinejoin="round"
             />
           </svg>
-        </a>
+        </Link>
       </div>
     </div>
   );

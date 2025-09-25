@@ -37,7 +37,7 @@ function App() {
             <Route path="/choose-room" element={<ChooseRoom />} />
             <Route path="/fill-book-room" element={<FillBookRoompage />} />
             <Route path="/upcoming" element={<Upcoming />} />
-              
+            <Route path="/room-booking" element={<RoomBooking />} />
             {/* Role-based homes */}
             <Route
               path="/admin"
