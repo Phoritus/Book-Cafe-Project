@@ -26,9 +26,9 @@ export async function borrowingsByCategory(req, res) {
     if ((new Date(r.end) - new Date(r.start)) / 86400000 > 180) {
       return res.status(400).json({ error:true, message: 'Range too large (max 180 days)' });
     }
-    const sql = `SELECT b.category AS category, COUNT(br.record_id) AS borrowings
-                 FROM Borrowing_Record br
-                 JOIN Book b ON b.book_id = br.book_id
+  const sql = `SELECT b.category AS category, COUNT(br.record_id) AS borrowings
+         FROM borrowing_record br
+         JOIN book b ON b.book_id = br.book_id
                  WHERE DATE(br.borrowTime) BETWEEN ? AND ?
                  GROUP BY b.category
                  ORDER BY borrowings DESC, category
@@ -52,9 +52,9 @@ export async function topBorrowedBooks(req, res) {
     let limit = parseInt(req.query.limit || '5', 10);
     if (isNaN(limit) || limit < 1) limit = 5;
     if (limit > 50) limit = 50;
-    const sql = `SELECT b.book_id, b.book_name, b.category, COUNT(br.record_id) AS borrowings
-                 FROM Borrowing_Record br
-                 JOIN Book b ON b.book_id = br.book_id
+  const sql = `SELECT b.book_id, b.book_name, b.category, COUNT(br.record_id) AS borrowings
+         FROM borrowing_record br
+         JOIN book b ON b.book_id = br.book_id
                  WHERE DATE(br.borrowTime) BETWEEN ? AND ?
                  GROUP BY b.book_id, b.book_name, b.category
                  HAVING borrowings > 0

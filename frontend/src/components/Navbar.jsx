@@ -1,19 +1,16 @@
+// src/components/Navbar.jsx
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {Coffee,LogOut,User,BookOpen,Calendar,Menu,X,CoffeeIcon,HomeIcon,
-} from "lucide-react";
-import toast from "react-hot-toast";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { HomeIcon, BookOpen, Menu, X, Book, LogOut, User } from "lucide-react";
 import logo from "../assets/Coffee.svg";
+import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
-
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
-  };
+  const location = useLocation(); // เพิ่ม useLocation เพื่อดู current path
+  const { isAuthenticated, role, user, logout } = useAuthStore();
 
   const handleLogout = () => {
     logout();
@@ -21,121 +18,200 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const toggleMobileMenu = () => {
-    setMobileOpen(!mobileOpen);
+  const toggleMobileMenu = () => setMobileOpen(!mobileOpen);
+  const closeMobileMenu = () => setMobileOpen(false);
+
+  // ฟังก์ชันสำหรับเช็คว่า path ปัจจุบันตรงกับ link หรือไม่
+  const isActivePath = (path) => location.pathname === path;
+
+  // ฟังก์ชันสำหรับกำหนด home path ตาม role
+  const getHomePath = () => {
+    if (isAuthenticated && role === 'admin') {
+      return '/admin';
+    }
+    else if (isAuthenticated && role === 'user') {
+      return '/customer';
+    }
+    return '/Home';
   };
 
-  const closeMobileMenu = () => {
-    setMobileOpen(false);
+  // ฟังก์ชันเช็ค active state สำหรับ Home (เช็คทั้ง /Home และ /HomeAdmin)
+  const isHomeActive = () => {
+    return location.pathname === '/Home' || location.pathname === '/admin' || location.pathname === '/customer'; 
+  };
+  
+  // สไตล์สำหรับ active state
+  const getNavLinkClass = (path, baseClass = "") => {
+    const isActive = path === 'home' ? isHomeActive() : isActivePath(path);
+    return `${baseClass} ${isActive 
+      ? "bg-brown-500 text-white px-4 py-2 rounded-md hover:bg-brown-600" 
+      : "text-brown-600 hover:text-brown-700 px-4 py-2 rounded-md hover:bg-brown-50"
+    }`;
   };
 
   return (
-    <nav className="bg-white shadow-md border-b border-cream-300 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center space-x-2 text-brown-600 hover:text-brown-700 transition-colors"
-            onClick={closeMobileMenu}
+    <nav className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex items-center gap-2"
+          onClick={closeMobileMenu}
+        >
+          <img src={logo} alt="Logo" className="h-8 w-8" />
+          <span className="text-3xl font-crimson text-brown-600">
+            Book Café
+          </span>
+        </Link>
+
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-6">
+          <Link 
+            to={getHomePath()} 
+            className={getNavLinkClass("home", "flex items-center gap-1")}
           >
-            < img src={logo} alt="Logo"className="h-8 w-8" />
-            <span className="text-xl font-display font-semibold">
-              Book Café
-            </span>
+            <HomeIcon className="h-4 w-4" /> Home
           </Link>
-
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <Link 
+            to="/Room" 
+            className={getNavLinkClass("/Room", "flex items-center gap-1")}
+          >
+            <BookOpen className="h-4 w-4" /> Room
+          </Link>
+          {/* แสดง Book Room เฉพาะ admin เท่านั้น */}
+          {isAuthenticated && role === 'admin' && (
             <Link
-              to="/Home"
-              className="flex items-center gap-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
+              to="/booking" 
+              className={getNavLinkClass("/booking", "flex items-center gap-1")}
             >
-              <HomeIcon className="h-4 w-4" />
-              <span>Home</span>
+              <Book className="h-4 w-4" /> Book
             </Link>
-
-            <Link
-              to="/Room"
-              className="flex items-center gap-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
-            >
-              <BookOpen className="h-4 w-4" />
-              <span>Room</span>
-            </Link>
-          </div>
-
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/login"
-              className="text-darkBrown-500 hover:text-brown-600 transition-colors font-medium"
-            >
-              Login
-            </Link>
-            <Link to="/register" className="btn-primary text-sm">
-              Register
-            </Link>
-          </div>
-
-          {/* Mobile Hamburger Button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMobileMenu}
-              className="text-darkBrown-500 hover:text-brown-600 transition-colors p-2"
-              aria-label="Toggle mobile menu"
-            >
-              {mobileOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+          )}
         </div>
 
-        {/* Mobile Menu */}
-        {mobileOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-cream-300 z-40">
-            <div className="px-4 py-4 space-y-4">
-              {/* Mobile Navigation Links */}
-              <Link
-                to="/Home"
-                className="flex items-center space-x-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium py-2"
-                onClick={closeMobileMenu}
+        {/* Auth Buttons */}
+        <div className="hidden md:flex items-center gap-4">
+          {!isAuthenticated ? (
+            <>
+              <Link 
+                to="/login" 
+                className={getNavLinkClass("/login")}
               >
-                <HomeIcon className="h-4 w-4" />
-                <span>Home</span>
+                Login
               </Link>
               <Link
-                to="/Room"
-                className="flex items-center space-x-2 text-darkBrown-500 hover:text-brown-600 transition-colors font-medium py-2"
-                onClick={closeMobileMenu}
+                to="/register"
+                className={getNavLinkClass("/register", "bg-brown-500 text-white hover:bg-brown-600")}
               >
-                <BookOpen className="h-4 w-4" />
-                <span>Room</span>
+                Register
               </Link>
-
-              {/* Mobile Auth Links */}
-              <div className="pt-4 border-t border-cream-200 space-y-3">
-                <Link
-                  to="/login"
-                  className="block text-darkBrown-500 hover:text-brown-600 transition-colors font-medium py-2"
-                  onClick={closeMobileMenu}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="btn-primary text-sm inline-block"
-                  onClick={closeMobileMenu}
-                >
-                  Register
-                </Link>
+            </>
+            ) : (
+            <div className="flex items-center gap-3">
+              {/* User Info */}
+              <div className="text-right">
+                <div className="flex items-center gap-1 text-sm text-darkBrown-500">
+                  <User className="h-4 w-4" />
+                  <span>{user?.email || ''}</span>
               </div>
+              <Link
+                onClick={handleLogout}
+                className="flex items-center gap-1 px-3 py-1 rounded text-darkBrown-500 hover:text-brown-700">
+                <LogOut className="h-4 w-4" /> Logout
+              </Link> 
             </div>
-          </div>
-        )}
+            </div>)}
+        </div>
+
+        {/* Mobile Hamburger */}
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu}>
+            {mobileOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <div className="md:hidden bg-white shadow-lg border-t py-2">
+          <Link
+            to={getHomePath()}
+            className={`block mx-2 ${isHomeActive() 
+              ? "bg-brown-500 text-white px-4 py-2 rounded-md" 
+              : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+            }`}
+            onClick={closeMobileMenu}
+          >
+            Home
+          </Link>
+          <Link
+            to="/Room"
+            className={`block mx-2 ${isActivePath("/Room") 
+              ? "bg-brown-500 text-white px-4 py-2 rounded-md" 
+              : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+            }`}
+            onClick={closeMobileMenu}
+          >
+            Room
+          </Link>
+          {/* แสดง Book Room ใน mobile menu เฉพาะ admin เท่านั้น */}
+          {isAuthenticated && role === 'admin' && (
+            <Link
+              to="/booking"
+              className={`block mx-2 ${isActivePath("/booking") 
+                ? "bg-brown-500 text-white px-4 py-2 rounded-md" 
+                : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+              }`}
+              onClick={closeMobileMenu}
+            >
+              Book
+            </Link>
+          )}
+
+          {!isAuthenticated ? (
+            <>
+              <Link
+                to="/login"
+                className={`block mx-2 ${isActivePath("/login") 
+                  ? "bg-brown-500 text-white px-4 py-2 rounded-md" 
+                  : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+                }`}
+                onClick={closeMobileMenu}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className={`block mx-2 ${isActivePath("/register") 
+                  ? "bg-brown-500 text-white px-4 py-2 rounded-md" 
+                  : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+                }`}
+                onClick={closeMobileMenu}
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <div>
+              {/* User Info in Mobile */}
+              <div className="px-4 py-2 border-b border-gray-100">
+                <div className="text-sm text-darkBrown-500">
+                  {user?.email || ''}
+                </div>
+              </div>
+              <Link
+                onClick={() => {
+                  handleLogout();
+                  closeMobileMenu();
+                }}
+                className="block text-left px-4 py-2 text-brown-600 hover:bg-gray-100"
+              >
+                Logout
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

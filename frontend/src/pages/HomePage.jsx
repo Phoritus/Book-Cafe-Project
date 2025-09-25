@@ -10,11 +10,11 @@ const HomePage = () => {
     <div className="page-container">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cream-100/90 to-brown-100/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br bg-[#F6F3ED]"></div>
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-fade-in">
-            <img src={logo} alt="Logo" className="h-16 w-16 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-darkBrown-500 mb-6 text-shadow">
+            <img src={logo} alt="Logo" className="!h-28 !w-28 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
+            <h1 className="text-4xl md:text-6xl font-crimson font-bold text-darkBrown-500 mb-6 text-shadow">
               Welcome to Book Café
             </h1>
             <p className="text-xl md:text-2xl text-brown-600 mb-8 max-w-2xl mx-auto leading-relaxed">

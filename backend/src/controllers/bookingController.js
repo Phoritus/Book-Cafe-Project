@@ -28,7 +28,7 @@ export async function createBookingHandler(req, res) {
 export async function listBookingsHandler(req, res) {
   try {
     if (req.user.role === 'admin' && req.query.all === '1') {
-      const [rows] = await query('SELECT * FROM Booking_Room ORDER BY checkIn DESC');
+  const [rows] = await query('SELECT * FROM booking_room ORDER BY checkIn DESC');
       return res.json(rows);
     }
     const rows = await listBookingsByPerson(req.user.id);

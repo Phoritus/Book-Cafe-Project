@@ -3,16 +3,16 @@
 
 -- Password hashes were pre-generated with bcrypt (10 rounds)
 -- admin123 => $2b$10$WU3rqtWQ6hm8OV9LFp8pg.8ih5Gp0pf0UJ3LpvEyozUjMOyBJjDia
-INSERT INTO Person (firstname, lastname, nameTitle, phone, password, dateOfBirth, citizen_id, email, verifyCode, role)
+INSERT INTO person (firstname, lastname, nameTitle, phone, password, dateOfBirth, citizen_id, email, verifyCode, role)
 VALUES ('admin', 'admin', 'Mr.', '080-000-0000', '$2b$10$WU3rqtWQ6hm8OV9LFp8pg.8ih5Gp0pf0UJ3LpvEyozUjMOyBJjDia', '1980-01-01', '0000000000000', 'admin@email.com', NULL, 'admin');
 
 -- userPass1! => $2b$10$8bH6H3i4CkD9p5xivFHQWu5lFyd9bItIju7/fqlF7nLy3d0QvmbcC
 -- userPass2! => $2b$10$4AF0nMQ1q8H3KE9lB4Y1xOIlkF5A4WQ5dFjl3mT2m6YVd/YwY0Q5Ri
-INSERT INTO Person (firstname, lastname, nameTitle, phone, password, dateOfBirth, citizen_id, email, verifyCode, role) VALUES
+INSERT INTO person (firstname, lastname, nameTitle, phone, password, dateOfBirth, citizen_id, email, verifyCode, role) VALUES
 ('somchai', 'jaidee', 'Mr.', '081-234-5678', '$2b$10$8bH6H3i4CkD9p5xivFHQWu5lFyd9bItIju7/fqlF7nLy3d0QvmbcC', '1990-05-15', '1234567890123', 'somchai@email.com', NULL, 'user'),
 ('somying', 'rakdee', 'Mrs.', '082-345-6789', '$2b$10$4AF0nMQ1q8H3KE9lB4Y1xOIlkF5A4WQ5dFjl3mT2m6YVd/YwY0Q5Ri', '1992-08-20', '2345678901234', 'somying@email.com', NULL, 'user');
 
-INSERT INTO Room (room_number, price, room_status, number_people) VALUES
+INSERT INTO room (room_number, price, room_status, number_people) VALUES
 ('Room 1', 50.00, 'available', 7),
 ('Room 2', 50.00, 'available', 7),
 ('Room 3', 50.00, 'available', 11),
@@ -21,18 +21,15 @@ INSERT INTO Room (room_number, price, room_status, number_people) VALUES
 -- NOTE: Schema defines table Book_Room but code currently queries Booking_Room.
 -- If your actual table name is Book_Room, adjust code OR rename table.
 -- Below we seed both for safety (ignore errors if one does not exist).
-INSERT INTO Booking_Room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode) VALUES
+INSERT INTO booking_room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode) VALUES
 (1, 'Room 1', '2025-09-10', '2025-09-12', '14:00:00', '12:00:00', 200.00, 'QR123456'),
 (2, 'Room 2', '2025-09-15', '2025-09-16', '15:00:00', '11:00:00', 250.00, 'QR789012')
 ON DUPLICATE KEY UPDATE room_number=VALUES(room_number);
 
 -- Optional duplicate seed into Book_Room if exists
-INSERT INTO Book_Room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode) VALUES
-(1, 'Room 1', '2025-09-10', '2025-09-12', '14:00:00', '12:00:00', 200.00, 'QR123456'),
-(2, 'Room 2', '2025-09-15', '2025-09-16', '15:00:00', '11:00:00', 250.00, 'QR789012')
-ON DUPLICATE KEY UPDATE room_number=VALUES(room_number);
+-- (Removed Book_Room duplicate seed after normalization)
 
-INSERT INTO Book (book_id, book_name, book_status, category) VALUES
+INSERT INTO book (book_id, book_name, book_status, category) VALUES
 ('B001', 'Python Programming Guide', 'available', 'Academic'),
 ('B002', 'MySQL Database Fundamentals', 'available', 'Academic'),
 ('B003', 'Harry Potter and the Stone', 'available', 'Fiction'),
@@ -45,7 +42,7 @@ INSERT INTO Book (book_id, book_name, book_status, category) VALUES
 ('B010', 'Mind Growth', 'available', 'Inspiration');
 
 -- Comprehensive September 2025 borrowing dataset for dashboard testing
-INSERT INTO Borrowing_Record (book_id, citizen_id, borrowTime, returnTime) VALUES
+INSERT INTO borrowing_record (book_id, citizen_id, borrowTime, returnTime) VALUES
 -- Early month
  ('B001','1234567890123','2025-09-01 09:05:00','2025-09-02 10:00:00'),
  ('B001','1234567890124','2025-09-01 14:20:00','2025-09-03 11:30:00'),
