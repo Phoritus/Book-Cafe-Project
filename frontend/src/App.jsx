@@ -13,11 +13,21 @@ import Upcoming from './pages/Upcoming.jsx';
 import BookLending from './pages/BookLending.jsx';
 import ChooseRoom from './pages/ChooseRoom.jsx';
 import RoomBooking from './pages/RoomBooking.jsx';
+import Roomdashboard from './pages/RoomBoard.jsx';
+import BookBorrowingDashboard from './pages/BookBorrowingDashboard.jsx';
 
 function RequireRole({ role, children }) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   if (!user) return <Navigate to="/login" replace />;
-  if (role && user.role !== role) return <Navigate to="/" replace />;
+  if (role) {
+    const userRole = (user.role || '').toLowerCase();
+    if (Array.isArray(role)) {
+      const allowed = role.map(r => String(r).toLowerCase());
+      if (!allowed.includes(userRole)) return <Navigate to="/" replace />;
+    } else if (String(role).toLowerCase() !== userRole) {
+      return <Navigate to="/" replace />;
+    }
+  }
   return children;
 }
 
@@ -37,11 +47,28 @@ function App() {
             <Route path="/choose-room" element={<ChooseRoom />} />
             <Route path="/fill-book-room" element={<FillBookRoompage />} />
             <Route path="/upcoming" element={<Upcoming />} />
+            {/* Strict admin feature routes */}
             <Route
-              path="/room-booking"
+              path="/roombooking"
               element={
-                <RequireRole>
+                <RequireRole role="admin">
                   <RoomBooking />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/roombookingdashboard"
+              element={
+                <RequireRole role="admin">
+                  <Roomdashboard />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/bookborrowingdashboard"
+              element={
+                <RequireRole role="admin">
+                  <BookBorrowingDashboard />
                 </RequireRole>
               }
             />

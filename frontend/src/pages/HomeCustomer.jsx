@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Calendar, Clock } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
 
-const HomePage = () => {
+const HomeCustomer = () => {
   const isAuthenticated = false; // ตั้งค่า default ไปก่อน
 
   return (
@@ -32,7 +32,7 @@ const HomePage = () => {
                 <>
                   {/* Room Booking */}
                   <Link
-                    to="/roombooking"
+                    to="/choose-room"
                     className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2"
                   >
                     <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-1" />
@@ -48,7 +48,7 @@ const HomePage = () => {
 
                   {/* Upcoming Booking */}
                   <Link
-                    to="/upcomingbooking"
+                    to="/upcoming"
                     className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2"
                   >
                     <Clock className="h-8 w-8 mx-auto text-brown-500 mb-1" />
@@ -73,4 +73,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomeCustomer;

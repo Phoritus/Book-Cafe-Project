@@ -20,8 +20,24 @@ const Navbar = () => {
   const toggleMobileMenu = () => setMobileOpen(!mobileOpen);
   const closeMobileMenu = () => setMobileOpen(false);
 
-  // ฟังก์ชันสำหรับเช็คว่า path ปัจจุบันตรงกับ link หรือไม่
+  // ฟังก์ชันสำหรับเช็คว่า path ปัจจุบันตรงกับ link หรือไม่ (exact)
   const isActivePath = (path) => location.pathname === path;
+
+  // กลุ่มเส้นทาง (Room / Book) เพื่อให้ highlight เมื่ออยู่ในหน้าใดๆ ของหมวดนั้น
+  const roomPaths = [
+    '/choose-room',
+    '/roombooking',
+    '/roombookingdashboard',
+    '/fill-book-room',
+    '/upcoming'
+  ];
+  const bookPaths = [
+    '/lending',
+    '/bookborrowingdashboard'
+  ];
+
+  const isRoomGroupActive = () => roomPaths.some(p => location.pathname.startsWith(p));
+  const isBookGroupActive = () => bookPaths.some(p => location.pathname.startsWith(p));
 
   // ฟังก์ชันสำหรับกำหนด home path ตาม role
   const getHomePath = () => {
@@ -43,13 +59,15 @@ const Navbar = () => {
   };
 
   // สไตล์สำหรับ active state
-  const getNavLinkClass = (path, baseClass = "") => {
-    const isActive = path === "home" ? isHomeActive() : isActivePath(path);
-    return `${baseClass} ${
-      isActive
-        ? "bg-brown-500 text-white px-4 py-2 rounded-md hover:bg-brown-600"
-        : "text-brown-600 hover:text-brown-700 px-4 py-2 rounded-md hover:bg-brown-50"
-    }`;
+  const getNavLinkClass = (path, baseClass = "", group = null) => {
+    let active = false;
+    if (path === 'home') active = isHomeActive();
+    else if (group === 'room') active = isRoomGroupActive();
+    else if (group === 'book') active = isBookGroupActive();
+    else active = isActivePath(path);
+    return `${baseClass} ${active
+      ? 'bg-brown-500 text-white px-4 py-2 rounded-md hover:bg-brown-600'
+      : 'text-brown-600 hover:text-brown-700 px-4 py-2 rounded-md hover:bg-brown-50'}`;
   };
 
   return (
@@ -79,15 +97,15 @@ const Navbar = () => {
                 toast.error("Please login first");
               }
             }}
-            className={getNavLinkClass("/choose-room", "flex items-center gap-1")}
+            className={getNavLinkClass("/choose-room", "flex items-center gap-1", 'room')}
           >
             <BookOpen className="h-4 w-4" /> Room
           </Link>
           {/* แสดง Book Room เฉพาะ admin เท่านั้น */}
           {isAuthenticated && role === "admin" && (
             <Link
-              to="/booking"
-              className={getNavLinkClass("/booking", "flex items-center gap-1")}
+              to="/lending"
+              className={getNavLinkClass("/lending", "flex items-center gap-1", 'book')}
             >
               <Book className="h-4 w-4" /> Book
             </Link>
@@ -109,19 +127,22 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <div className="flex items-center gap-3">
-              {/* User Info */}
-              <div className="text-right">
-                <div className="flex items-center gap-1 text-sm text-darkBrown-500">
-                  <User className="h-4 w-4" />
-                  <span>{user?.email || ""}</span>
-                </div>
-                <Link
-                  onClick={handleLogout}
-                  className="flex items-center gap-1 px-3 py-1 rounded text-darkBrown-500 hover:text-brown-700"
-                >
-                  <LogOut className="h-4 w-4" /> Logout
-                </Link>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-sm text-darkBrown-500 max-w-[220px]">
+                <User className="h-4 w-4 shrink-0" />
+                <span className="truncate text-[15px]" title={user?.email || ''}>{user?.email || ''}</span>
+              </div>
+              {/* Icon + text logout */}
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Logout"
+                onClick={handleLogout}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLogout(); } }}
+                className="flex items-center gap-1 text-sm text-darkBrown-500 hover:text-brown-700 cursor-pointer transition"
+              >
+                <LogOut className="h-5 w-5" />
+                <span>Log out</span>
               </div>
             </div>
           )}
@@ -130,16 +151,15 @@ const Navbar = () => {
         {/* Mobile Hamburger */}
         <div className="md:hidden">
           <div className="md:hidden absolute right-4 top-3 -translate-y-1/2">
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            aria-label="Toggle menu"
-            className="p-2 text-brown-600 hover:text-brown-700 inline-flex items-center justify-center w-auto !shadow-none !rounded-none focus:outline-none"
-            // ถ้าต้องการเอา override แบบ inline ใช้ style ด้วย (ไม่สามารถใช้ !important ใน style ได้เสมอ)
-            style={{ background: "transparent", border: 0, boxShadow: "none", outline: "none", width: "auto" }}
-          >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+              className="p-2 text-brown-600 inline-flex items-center justify-center w-auto !shadow-none !rounded-none focus:outline-none"
+              style={{ background: "transparent", border: 0, boxShadow: "none", outline: "none", width: "auto" }}
+            >
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </div>
@@ -161,9 +181,9 @@ const Navbar = () => {
           <Link
             to={isAuthenticated ? "/choose-room" : location.pathname}
             className={`block mx-2 ${
-              isActivePath("/choose-room")
-                ? "bg-brown-500 text-white px-4 py-2 rounded-md"
-                : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+              isRoomGroupActive()
+                ? 'bg-brown-500 text-white px-4 py-2 rounded-md'
+                : 'text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md'
             }`}
             onClick={(e) => {
               if (!isAuthenticated) {
@@ -177,13 +197,13 @@ const Navbar = () => {
             Room
           </Link>
           {/* แสดง Book Room ใน mobile menu เฉพาะ admin เท่านั้น */}
-          {isAuthenticated && role === "admin" && (
+          {isAuthenticated && role === 'admin' && (
             <Link
-              to="/booking"
+              to="/lending"
               className={`block mx-2 ${
-                isActivePath("/booking")
-                  ? "bg-brown-500 text-white px-4 py-2 rounded-md"
-                  : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"
+                isBookGroupActive()
+                  ? 'bg-brown-500 text-white px-4 py-2 rounded-md'
+                  : 'text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md'
               }`}
               onClick={closeMobileMenu}
             >
