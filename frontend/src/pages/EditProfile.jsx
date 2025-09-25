@@ -50,12 +50,13 @@ function EditProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f6f2] pt-6 px-4 pb-40">
+    <div className="min-h-screen " style={{ minHeight: '110vh' }}>
       {/* Back Button */}
-      <div className="ml-8">
+  <div className="mt-6" style={{ marginLeft: '5rem' }}>
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center ml-auto text-brown-600 font-medium hover:text-brown-700"
+          className="back-btn-custom inline-flex items-center w-auto text-brown-600 font-medium hover:text-brown-700 p-0"
+          style={{ background: 'transparent', border: 'none', width: 'auto', padding: 0, }}
         >
           <svg
             width="51"
@@ -63,7 +64,7 @@ function EditProfile() {
             viewBox="0 0 51 51"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-11 h-11 mt-6"
+            className="w-11 h-11"
           >
             <path
               fillRule="evenodd"
@@ -243,7 +244,7 @@ function EditProfile() {
             )}
           </div>
 
-          <div className="mt-8">
+          <div className="mt-1">
             <button
               type="submit"
               className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"

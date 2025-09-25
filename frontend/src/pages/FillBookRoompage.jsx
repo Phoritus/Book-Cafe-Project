@@ -5,6 +5,7 @@ import arrow from "../assets/Arrowcategory.svg";
 import Success from "../assets/Success.svg";
 
 const FillBookRoompage = () => {
+  
   const money = 150;
   const [isOpenStart, setIsOpenStart] = useState(false);
   const [isOpenEnd, setIsOpenEnd] = useState(false);
@@ -51,7 +52,7 @@ const FillBookRoompage = () => {
           <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Booking Room</h1>
         </div>
       </header>
-      <div className="Fill-book-room-container text-[#53311C] w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6">
+      <div className="Fill-book-room-container text-[#53311C] w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6 font-Inter">
         <div className="flex flex-row  gap-6">
           {/* Left Side (A) */}
           <div id="A" className="flex-1">
@@ -75,7 +76,7 @@ const FillBookRoompage = () => {
               </div>
               <div className="relative">
                 <label>Select Start Time</label>
-                <select style={{ borderColor: '#B37E32',width: '80%',padding: '0.25rem ',color:'#53311C' }} className="block mb-2 border px-10 py-1 rounded"
+                <select style={{ borderColor: '#B37E32',width: '80%',padding: '0.25rem ',color:'#53311C' }} className="block mb-2 border px-10 py-1 rounded focus:border-[#8b5a40] focus:shadow-[0_0_0_3px_rgba(139,90,64,0.1)] focus:bg-white"
                 onChange={e => setTimeSelectedStart(e.target.value)}
                         onFocus={() => setIsOpenStart(true)}
                         onBlur={() => setIsOpenStart(false)}>
@@ -91,7 +92,7 @@ const FillBookRoompage = () => {
               </div>
               <div className="relative">
                 <label>Select End Time</label>
-                <select style={{ borderColor: '#B37E32',width: '80%',padding: '0.25rem ',color:'#53311C' }} className="block mb-2 border px-10 py-1 rounded"
+                <select style={{ borderColor: '#B37E32',width: '80%',padding: '0.25rem ',color:'#53311C' }} className="block mb-2 border px-10 py-1 rounded focus:border-[#8b5a40] focus:shadow-[0_0_0_3px_rgba(139,90,64,0.1)] focus:bg-white"
                 onChange={e => setTimeSelectedEnd(e.target.value)}
                         onFocus={() => setIsOpenEnd(true)}
                         onBlur={() => setIsOpenEnd(false)}>
