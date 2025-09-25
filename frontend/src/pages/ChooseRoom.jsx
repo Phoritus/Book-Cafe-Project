@@ -2,8 +2,13 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import './ChooseRoom.css';
 import roomImage from '../assets/10p_room.jpg'; // ใช้รูปภาพที่ส่งมา
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import toast from 'react-hot-toast';
 
 function ChooseRoom() {
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuthStore();
     const rooms = [
         {
             id: 1,
@@ -44,8 +49,11 @@ function ChooseRoom() {
     ];
 
     const handleRoomSchedule = (roomId) => {
-        console.log(`Opening schedule for Room ${roomId}`);
-        // Navigate to room schedule
+        if (!isAuthenticated) {
+            toast.error('Please login first');
+            return;
+        }
+        navigate('/room-booking', { state: { roomId } });
     };
 
     const getStatusIcon = (status) => {
@@ -121,9 +129,12 @@ function ChooseRoom() {
                                     <span className="price-amount">{room.price}</span>
                                 </div>
                                 
-                                <button 
-                                    className="room-schedule-btn"
-                                    onClick={() => handleRoomSchedule(room.id)}
+                                <button
+                                    type="button"
+                                    className={`room-schedule-btn ${room.status.toLowerCase()}`}
+                                    disabled={!room.available}
+                                    aria-disabled={!room.available}
+                                    onClick={() => room.available && handleRoomSchedule(room.id)}
                                 >
                                     {room.name} Schedule
                                 </button>
