@@ -4,6 +4,7 @@ import './Login.css';
 import { Eye, EyeOff, Coffee } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from "../store/authStore";
 
 const API_URL = 'https://api-book-cafe.onrender.com/auth/login';
 
@@ -15,6 +16,7 @@ function Login() {
   const [loginError, setLoginError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const authStore = useAuthStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +48,7 @@ function Login() {
       }
       localStorage.setItem('accessToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      authStore.login(data.user);
       const role = data.user?.role;
       if (role === 'admin') {
         navigate('/admin', { replace: true });

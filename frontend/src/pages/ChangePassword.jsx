@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './ChangePassword.css';
 import { Eye, EyeOff } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
+import { ArrowLeft } from 'lucide-react';
 
 function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -52,6 +53,9 @@ function ChangePassword() {
   return (
     <div className="login-container">
       <div className="login-wrapper">
+        <div className="absolute top-25 left-25 cursor-pointer z-30" onClick={() => window.history.back()}>
+              <ArrowLeft size={40} color="#86422A" />
+        </div>
         {/* Logo */}
         <div className="animate-fade-in">
           <img src={logo} alt="Logo" className="h-16 w-16 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
@@ -63,83 +67,86 @@ function ChangePassword() {
           <p className="welcome-subtitle">Don’t forgot your password</p>
         </div>
 
-        {/* Current Password */}
-        <div className="form-group">
-          <label className="form-label"style={{ color: '#8b7355' }}>Current Password *</label>
-          <div className="password-container">
-            <input
-              type={showCurrent ? 'text' : 'password'}
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Enter your current password"
-              className={`form-input password-input ${errors.currentPassword ? 'error' : ''}`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowCurrent(!showCurrent)}
-              className="password-toggle"
-            >
-              {showCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+        {/* Form */}
+        <div className="form-container">
+          {/* Current Password */}
+          <div className="form-group">
+            <label className="form-label"style={{ color: '#8b7355' }}>Current Password *</label>
+            <div className="password-container">
+              <input
+                type={showCurrent ? 'text' : 'password'}
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter your current password"
+                className={`form-input password-input ${errors.currentPassword ? 'error' : ''}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrent(!showCurrent)}
+                className="password-toggle"
+              >
+                {showCurrent ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {errors.currentPassword && <p className="error-message">{errors.currentPassword}</p>}
           </div>
-          {errors.currentPassword && <p className="error-message">{errors.currentPassword}</p>}
+
+          {/* New Password */}
+          <div className="form-group">
+            <label className="form-label"style={{ color: '#8b7355' }}>New Password *</label>
+            <div className="password-container">
+              <input
+                type={showNew ? 'text' : 'password'}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter your new password"
+                className={`form-input password-input ${errors.newPassword ? 'error' : ''}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowNew(!showNew)}
+                className="password-toggle"
+              >
+                {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {errors.newPassword && <p className="error-message">{errors.newPassword}</p>}
+          </div>
+
+          {/* Confirm New Password */}
+          <div className="form-group">
+            <label className="form-label"style={{ color: '#8b7355' }}>Confirm New Password *</label>
+            <div className="password-container">
+              <input
+                type={showConfirm ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Enter your new password"
+                className={`form-input password-input ${errors.confirmPassword ? 'error' : ''}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="password-toggle"
+              >
+                {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
+          </div>
+
+          {/* Message */}
+          {message && (
+            <div className={`message-box ${messageType}`}>
+              <p>{message}</p>
+            </div>
+          )}
+
+          {/* Change Password Button */}
+          <button type="button" onClick={handleSubmit} className="signin-button">
+            Change Password
+          </button>
         </div>
-
-        {/* New Password */}
-        <div className="form-group">
-          <label className="form-label"style={{ color: '#8b7355' }}>New Password *</label>
-          <div className="password-container">
-            <input
-              type={showNew ? 'text' : 'password'}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Enter your new password"
-              className={`form-input password-input ${errors.newPassword ? 'error' : ''}`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowNew(!showNew)}
-              className="password-toggle"
-            >
-              {showNew ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-          {errors.newPassword && <p className="error-message">{errors.newPassword}</p>}
-        </div>
-
-        {/* Confirm New Password */}
-        <div className="form-group">
-          <label className="form-label"style={{ color: '#8b7355' }}>Confirm New Password *</label>
-          <div className="password-container">
-            <input
-              type={showConfirm ? 'text' : 'password'}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Enter your new password"
-              className={`form-input password-input ${errors.confirmPassword ? 'error' : ''}`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirm(!showConfirm)}
-              className="password-toggle"
-            >
-              {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
-        </div>
-
-        {/* Message */}
-        {message && (
-          <div className={`message-box ${messageType}`}>
-            <p>{message}</p>
-          </div>
-        )}
-
-        {/* Change Password Button */}
-        <button type="button" onClick={handleSubmit} className="signin-button">
-          Change Password
-        </button>
       </div>
     </div>
   );

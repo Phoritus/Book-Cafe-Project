@@ -4,6 +4,16 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-primary: #7a4f37; /* เลือกสีเข้มจาก gradient */
+}
+
+.form-label,
+.welcome-title {
+  color: var(--color-primary) !important;
+}
+
+
 .login-container {
   min-height: 100vh;
   display: flex;
@@ -11,12 +21,30 @@
   justify-content: center;
   padding: 20px;
   background: #f7f3f0;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
 }
 
 .login-wrapper {
   width: 100%;
   max-width: 450px;
+}
+
+/* ปุ่มย้อนกลับ */
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #86422A; /* ใช้สีน้ำตาลเดียวกับปุ่ม Reset Password */
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.back-button:hover {
+  transform: scale(1.1);
+  color: #5c2e1b; /* น้ำตาลเข้มขึ้นตอน hover */
 }
 
 .logo-container {
@@ -46,9 +74,9 @@
 }
 
 .welcome-subtitle {
-  color: #8b7355;
+  color: #bc956b;
   font-size: 1rem;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
   margin: 0;
 }
 
@@ -69,9 +97,9 @@
   display: block;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #4a3429;
+  color: #bc956b;
   margin-bottom: 8px;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
 }
 
 .form-input {
@@ -83,7 +111,7 @@
   background: #fefcfb;
   color: #4a3429;
   outline: none;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
   transition: all 0.3s ease;
 }
 
@@ -133,7 +161,7 @@
   margin-top: 8px;
   font-size: 0.875rem;
   color: #dc2626;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
 }
 
 .login-error {
@@ -147,14 +175,14 @@
 .login-error-text {
   font-size: 0.875rem;
   color: #b91c1c;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
   margin: 0;
 }
 
 .signin-button {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #8b5a40, #a67251);
+  background: #5c2e0f;   /* ✅ เปลี่ยนเป็นสีเดียว */
   color: white;
   border: none;
   border-radius: 12px;
@@ -162,16 +190,17 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(139, 90, 64, 0.3);
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
   margin-bottom: 20px;
   transition: all 0.3s ease;
 }
 
 .signin-button:hover {
-  background: linear-gradient(135deg, #7a4f37, #956247);
+  background: #421f07;   /* ✅ สีเข้มขึ้นเวลา hover */
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(139, 90, 64, 0.4);
 }
+
 
 .signin-button:active {
   transform: translateY(0);
@@ -185,7 +214,7 @@
   font-size: 0.95rem;
   color: #8b7355;
   text-decoration: none;
-  font-family: Georgia, serif;
+  font-family: var(--font-sans);
   transition: color 0.2s ease;
 }
 
@@ -292,8 +321,9 @@
   bottom: 0;
   height: 100%;              /* ให้สูงเท่าช่อง input */
   background-color: #f8f6f4;
-  color: #6f3610;
-  border: 1px solid #ddd;
+  font-family: var(--font-sans);
+  color: #86422A;
+  border: 1px solid #86422A;
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
   padding: 0 16px;
@@ -316,6 +346,7 @@
   border-radius: 6px;
   font-weight: bold;
   text-align: center;
+  font-family: var(--font-sans);
 }
 
 /* ✅ สีเขียวเมื่อ success */

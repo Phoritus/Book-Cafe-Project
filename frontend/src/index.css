@@ -295,6 +295,21 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
+/* ซ่อนปฏิทิน default ของ browser */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: block;
+  background: none;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+}
+
+input[type="date"]::-moz-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+}
+
 
 @theme {
   /* 🎨 Book Café Custom Color Palette */
@@ -346,6 +361,7 @@ body {
   --font-sans: Inter, system-ui, sans-serif;
   --font-display: "Playfair Display", serif;
   --font-crimson: 'Crimson Text', serif;
+  
 
   /* Shadow */
   --shadow-soft: 0 4px 20px rgba(139, 69, 19, 0.1);
