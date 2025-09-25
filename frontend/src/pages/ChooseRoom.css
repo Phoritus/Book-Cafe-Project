@@ -170,26 +170,39 @@
 }
 
 /* Schedule Button */
+/* Base Schedule Button */
 .room-schedule-btn {
   width: 100%;
-  background-color: #86422A;
   color: white;
   padding: 0.625rem 1rem;
   border-radius: 0.5rem;
   border: none;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: background-color 0.2s, transform 0.1s, opacity 0.2s;
+  background-color: #86422A; /* brown */
 }
 
-.room-schedule-btn:hover {
-  background-color: #7a3d0f;
+/* Hover (enabled only) */
+.room-schedule-btn:hover:not(:disabled) {
+  background-color: #6f351f; /* darker brown */
   transform: translateY(-1px);
 }
 
-.room-schedule-btn:active {
-  transform: translateY(0);
+/* Keep status classes but unify color to brown */
+.room-schedule-btn.available,
+.room-schedule-btn.booked,
+.room-schedule-btn.occupied {
+  background-color: #86422A;
+}
+
+/* Disabled state */
+.room-schedule-btn:disabled,
+.room-schedule-btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Status Legend */
