@@ -10,9 +10,8 @@ if (missing.length) {
   console.error('[emailService] Missing env vars:', missing.join(', '));
 }
 
-// Explicit Gmail SMTP configuration instead of relying on service shortcut.
-// This helps when encountering connection timeouts because we can tune timeouts & pooling.
-const transporter = nodemailer.createTransport({
+// Primary transporter: SSL 465
+const primaryTransporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
   secure: true, // Gmail SSL
@@ -21,29 +20,45 @@ const transporter = nodemailer.createTransport({
   maxConnections: 3,
   maxMessages: 50,
   // Timeouts (ms)
-  connectionTimeout: 15_000, // time to establish TCP
-  greetingTimeout: 10_000,   // waiting for greeting after connection
-  socketTimeout: 20_000,     // inactivity during data transfer
+  connectionTimeout: 15_000,
+  greetingTimeout: 10_000,
+  socketTimeout: 20_000,
+});
+
+// Fallback transporter: STARTTLS 587 (some hosts block 465 but allow 587)
+const fallbackTransporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // STARTTLS upgrade
+  auth: { user: process.env.MAIL_USER, pass: process.env.MAIL_PASS },
+  pool: false, // keep simple for fallback
+  connectionTimeout: 12_000,
+  greetingTimeout: 8_000,
+  socketTimeout: 18_000,
 });
 
 if (debugEmail) {
-  console.log('[emailService][debug] SMTP config created for', process.env.MAIL_USER);
+  console.log('[emailService][debug] SMTP primary + fallback configured for', process.env.MAIL_USER);
 }
 
-async function verifyTransport() {
+async function verifyTransporters() {
   try {
-    await transporter.verify();
-    console.log('[emailService] SMTP transport verified.');
+    await primaryTransporter.verify();
+    console.log('[emailService] Primary SMTP (465) verified.');
   } catch (err) {
-    console.error('[emailService] SMTP verify failed:', err.code || err.name, err.message);
-    if (err.message?.includes('invalid logon') || err.code === 'EAUTH') {
-      console.error('[emailService] AUTH ERROR: Ensure you are using a Gmail App Password (not your normal password).');
-    } else if (err.message?.includes('timeout')) {
-      console.error('[emailService] TIMEOUT: Possible firewall / blocked outbound SMTP or network latency.');
+    console.error('[emailService] Primary (465) verify failed:', err.code || err.name, err.message);
+    if (err.message?.toLowerCase().includes('timeout')) {
+      console.error('[emailService] Primary port 465 timeout, fallback (587) may succeed.');
+    }
+    try {
+      await fallbackTransporter.verify();
+      console.log('[emailService] Fallback SMTP (587) verified.');
+    } catch (err2) {
+      console.error('[emailService] Fallback (587) verify failed:', err2.code || err2.name, err2.message);
     }
   }
 }
-verifyTransport();
+verifyTransporters();
 
 function fromAddress() {
   return `Book Cafe <${process.env.MAIL_USER || 'no-reply@example.com'}>`;
@@ -53,9 +68,50 @@ function classifyError(err) {
   if (!err) return 'UNKNOWN_ERROR';
   if (err.code === 'EAUTH') return 'AUTH_FAILED';
   if (err.code === 'ECONNECTION') return 'CONNECTION_FAILED';
-  if (err.message?.toLowerCase().includes('timeout')) return 'CONNECTION_TIMEOUT';
+  if (err.message?.toLowerCase().includes('timeout') || err.code === 'ETIMEDOUT') return 'CONNECTION_TIMEOUT';
   if (err.responseCode === 535) return 'AUTH_FAILED_535';
   return err.code || 'UNCLASSIFIED';
+}
+
+async function sendWithFallback(mailOptions) {
+  // Try primary first
+  try {
+    if (debugEmail) console.log('[emailService][debug] Sending via primary (465)');
+    return await primaryTransporter.sendMail(mailOptions);
+  } catch (err) {
+    const type = classifyError(err);
+    if (debugEmail) console.error('[emailService][debug] Primary send failed:', type, err.message);
+    if (type === 'CONNECTION_TIMEOUT' || type === 'CONNECTION_FAILED') {
+      // Try fallback
+      try {
+        if (debugEmail) console.log('[emailService][debug] Trying fallback (587 STARTTLS)');
+        return await fallbackTransporter.sendMail(mailOptions);
+      } catch (err2) {
+        const type2 = classifyError(err2);
+        if (debugEmail) console.error('[emailService][debug] Fallback send failed:', type2, err2.message);
+        throw err2; // propagate
+      }
+    }
+    throw err; // propagate other errors directly
+  }
+}
+
+export async function diagnoseEmailConnectivity() {
+  const results = { primary: null, fallback: null };
+  try {
+    await primaryTransporter.verify();
+    results.primary = 'OK';
+  } catch (e) {
+    results.primary = 'FAIL: ' + (e.code || e.message);
+  }
+  try {
+    await fallbackTransporter.verify();
+    results.fallback = 'OK';
+  } catch (e) {
+    results.fallback = 'FAIL: ' + (e.code || e.message);
+  }
+  if (debugEmail) console.log('[emailService][diagnose]', results);
+  return results;
 }
 
 export async function sendVerificationCode(to, code) {
@@ -69,7 +125,7 @@ export async function sendVerificationCode(to, code) {
   }
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await sendWithFallback(mailOptions);
     if (debugEmail) console.log('[emailService][debug] Sent id:', info.messageId, 'response:', info.response);
     return info.messageId;
   } catch (err) {
@@ -78,7 +134,7 @@ export async function sendVerificationCode(to, code) {
     if (type === 'AUTH_FAILED' || type === 'AUTH_FAILED_535') {
       console.error('[emailService] Gmail authentication failed. Use App Password & enable 2FA.');
     } else if (type === 'CONNECTION_TIMEOUT') {
-      console.error('[emailService] Connection timed out. Check outbound SMTP (port 465) firewall / hosting provider restrictions.');
+      console.error('[emailService] Connection timed out on both ports. Check outbound SMTP (465/587) firewall / hosting restrictions.');
     } else if (type === 'CONNECTION_FAILED') {
       console.error('[emailService] Could not establish connection. DNS or network issue.');
     }
@@ -86,4 +142,4 @@ export async function sendVerificationCode(to, code) {
   }
 }
 
-export default { sendVerificationCode };
+export default { sendVerificationCode, diagnoseEmailConnectivity };
