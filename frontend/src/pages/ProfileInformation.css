@@ -1,0 +1,255 @@
+/* Base Styles */
+.profile-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fef7ed 0%, #e7d3c8 100%);
+  padding: 2rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.profile-container {
+  max-width: 40rem;
+  margin: 2rem auto;
+  background-color: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: all 0.6s ease-out;
+}
+
+.profile-container.loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Header Styles */
+.profile-header {
+  text-align: center;
+  /* padding: 3rem 2rem; */
+}
+
+.profile-icon {
+  /* width: 3rem;
+  height: 3rem; */
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+}
+
+.profile-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0;
+}
+/* Content Styles */
+.profile-content {
+  padding: 2.5rem;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  font-size: 30px;
+}
+
+/* Dots Icon */
+.dots-icon {
+  position: relative;
+  width: 1rem;
+  height: 2.5rem;
+  color: #92400e;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #d97706;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.dot-1 {
+  top: -0rem;
+}
+
+.dot-2 {
+  top: 0;
+}
+
+.dot-3 {
+  top: 0.75rem;
+}
+
+/* Item Content */
+.item-content {
+  flex: 1;
+}
+
+.item-label {
+  font-size: 0.875rem;
+  color: #d97706;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.item-value {
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* Edit Button */
+.edit-btn {
+  width: 100%;
+  background-color: #92400e;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 2rem;
+}
+
+.edit-btn:hover {
+  background-color: #a3410d;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(146, 64, 14, 0.3);
+}
+
+/* Account Settings */
+.account-settings {
+  border-top: 1px solid #f3e8dc;
+  padding-top: 2rem;
+}
+.divider{
+  margin-bottom: 1rem;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #fef7ed;
+}
+
+.setting-item.last {
+  border-bottom: none;
+}
+
+.setting-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.setting-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  /* background-color: #fef7ed; */
+  /* border-radius: 0.5rem; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.setting-title {
+  font-size: 1rem;
+  color: #d97706;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+}
+
+.setting-description {
+  font-size: 0.875rem;
+  color: #040912;
+  margin: 0;
+}
+
+/* Change Button */
+.change-btn {
+  padding: 0.75rem 1.25rem;
+  background-color: white;
+  color: #92400e;
+  border: 2px solid #92400e;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 180px;
+}
+
+.change-btn:hover {
+  background-color: #92400e;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-wrapper {
+    padding: 1rem;
+  }
+  
+  .profile-content {
+    padding: 1.5rem;
+  }
+  
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .profile-header {
+    padding: 2rem 1rem;
+  }
+  
+  .profile-title {
+    font-size: 1.5rem;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .change-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-icon {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.5rem;
+  }
+  
+  .profile-title {
+    font-size: 1.25rem;
+  }
+  
+  .edit-btn {
+    padding: 0.875rem;
+    font-size: 0.875rem;
+  }
+}
