@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import roomImage from "../assets/10p_room.jpg";
 import ArrowBack from "../assets/ArrowBack.svg";
+
 function RoomBooking() {
   const timeSlots = [
     { time: "08:00 - 09:00", available: true },
@@ -15,7 +16,6 @@ function RoomBooking() {
     { time: "17:00 - 18:00", available: true },
   ];
 
-  // Multi-select time slot logic
   const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
 
   const toggleTime = (timeSlot) => {
@@ -28,8 +28,10 @@ function RoomBooking() {
   };
 
   return (
-  <div className="app w-full min-h-screen bg-[#F6F3ED] px-4 py-6 flex justify-center items-center">
+    <div className="app w-full min-h-screen bg-[#F6F3ED] px-4 py-6 flex justify-center items-start">
       <style>{`
+
+        
         .app {
           min-height: 100vh;
           background-color: #F6F3ED;
@@ -278,69 +280,63 @@ function RoomBooking() {
         }
       `}</style>
 
-  <div className="booking-header">
-    <header className="header flex items-center gap-4 mb-6 relative">
-              <button className="back-button" onClick={() => window.history.back()}>
-                <img src={ArrowBack} alt="Back" />
-              </button>
-            <div className="header-content flex-1">
-              <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Room Booking Schedule</h1>
-              <p className="subtitle text-base sm:text-lg text-[#BC956B] text-center font-inter">Please select your preferred time for booking</p>
-            </div>
-          </header>
-  <div className="booking-container w-full max-w-md mx-auto rounded-2xl p-4 sm:p-6">
+      <div className="booking-header">
+        <header className="header flex items-center gap-4 mb-6 relative">
+          <button className="back-button" onClick={() => window.history.back()}>
+            <img src={ArrowBack} alt="Back" />
+          </button>
+          <div className="header-content flex-1">
+            <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Room Booking Schedule</h1>
+            <p className="subtitle text-base sm:text-lg text-[#BC956B] text-center font-inter">Please select your preferred time for booking</p>
+          </div>
+        </header>
+        <div className="booking-container w-full max-w-md mx-auto rounded-2xl p-4 sm:p-6">
 
-  <div className="room-card mt-4 rounded-2xl overflow-hidden">
-          <div className="room-image w-full h-48 sm:h-56 md:h-64 overflow-hidden relative rounded-t-2xl">
-            <img
-              src={roomImage}
-              alt="Conference Room"
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute left-0 bottom-0 w-full z-10" style={{ height: '25%', background: 'rgba(255, 255, 255, 0.5)', borderRadius: '0', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '16px' }}>
-              <div style={{ color: '#53311C', fontFamily: 'Inter, sans-serif' }}>
-                <h2 style={{ fontSize: '20px', fontWeight: 400, margin: 0 }}>Room 4</h2>
-                <p style={{ fontSize: '20px', margin: 0 }}>Room for 10 people</p>
+          <div className="room-card mt-4 rounded-2xl overflow-hidden">
+            <div className="room-image w-full h-48 sm:h-56 md:h-64 overflow-hidden relative rounded-t-2xl">
+              <img
+                src={roomImage}
+                alt="Conference Room"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute left-0 bottom-0 w-full z-10" style={{ height: '25%', background: 'rgba(255, 255, 255, 0.5)', borderRadius: '0', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '16px' }}>
+                <div style={{ color: '#53311C', fontFamily: 'Inter, sans-serif' }}>
+                  <h2 style={{ fontSize: '20px', fontWeight: 400, margin: 0 }}>Room 4</h2>
+                  <p style={{ fontSize: '20px', margin: 0 }}>Room for 10 people</p>
+                </div>
+                <div style={{ color: '#53311C', textAlign: 'right', fontFamily: 'Inter, sans-serif' }}>
+                  <span style={{ fontSize: '20px', fontWeight: 400 }}>50 THB / Hour</span>
+                </div>
+                <div className="price">50 THB / Hour</div>
               </div>
-              <div style={{ color: '#53311C', textAlign: 'right', fontFamily: 'Inter, sans-serif' }}>
-                <span style={{ fontSize: '20px', fontWeight: 400 }}>50 THB / Hour</span>
+            </div>
+
+            <div className="time-wrapper">
+              <div className="time-grid">
+                {timeSlots.map((slot) => (
+                  <button
+                    key={slot.time}
+                    className={`time-btn ${selectedTimeSlots.includes(slot.time) ? "selected" : ""}`}
+                    onClick={() => toggleTime(slot)}
+                    disabled={!slot.available}
+                  >
+                    {slot.time}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="time-slots grid grid-cols-3 gap-3 sm:gap-4 p-4">
-            {timeSlots.map((slot, index) => (
-              <button
-                key={index}
-                className={`time-slot px-2 py-2 sm:px-4 sm:py-2 rounded-lg border text-xs sm:text-sm font-medium transition-colors text-center ${
-                  !slot.available ? "booked" : ""
-                } ${selectedTimeSlots.includes(slot.time) ? "selected" : ""}`}
-                onClick={() => toggleTime(slot)}
-                disabled={!slot.available}
-              >
-                {slot.time}
-              </button>
-            ))}
-          </div>
+          <button className="continue">
+            Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
-
-        <a href="/" className="continue-button w-full bg-[#86422A] text-white rounded-xl py-4 px-6 text-lg font-semibold flex items-center justify-center gap-2 mt-4 transition hover:bg-[#7a3d0f]">
-          Continue
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M9 18L15 12L9 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a>
       </div>
     </div>
-  </div>
   );
 }
-
 export default RoomBooking;
