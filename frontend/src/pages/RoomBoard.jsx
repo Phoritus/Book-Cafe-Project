@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   // ✅ แยก filter ของแต่ละกราฟ
   const [dailyFilter, setDailyFilter] = useState("today");
-  const [monthlyFilter, setMonthlyFilter] = useState("month");
+  const [monthlyFilter, setMonthlyFilter] = useState("today");
 
   const fetchData = async () => {
     try {

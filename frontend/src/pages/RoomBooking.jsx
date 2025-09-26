@@ -27,7 +27,7 @@ const RoomBookingSchedule = () => {
 
       <div className="!w-160 mx-auto">
         <div
-          className="absolute left-6 top-6 cursor-pointer left-30"
+          className="absolute left-6 top-6 cursor-pointer"
           onClick={() => window.history.back()}
         >
           <ArrowLeft size={48} color="#86422A" />
