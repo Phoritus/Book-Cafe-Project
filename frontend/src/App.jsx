@@ -16,18 +16,20 @@ import RoomBooking from './pages/RoomBooking.jsx';
 import Roomdashboard from './pages/RoomBoard.jsx';
 import BookBorrowingDashboard from './pages/BookBorrowingDashboard.jsx';
 import ResetPassword from './pages/Resetpassword.jsx';
+import ProfileInformation from './pages/ProfileInformation.jsx';
+import ChangeEmail from './pages/ChangeEmail';
+import ChangePassword from './pages/ChangePassword';
 
 function RequireRole({ role, children }) {
+  // ถ้าคุณมี auth store ใช้แทน localStorage
   const user = JSON.parse(localStorage.getItem('user') || 'null');
-  if (!user) return <Navigate to="/login" replace />;
-  if (role) {
-    const userRole = (user.role || '').toLowerCase();
-    if (Array.isArray(role)) {
-      const allowed = role.map(r => String(r).toLowerCase());
-      if (!allowed.includes(userRole)) return <Navigate to="/" replace />;
-    } else if (String(role).toLowerCase() !== userRole) {
-      return <Navigate to="/" replace />;
-    }
+  if (!user) {
+    // ยังไม่ล็อกอิน -> ไปหน้า login
+    return <Navigate to="/login" replace />;
+  }
+  if (role && user.role !== role) {
+    // ไม่มีสิทธิ -> ไปหน้า unauthorized หรือ home
+    return <Navigate to="/" replace />;
   }
   return children;
 }
@@ -41,7 +43,14 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/edit-book" element={<EditBook />} />
-            <Route path="/edit-profile" element={<EditProfile />} />
+            <Route
+              path="/edit-profile"
+              element={
+                <RequireRole role="user">
+                  <EditProfile />
+                </RequireRole>
+              }
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -100,6 +109,40 @@ function App() {
                 </RequireRole>
               }
             />
+            <Route
+              path="/customer/profile"
+              element={
+                <RequireRole role="user">
+                  <ProfileInformation />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/customer/profile/edit"
+              element={
+                <RequireRole role="user">
+                  <EditProfile />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/customer/profile/change-email"
+              element={
+                <RequireRole role="user">
+                  <ChangeEmail />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/customer/profile/change-password"
+              element={
+                <RequireRole role="user">
+                  <ChangePassword />
+                </RequireRole>
+              }
+            />
+            {/* optional redirect from /profile */}
+            <Route path="/profile" element={<Navigate to="/customer/profile" replace />} />
 
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
             <Route path="*" element={<Navigate to="/" replace />} />

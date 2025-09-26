@@ -23,6 +23,11 @@ const Navbar = () => {
   // ฟังก์ชันสำหรับเช็คว่า path ปัจจุบันตรงกับ link หรือไม่ (exact)
   const isActivePath = (path) => location.pathname === path;
 
+  // consider profile and its sub-routes as "active"
+  const isProfileActive = () =>
+    location.pathname === '/profile' ||
+    location.pathname.startsWith('/customer/profile');
+
   // กลุ่มเส้นทาง (Room / Book) เพื่อให้ highlight เมื่ออยู่ในหน้าใดๆ ของหมวดนั้น
   const roomPaths = [
     '/choose-room',
@@ -54,7 +59,8 @@ const Navbar = () => {
     return (
       location.pathname === "/Home" ||
       location.pathname === "/admin" ||
-      location.pathname === "/customer"
+      location.pathname === "/customer" ||
+      location.pathname === "/profile"
     );
   };
 
@@ -62,6 +68,7 @@ const Navbar = () => {
   const getNavLinkClass = (path, baseClass = "", group = null) => {
     let active = false;
     if (path === 'home') active = isHomeActive();
+    else if (path === '/customer/profile') active = isProfileActive();
     else if (group === 'room') active = isRoomGroupActive();
     else if (group === 'book') active = isBookGroupActive();
     else active = isActivePath(path);
@@ -128,10 +135,14 @@ const Navbar = () => {
             </>
           ) : (
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2 text-sm text-darkBrown-500 max-w-[220px]">
+              <Link
+                to="/customer/profile"
+                className={getNavLinkClass("/customer/profile", "flex items-center gap-2")}
+                title={user?.email || ""}
+              >
                 <User className="h-4 w-4 shrink-0" />
                 <span className="truncate text-[15px]" title={user?.email || ''}>{user?.email || ''}</span>
-              </div>
+              </Link>
               {/* Icon + text logout */}
               <div
                 role="button"
@@ -150,7 +161,7 @@ const Navbar = () => {
 
         {/* Mobile Hamburger */}
         <div className="md:hidden">
-          <div className="md:hidden absolute right-4 top-3 -translate-y-1/2">
+          <div className="md:hidden absolute right-4 top-3 ">
             <button
               type="button"
               onClick={toggleMobileMenu}
@@ -158,7 +169,7 @@ const Navbar = () => {
               className="p-2 text-brown-600 inline-flex items-center justify-center w-auto !shadow-none !rounded-none focus:outline-none"
               style={{ background: "transparent", border: 0, boxShadow: "none", outline: "none", width: "auto" }}
             >
-              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="!h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -237,23 +248,26 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <div>
+            <>
               {/* User Info in Mobile */}
-              <div className="px-4 py-2 border-b border-gray-100">
-                <div className="text-sm text-darkBrown-500">
-                  {user?.email || ""}
-                </div>
-              </div>
               <Link
-                onClick={() => {
-                  handleLogout();
-                  closeMobileMenu();
-                }}
-                className="block text-left px-4 py-2 text-brown-600 hover:bg-gray-100"
+                to="/customer/profile"
+                className={`block mx-2 ${isProfileActive() ? "bg-brown-500 text-white px-4 py-2 rounded-md" : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"}`}
+                onClick={closeMobileMenu}
+              >
+                <div className="flex items-center gap-2 px-4 py-2">
+                  <User className="h-4 w-4" />
+                  <span className="truncate">{user?.email || ""}</span>
+                </div>
+              </Link>
+              <button
+                type="button"
+                onClick={() => { handleLogout(); closeMobileMenu(); }}
+                className="block w-full text-left px-4 py-2 text-brown-600 hover:bg-gray-100"
               >
                 Logout
-              </Link>
-            </div>
+              </button>
+            </>
           )}
         </div>
       )}
