@@ -3,7 +3,7 @@
 
 @import "tailwindcss";
 
-/* Base Styles */
+/* Base styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -18,10 +18,10 @@ html {
 body {
   background: linear-gradient(135deg, #FDFCF8 0%, #F5F2E8 50%, #EDE7D3 100%);
   color: #3C2415;
+  margin: 0;
   min-height: 100vh;
   line-height: 1.5;
 }
-
 
 /* Component styles */
 .btn-primary {

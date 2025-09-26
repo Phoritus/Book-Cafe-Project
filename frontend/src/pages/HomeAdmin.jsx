@@ -10,7 +10,7 @@ const HomeAdmin = () => {
     <div className="page-container">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cream-100/90 to-brown-100/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br bg-[#F6F3ED]"></div>
         <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="animate-fade-in">
             <img
@@ -18,18 +18,18 @@ const HomeAdmin = () => {
               alt="Logo"
               className="!h-20 !w-20 mx-auto text-brown-500 mb-6 animate-bounce-subtle"
             />
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-darkBrown-500 mb-6 text-shadow">
+            <h1 className="text-4xl md:text-6xl font-crimson font-bold text-darkBrown-500 mb-6 text-shadow">
               Book Café
             </h1>
-            <p className="text-xl md:text-2xl text-brown-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl font-sans text-brown-600 mb-8 max-w-2xl mx-auto leading-relaxed">
               Please select a system menu on this page <br />
               to continue with the operation
             </p>
 
             {/* Primary CTA Buttons */}
             {/* Four-card horizontal row */}
-            <div className="w-full flex justify-center mt-12">
-              <div className="flex flex-row gap-5 max-w-7xl w-full justify-center">
+            <div className="w-full flex justify-center mt-12 font-sans">
+              <div className="flex flex-col sm:flex-row gap-5 max-w-7xl w-full justify-center items-center">
                 {!isAuthenticated ? (
                   <>
                     {/* Room Booking */}
@@ -42,7 +42,7 @@ const HomeAdmin = () => {
                         Room Booking
                       </h3>
                       <p className="text-brown-600 text-[12.5px] leading-snug">
-                        View and verify customer café room reservations
+                        View and verify customer café<br /> room reservations
                       </p>
                     </Link>
 
@@ -55,7 +55,7 @@ const HomeAdmin = () => {
                       <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                         Room Booking Dashboard
                       </h3>
-                      <p className="text-brown-600 text-[12.5px] leading-snug">
+                      <p className="text-brown-600 text-[12.5px] leading-snug ">
                         Dashboard shows booked rooms, today’s reservations, and usage statistics
                       </p>
                     </Link>
