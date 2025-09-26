@@ -111,7 +111,7 @@ function ResetPassword() {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container" style={{ backgroundColor: "#F6F3ED" }}>
       <div className="login-wrapper">
         <div className="absolute top-25 left-25 cursor-pointer z-30" onClick={() => window.history.back()}>
           <ArrowLeft size={40} color="#86422A" />
@@ -154,19 +154,19 @@ function ResetPassword() {
             <label className="form-label" style={{ color: "#8b7355" }}>
               Verify Code *
             </label>
-            <div className="verify-input-wrapper">
+            <div className="relative">
               <input
                 type="text"
                 value={verifyCode}
                 onChange={(e) => setVerifyCode(e.target.value)}
                 placeholder="Enter Verify Code"
-                className={`form-input ${errors.verifyCode ? "error" : ""}`}
+                className={`form-input !pr-28 px-3 f-1 ${errors.verifyCode ? "error" : ""}`}
               />
               <button
                 type="button"
                 onClick={handleSendCode}
                 disabled={sendingCode || !email.trim()}
-                className="sendcode-inside-button disabled:opacity-60 disabled:cursor-not-allowed"
+                className="sendcode-inside-button !mt-0 !w-30  right-0 top-0 bottom-0 h-fulldisabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {sendingCode ? 'Sending...' : 'Send Code'}
               </button>

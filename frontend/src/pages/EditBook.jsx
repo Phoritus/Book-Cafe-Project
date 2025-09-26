@@ -115,7 +115,7 @@ const AddBook = () => {
                     <label className="text-md md:text-xl text-yellow-700  w-32 text-left" style={{ fontFamily: 'Inter, sans-serif' }}>Category:</label>
                     <div className="relative flex-1">
                       <select
-                        className='appearance-none input-field h-10 border border-yellow-400 w-full px-3 pr-8 bg-white leading-tight' style={{ fontFamily: 'Inter, sans-serif' }}
+                        className='appearance-none input-field border border-yellow-400 w-full px-3 pr-8 bg-white leading-tight' style={{ fontFamily: 'Inter, sans-serif' }}
                         value={category}
                         onChange={e => setCategory(e.target.value)}
                         onFocus={() => setIsOpen(true)}

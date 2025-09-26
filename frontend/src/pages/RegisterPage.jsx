@@ -23,7 +23,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="register-container">
+    <div className="register-container" style={{ backgroundColor: "#F6F3ED" }}>
       <div className="header">
         <img
           src={logo}
@@ -42,14 +42,15 @@ export default function RegisterPage() {
           layout="vertical"
         >
           {/* ✅ Title + First + Last name */}
-          <div className="name-row">
+          <div className="flex flex-col sm:flex-row sm:gap-4 w-full">
+            {/* Title */}
             <Form.Item
               name="title"
               label="Title"
-              rules={[{ required: true, message: "Please select your title" }]}
-              className="name-item"
+              rules={[{ required: true, message: "Enter your title" }]}
+              className="flex flex-col justify-end min-h-[90px] !w-20 sm:w-24"
             >
-              <Select placeholder="---">
+              <Select placeholder="---" className="!h-10.5">
                 <Option value="Mr">Mr</Option>
                 <Option value="Ms">Ms</Option>
                 <Option value="Mrs">Mrs</Option>
@@ -57,28 +58,27 @@ export default function RegisterPage() {
               </Select>
             </Form.Item>
 
+            {/* First Name */}
             <Form.Item
               name="fname"
               label="First Name"
-              rules={[
-                { required: true, message: "Please enter your first name" },
-              ]}
-              className="name-item"
+              rules={[{ required: true, message: "Please enter your first name" }]}
+              className="flex flex-col justify-end min-h-[90px] w-full sm:flex-1"
             >
               <Input placeholder="Enter your First Name" />
             </Form.Item>
 
+            {/* Last Name */}
             <Form.Item
               name="lname"
               label="Last Name"
-              rules={[
-                { required: true, message: "Please enter your last name" },
-              ]}
-              className="name-item"
+              rules={[{ required: true, message: "Please enter your last name" }]}
+              className="flex flex-col justify-end min-h-[90px] w-full sm:flex-1"
             >
               <Input placeholder="Enter your Last Name" />
             </Form.Item>
           </div>
+
 
           <Form.Item
             name="dateBirth"

@@ -79,12 +79,12 @@ const RoomBookingSchedule = () => {
                     onClick={() => toggleTime(slot)}
                     disabled={slot === "17:00 - 18:00"}
                     className={`
-                       !w-full !mt-2 rounded-xl  text-sm transition-transform 
+                       !w-full !mt-2 rounded-xl border !h-15 text-sm transition-transform 
                          ${slot === "17:00 - 18:00"
                         ? '!bg-[#F6F3ED] !text-amber-800 '
                         : isSelected  
-                          ? 'bg-amber-600 border-amber-600 text-white shadow-lg shadow-amber-200 scale-105'
-                          : 'bg-white border-amber-200 !text-amber-800 hover:border-amber-400 hover:bg-amber-50 '
+                          ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105'
+                          : 'bg-white border-amb er-200 !text-amber-800  '
                       }
                       `}
                   >
@@ -97,10 +97,12 @@ const RoomBookingSchedule = () => {
         </div>
 
         {/* Continue Button */}
-        <button className="!w-110 bg-amber-700 hover:bg-amber-800 text-white font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20">
+        <div className="flex justify-center">
+        <button className="!w-110 bg-darkBrown-700 !mt-10 text-white font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20">
           <span>Continue</span>
           <ArrowLeft className="w-4 h-4 rotate-180" />
         </button>
+        </div>
 
         {/* Quick Info */}
 
