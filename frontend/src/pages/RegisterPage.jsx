@@ -1,231 +1,190 @@
-import { useState } from "react";
+import React from "react";
+import { DatePicker, Input, Button, Select, Form } from "antd";
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  CalendarOutlined,
+} from "@ant-design/icons";
+import "antd/dist/reset.css";
 import "./RegisterPage.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { Link } from "react-router-dom";
-import {CalendarComponent} from '@syncfusion/ej2-react-calendars';
+import logo from "../assets/Coffee.svg";
+
+const { Option } = Select;
 
 export default function RegisterPage() {
-    const dateBirth = new Date(new Date().getFullYear(),new Date().getMonth(),20);
+  const [form] = Form.useForm();
 
-  const [title, setTitle] = useState("");
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-//   const [dateBirth, setDateBirth] = useState(null);
-  const [nationalID, setNationalID] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [verifyCode, setVerifyCode] = useState("");
-  const [password, setPassword] = useState("");
-  const [comfirmPassword, setComfirmPassword] = useState("");
-
-  const [submit, setSubmit] = useState(false);
-
-  const isValidDateBirth = (date) => {
-    return date instanceof Date && !isNaN(date);
+  const submitButton = (values) => {
+    console.log("Success:", values);
   };
 
-  const formatDate = (date) => {
-    if (!date) return "";
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
-  const submitButton = (e) => {
-    e.preventDefault();
-    formatDate(dateBirth);
-    if (!isValidDateBirth(dateBirth)) {
-      alert("กรุณาเลือกวันเกิดให้ถูกต้อง");
-      return;
-    }
-    const users = {
-      id: Math.floor(Math.random() * 1000),
-      title: title,
-      fname: fname,
-      lname: lname,
-      date: dateBirth,
-      nationalID: nationalID,
-      phoneNumber: phoneNumber,
-      email: email,
-      password: password,
-      comfirmPassword: comfirmPassword,
-    };
-    console.log(users);
-    setSubmit(true);
+  const onError = (errorInfo) => {
+    console.log("Failed:", errorInfo);
   };
 
   return (
-    <div className="Container">
-      <div className="Reg-wrap">
-        <div className="Show">
-          <img src="./src/assets/Coffee.svg" alt="" />
-          <h1 className="H1-show">
-            <b>Join Book Café</b>
-          </h1>
-          <p className="P-show">Create your account to access room bookings</p>
-        </div>
-        {/* Form-register */}
-        <div className="Reg-container">
-          {/* ด้านบน   */}
-          <div className="Reg-up">
-            {/* Title */}
-            <div>
-              <label>Title *</label>
-              <select
-                placeholder="--"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              >
-                <option value="" disabled selected hidden>
-                  --
-                </option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
+    <div className="register-container">
+      <div className="header">
+        <img
+          src={logo}
+          alt="Logo"
+          className="!h-12 !w-12 mx-auto text-brown-500 mb-5 "
+        />
+        <h2>Join Book Café</h2>
+        <p>Create your account to access room bookings</p>
+      </div>
 
-            {/* Fname */}
-            <div>
-              <label href="fname">First Name *</label>
-              <input
-                id="fname"
-                placeholder="Enter your First Name"
-                type="text"
-                value={fname}
-                onChange={(e) => {
-                  setFname(e.target.value);
-                }}
-              />
-            </div>
+      <div className="register-box">
+        <Form
+          form={form}
+          onFinish={submitButton}
+          onFinishFailed={onError}
+          layout="vertical"
+        >
+          {/* ✅ Title + First + Last name */}
+          <div className="name-row">
+            <Form.Item
+              name="title"
+              label="Title"
+              rules={[{ required: true, message: "Please select your title" }]}
+              className="name-item"
+            >
+              <Select placeholder="---">
+                <Option value="Mr">Mr</Option>
+                <Option value="Ms">Ms</Option>
+                <Option value="Mrs">Mrs</Option>
+                <Option value="Other">Other</Option>
+              </Select>
+            </Form.Item>
 
-            {/* Lname */}
-            <div>
-              <label href="lname">Last Name *</label>
-              <input
-                id="lname"
-                placeholder="Enter your Last Name"
-                type="text"
-                value={lname}
-                onChange={(e) => {
-                  setLname(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          {/* ตรงกลาง */}
-          <div className="Reg-body">
-            {/* DateBirth */}
-            <div class="exclude">
-              <label>Date of Birth *</label>
+            <Form.Item
+              name="fname"
+              label="First Name"
+              rules={[
+                { required: true, message: "Please enter your first name" },
+              ]}
+              className="name-item"
+            >
+              <Input placeholder="Enter your First Name" />
+            </Form.Item>
 
-              <DatePicker
-                className="Date"
-                selected={dateBirth}
-                onChange={(e) => setDateBirth(e.target.value)}
-                calendarClassName="my-custom-calendar" // <-- ตกแต่ง popup
-                placeholderText="เลือกวันที่"
-              />
-            </div>
-            {/* NationIDnumber */}
-            <div>
-              <label>National ID Number *</label>
-              <input
-                value={nationalID}
-                placeholder="1-XXXX-XXXXX-XX-X"
-                type="text"
-                onChange={(e) => {
-                  setNationalID(e.target.value);
-                }}
-              />
-            </div>
-
-            {/* PhoneNumber */}
-            <div>
-              <label>Phone Number *</label>
-              <input
-                value={phoneNumber}
-                placeholder="09X-XXX-XXXX"
-                type="text"
-                onChange={(e) => {
-                  setPhoneNumber(e.target.value);
-                }}
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label>Email Adress *</label>
-              <input
-                value={email}
-                placeholder="Enter your email"
-                type="text"
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-            </div>
-
-            {/* VerifyCode */}
-            <div className="sendCode">
-              <label>Verify Code *</label>
-              <div>
-                <input
-                  value={verifyCode}
-                  placeholder="Enter Verify Code"
-                  type="text"
-                  onChange={(e) => {
-                    setVerifyCode(e.target.value);
-                  }}
-                />
-                <button>Send Code</button>
-              </div>
-            </div>
-
-            <div>
-              <label>Password *</label>
-              <input
-                value={password}
-                placeholder="Enter your password"
-                type="text"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-            </div>
-
-            <div>
-              <label>Confirm Password *</label>
-              <input
-                value={verifyCode}
-                placeholder="Enter your password"
-                type="text"
-                onChange={(e) => {
-                  setComfirmPassword(e.target.value);
-                }}
-              />
-            </div>
+            <Form.Item
+              name="lname"
+              label="Last Name"
+              rules={[
+                { required: true, message: "Please enter your last name" },
+              ]}
+              className="name-item"
+            >
+              <Input placeholder="Enter your Last Name" />
+            </Form.Item>
           </div>
 
-          {/* ปุ่ม */}
-          <button className="button" onClick={submitButton}>
+          <Form.Item
+            name="dateBirth"
+            label="Date of Birth"
+            rules={[
+              { required: true, message: "Please select your date of birth" },
+            ]}
+          >
+            <DatePicker
+              placeholder="Select your Date / Month / Year of Birth"
+              suffixIcon={<CalendarOutlined />}
+              style={{ width: "100%" }}
+              format="DD/MM/YYYY"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="nationalID"
+            label="National ID Number"
+            rules={[
+              {
+                required: true,
+                message: "Please enter your national ID number",
+              },
+            ]}
+          >
+            <Input placeholder="1-XXXX-XXXXX-XX-X" />
+          </Form.Item>
+
+          <Form.Item
+            name="phoneNumber"
+            label="Phone Number"
+            rules={[
+              { required: true, message: "Please enter your phone number" },
+            ]}
+          >
+            <Input placeholder="09X-XXX-XXXX" />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label="Email Address"
+            rules={[
+              { required: true, message: "Please enter your email address" },
+              { type: "email", message: "Invalid email format" },
+            ]}
+          >
+            <Input placeholder="Enter your email" />
+          </Form.Item>
+
+          <Form.Item
+            name="verifyCode"
+            label="Verify Code"
+            rules={[{ required: true, message: "Please enter verify code" }]}
+          >
+            <div className="verify-code">
+              <Input placeholder="Enter Verify Code" />
+              <Button className="send-btn">Send Code</Button>
+            </div>
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: "Please enter your password" }]}
+          >
+            <Input.Password
+              placeholder="Enter your password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="confirmPassword"
+            label="Confirm Password"
+            dependencies={["password"]}
+            rules={[
+              { required: true, message: "Please confirm your password" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("Passwords do not match"));
+                },
+              }),
+            ]}
+          >
+            <Input.Password
+              placeholder="Enter your password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+            />
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit" className="submit-btn">
             Create Account
-          </button>
-          {submit && <div>Successful</div>}
-          {submit && !isValidDateBirth(dateBirth) && (
-            <div style={{ color: "red" }}>กรุณาเลือกวันเกิด</div>
-          )}
-          <div className="Login">
-            <label>Already have an account?</label>
-            <Link to="/Login">
-              <b>Sign in here</b>
-            </Link>
+          </Button>
+
+          <div className="login-link">
+            Already have an account? <a href="/login">Sign in here</a>
           </div>
-        </div>
+        </Form>
       </div>
     </div>
   );
