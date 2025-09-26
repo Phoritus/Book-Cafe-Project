@@ -1,5 +1,5 @@
-import React from "react";
-import { DatePicker, Input, Button, Select, Form } from "antd";
+import React, { useState } from "react";
+import { DatePicker, Input, Button, Select, Form, message, Result } from "antd";
 import {
   EyeInvisibleOutlined,
   EyeTwoTone,
@@ -13,13 +13,79 @@ const { Option } = Select;
 
 export default function RegisterPage() {
   const [form] = Form.useForm();
+  const [sendingCode, setSendingCode] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [success, setSuccess] = useState(false);
+  const API_BASE = 'https://book-cafe-project.vercel.app';
 
-  const submitButton = (values) => {
-    console.log("Success:", values);
+  // cooldown timer
+  React.useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown(cooldown - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  const handleSendCode = async () => {
+    try {
+      const email = form.getFieldValue('email');
+      if (!email) {
+        message.error('Please enter email first');
+        return;
+      }
+      setSendingCode(true);
+      const res = await fetch(`${API_BASE}/auth/register/send-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(()=>({ message: 'Error' }));
+        throw new Error(err.message || 'Failed to send code');
+      }
+      message.success('Verification code sent');
+      setCooldown(60); // 60s cooldown
+    } catch (e) {
+      message.error(e.message);
+    } finally {
+      setSendingCode(false);
+    }
+  };
+
+  const submitButton = async (values) => {
+    try {
+      setSubmitting(true);
+      // Transform to API fields
+      const payload = {
+        nameTitle: values.nameTitle,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        dateOfBirth: values.dateOfBirth?.format('YYYY-MM-DD'),
+        citizen_id: values.citizen_id,
+        phone: values.phone,
+        email: values.email,
+        verifyCode: values.verifyCode,
+        password: values.password,
+        confirmPassword: values.confirmPassword
+      };
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(()=>({ message: 'Unknown response'}));
+      if (!res.ok) throw new Error(data.message || 'Registration failed');
+  message.success('Registration successful');
+  setSuccess(true);
+    } catch (e) {
+      message.error(e.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const onError = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    console.log('Failed:', errorInfo);
   };
 
   return (
@@ -35,6 +101,17 @@ export default function RegisterPage() {
       </div>
 
       <div className="register-box">
+        {success ? (
+          <Result
+            status="success"
+            title="Account created successfully"
+            subTitle="You can now sign in with your credentials."
+            extra={[
+              <Button type="primary" key="login" href="/login">Go to Login</Button>,
+              <Button key="home" href="/Home">Back Home</Button>
+            ]}
+          />
+        ) : (
         <Form
           form={form}
           onFinish={submitButton}
@@ -60,7 +137,7 @@ export default function RegisterPage() {
 
             {/* First Name */}
             <Form.Item
-              name="fname"
+              name="firstname"
               label="First Name"
               rules={[{ required: true, message: "Please enter your first name" }]}
               className="flex flex-col justify-end min-h-[90px] w-full sm:flex-1"
@@ -70,7 +147,7 @@ export default function RegisterPage() {
 
             {/* Last Name */}
             <Form.Item
-              name="lname"
+              name="lastname"
               label="Last Name"
               rules={[{ required: true, message: "Please enter your last name" }]}
               className="flex flex-col justify-end min-h-[90px] w-full sm:flex-1"
@@ -81,7 +158,7 @@ export default function RegisterPage() {
 
 
           <Form.Item
-            name="dateBirth"
+            name="dateOfBirth"
             label="Date of Birth"
             rules={[
               { required: true, message: "Please select your date of birth" },
@@ -90,29 +167,28 @@ export default function RegisterPage() {
             <DatePicker
               placeholder="Select your Date / Month / Year of Birth"
               suffixIcon={<CalendarOutlined />}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               format="DD/MM/YYYY"
             />
           </Form.Item>
 
           <Form.Item
-            name="nationalID"
+            name="citizen_id"
             label="National ID Number"
             rules={[
-              {
-                required: true,
-                message: "Please enter your national ID number",
-              },
+              { required: true, message: 'Please enter your national ID number' },
+              { pattern: /^\d{13}$/, message: 'Must be 13 digits (numbers only)' }
             ]}
           >
-            <Input placeholder="1-XXXX-XXXXX-XX-X" />
+            <Input placeholder="e.g. 1234567890123" maxLength={13} />
           </Form.Item>
 
           <Form.Item
-            name="phoneNumber"
+            name="phone"
             label="Phone Number"
             rules={[
-              { required: true, message: "Please enter your phone number" },
+              { required: true, message: 'Please enter your phone number' },
+              { pattern: /^[0-9\-+ ()]{7,20}$/, message: 'Invalid phone format' }
             ]}
           >
             <Input placeholder="09X-XXX-XXXX" />
@@ -132,18 +208,30 @@ export default function RegisterPage() {
           <Form.Item
             name="verifyCode"
             label="Verify Code"
-            rules={[{ required: true, message: "Please enter verify code" }]}
+            rules={[{ required: true, message: 'Please enter verify code' }, { pattern: /^\d{6}$/, message: 'Must be 6 digits' }]}
           >
             <div className="verify-code">
-              <Input placeholder="Enter Verify Code" />
-              <Button className="send-btn">Send Code</Button>
+              <Input placeholder="Enter Verify Code" maxLength={6} />
+              <Button
+                className="send-btn"
+                type="default"
+                onClick={handleSendCode}
+                disabled={sendingCode || cooldown > 0}
+                loading={sendingCode}
+              >
+                {cooldown > 0 ? `Resend (${cooldown})` : 'Send Code'}
+              </Button>
             </div>
           </Form.Item>
 
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: "Please enter your password" }]}
+            rules={[
+              { required: true, message: 'Please enter your password' },
+              { min: 8, message: 'At least 8 characters' },
+              { pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/, message: 'Need upper, lower, digit' }
+            ]}
           >
             <Input.Password
               placeholder="Enter your password"
@@ -177,14 +265,15 @@ export default function RegisterPage() {
             />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit" className="submit-btn">
-            Create Account
+          <Button type="primary" htmlType="submit" className="submit-btn" loading={submitting} disabled={submitting}>
+            {submitting ? 'Creating...' : 'Create Account'}
           </Button>
 
           <div className="login-link">
             Already have an account? <a href="/login">Sign in here</a>
           </div>
         </Form>
+        )}
       </div>
     </div>
   );
