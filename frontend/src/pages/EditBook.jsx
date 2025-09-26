@@ -65,7 +65,7 @@ const AddBook = () => {
         <div className="relative !pb-10 z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-fade-in">
             <img src={logo} alt="Logo" className="!h-28 !w-28 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
-            <h1 className="text-md md:text-4xl font-display font-bold text-darkBrown-500 mb-4 text-shadow" >
+            <h1 className="text-md font-crimson md:text-4xl font-display font-bold text-darkBrown-500 mb-4 text-shadow" >
               Edit Book
             </h1>
             <p className="text-sm md:text-2xl text-brown-600 mb-4 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
@@ -136,7 +136,7 @@ const AddBook = () => {
                   </div>
 
                   {/* Add Book Button */}
-                  <button className="btn-primary w-50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleAddBook}>Edit Book</button>
+                  <button className="btn-primary !w-50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleAddBook}>Edit Book</button>
                 </div>
               </div>
             </div>
