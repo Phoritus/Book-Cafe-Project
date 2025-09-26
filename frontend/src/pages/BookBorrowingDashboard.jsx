@@ -23,7 +23,7 @@ const BookBorrowingDashboard = () => {
     const fetchCategory = async () => {
       try {
         const res = await fetch(
-          `http://localhost:4000/api/borrowings/category?range=${categoryFilter}`
+          `https://book-cafe-project.vercel.app/dashboard/borrowings/by-category?range=${categoryFilter}`
         );
         const category = await res.json();
         setCategoryData(category);
@@ -39,7 +39,7 @@ const BookBorrowingDashboard = () => {
     const fetchTopBooks = async () => {
       try {
         const res = await fetch(
-          `http://localhost:4000/api/borrowings/top5?range=${topBooksFilter}`
+          `https://book-cafe-project.vercel.app/dashboard/borrowings/top-books?range=${topBooksFilter}`
         );
         const topBooks = await res.json();
         setTopBooksData(topBooks);
