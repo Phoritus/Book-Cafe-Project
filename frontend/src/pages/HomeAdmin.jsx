@@ -41,7 +41,7 @@ const HomeAdmin = () => {
                       <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                         Room Booking
                       </h3>
-                      <p className="text-brown-600 text-[12.5px] leading-snug">
+                      <p className="text-brown-600 text-[12px] leading-snug">
                         View and verify customer café<br /> room reservations
                       </p>
                     </Link>
@@ -55,7 +55,7 @@ const HomeAdmin = () => {
                       <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                         Room Booking Dashboard
                       </h3>
-                      <p className="text-brown-600 text-[12.5px] leading-snug ">
+                      <p className="text-brown-600 text-[11px] leading-snug ">
                         Dashboard shows booked rooms, today’s reservations, and usage statistics
                       </p>
                     </Link>
@@ -69,7 +69,7 @@ const HomeAdmin = () => {
                       <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                         Book Lending
                       </h3>
-                      <p className="text-brown-600 text-[12.5px] leading-snug">
+                      <p className="text-brown-600 text-[12px] leading-snug">
                         Manage and monitor book lending records
                       </p>
                     </Link>
@@ -83,7 +83,7 @@ const HomeAdmin = () => {
                       <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                         Book Borrowing Dashboard
                       </h3>
-                      <p className="text-brown-600 text-[12.5px] leading-snug ">
+                      <p className="text-brown-600 text-[12px] leading-snug ">
                         Dashboard shows borrowed books
                         <br />
                         and usage statistics
