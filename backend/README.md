@@ -11,7 +11,7 @@ Minimal backend service for a Book / Cafe hybrid system providing:
 - Node.js (Express, ES Modules)
 - MySQL (mysql2/promise)
 - JWT for access tokens
-- SendGrid (@sendgrid/mail) for sending verification codes
+- Nodemailer (Gmail App Password) for sending verification codes
 - dayjs for date utilities (analytics)
 
 ## Project Structure
@@ -46,15 +46,9 @@ MYSQL_DATABASE=booking_db
 JWT_ACCESS_SECRET=change_me_secret
 ACCESS_TOKEN_TTL=15m
 BCRYPT_SALT_ROUNDS=10
-# Email (SendGrid)
-SENDGRID_API_KEY=your_sendgrid_api_key
-EMAIL_FROM="Book Cafe <no-reply@yourdomain.com>"
+MAIL_USER=you@gmail.com
+MAIL_PASS=your_app_password
 ```
-
-Notes:
-- Generate a SendGrid API key with Mail Send permission.
-- Set a verified single sender or domain in SendGrid; match that in `EMAIL_FROM`.
-- Remove legacy `MAIL_USER` / `MAIL_PASS` variables (no longer used).
 3. Create database then apply schema + seed (MySQL):
 ```sql
 CREATE DATABASE booking_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
