@@ -70,12 +70,20 @@ export async function register(req, res) {
     if (!validatePassword(password)) return res.status(400).json({ error: true, message: 'Weak password' });
 
     const errors = [];
+    // Normalize phone (keep leading + and digits only)
+    if (phone) {
+      const raw = phone.toString();
+      const normalized = raw.replace(/[^+\d]/g, '');
+      phone = normalized;
+    }
     if (citizen_id && !/^\d{13}$/.test(citizen_id)) errors.push('citizen_id must be 13 digits');
-    if (phone && !/^[+]?\d{9,15}$/.test(phone.replace(/[-\s]/g, ''))) errors.push('phone format invalid');
+    if (phone && !/^[+]?\d[\d]{8,14}$/.test(phone.replace(/[^+\d]/g, ''))) errors.push('phone format invalid');
     if (dateOfBirth) {
       const dob = new Date(dateOfBirth);
       if (isNaN(dob.getTime())) errors.push('dateOfBirth invalid');
       else if (dob > new Date()) errors.push('dateOfBirth cannot be in the future');
+      // Enforce YYYY-MM-DD format by slicing
+      dateOfBirth = dob.toISOString().slice(0,10);
     }
     if (errors.length) return res.status(400).json({ error: true, message: 'Validation errors', details: errors });
 
@@ -86,24 +94,39 @@ export async function register(req, res) {
     if (!entry) return res.status(400).json({ error: true, message: 'No verification code requested or code expired' });
     if (entry.code !== verifyCode) return res.status(400).json({ error: true, message: 'Invalid verification code' });
 
-    const newUser = await createPerson({
-      firstname,
-      lastname,
-      nameTitle,
-      phone,
-      password,
-      dateOfBirth,
-      citizen_id,
-      email,
-      verifyCode,
-      role: role === 'admin' ? 'admin' : 'user'
-    });
+    let newUser;
+    try {
+      newUser = await createPerson({
+        firstname,
+        lastname,
+        nameTitle,
+        phone,
+        password,
+        dateOfBirth,
+        citizen_id,
+        email,
+        verifyCode,
+        role: role === 'admin' ? 'admin' : 'user'
+      });
+    } catch (dbErr) {
+      // MySQL duplicate email safety (in case race condition)
+      if (dbErr && (dbErr.code === 'ER_DUP_ENTRY' || /duplicate/i.test(dbErr.message))) {
+        return res.status(409).json({ error: true, message: 'Email already registered (db)' });
+      }
+      console.error('[REGISTER][DB_ERROR]', {
+        code: dbErr.code,
+        errno: dbErr.errno,
+        sqlMessage: dbErr.sqlMessage,
+        stack: dbErr.stack
+      });
+      return res.status(500).json({ error: true, message: 'Registration database error' });
+    }
     consumeRegistrationCode(email);
     deleteVerificationEntry(email);
     return res.status(201).json({ user: { id: newUser.person_id, email: newUser.email, role: newUser.role } });
   } catch (e) {
-    console.error(e);
-    return res.status(500).json({ error: true, message: 'Registration failed' });
+    console.error('[REGISTER][UNCAUGHT]', e);
+    return res.status(500).json({ error: true, message: 'Registration failed (unexpected)' });
   }
 }
 
