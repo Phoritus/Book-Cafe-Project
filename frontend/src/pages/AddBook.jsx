@@ -136,7 +136,7 @@ const AddBook = () => {
                   </div>
 
                   {/* Add Book Button */}
-                  <button className="btn-primary w-50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleAddBook}>Add Book</button>
+                  <button className="btn-primary !w-50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleAddBook}>Add Book</button>
                 </div>
               </div>
             </div>
