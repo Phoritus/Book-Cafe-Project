@@ -1,280 +1,278 @@
-@import url("https://cdn.syncfusion.com/ej2/material.css");
-.Container {
-    min-height: 100vh;
-    margin: 0 auto;
-    display: flex;
-    justify-items: center;
-    align-items: center;
-    background: #F6F3ED;
-    
-
+/* Container */
+.register-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  background: #faf5f0;
+  font-family: "Segoe UI", sans-serif;
+  padding: 40px 0;
 }
 
-.Reg-container select,
-.Reg-container input[type="text"] {
-    border: 1px solid #8B5A40;
-    border-radius: 10px;
-    padding: 8px 6px;
-    background: #fff;
-    box-sizing: border-box;
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.Reg-wrap {
-    /* outline: 1px solid red; */
-    display: center;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-
-
+.header img {
+  margin-bottom: 20px;
 }
 
-.Show {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 12px;
-    margin: 50px;
-    /* outline: 1px solid red; */
-
+.header h2 {
+  color: #53311c;
+  margin-bottom: 5px;
 }
 
-img {
-    width: 55px;
-    height: 55px;
-}
-
-.H1-show {
-    font-family: 'CrimsonText';
-    font-size: 36px;
-}
-
-.P-show {
-    font-family: 'Inter';
-    font-size: 16px;
-}
-
-.Reg-container {
-    font-family: 'Inter';
-    font-size: 15px;
-    width: 566px;
-    height: 1007px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin: auto;
-    background-color: #FBFBFB;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(139, 90, 64, 0.1);
-    /* outline: 1px solid red; */
-
-
-
-}
-
-.Reg-up {
-    margin: 0 auto;
-    /* outline: 1px solid red; */
-    display: flex;
-    justify-content: space-between;
-
-}
-
-.Reg-up label {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.Reg-up div {
-    margin-right: 10px;
-}
-
-.Reg-up select {
-    text-align: center;
-    width: 98px;
-    height: 50px;
-}
-
-.Reg-up input {
-    width: 175px;
-    height: 50px;
-}
-
-
-button {
-    margin: 0 auto;
-    margin-top: 43px;
-    background: #86422A;
-    border: 1px solid #86422A;
-    border-radius: 10px;
-    width: 475px;
-    height: 56px;
-    color: #FFFFFf;
-}
-
-
-.Reg-body {
-    font-family: 'Inter';
-    font-size: 15px;
-    text-decoration: none;
-    width: 475px;
-    height: 685px;
-    margin: 0 auto;
-    margin-top: 43px;
-    /* outline: 1px solid red; */
-}
-
-.Reg-body div:not(.exclude) {
-    width: 474px;
-
-    margin-bottom: 25px;
-    display: block;
-}
-
-.Reg-body input {
-    margin-top: 4px;
-    width: 474px;
-    height: 50px;
-}
-
-.Login {
-    color: #BC956B;
-    text-decoration: solid;
-    display: flex;
-    margin: 0 auto;
-    margin-top: 10px;
-    justify-content: space-around;
-}
-
-
-.Login label {
-    margin-right: 10px;
-}
-
-
-
-.sendCode{
-    overflow: hidden;
-    height: 77px;
-}
-.sendCode div{
-    display: flex;
-}
-
-.sendCode input {
-  flex: 1;
-  margin: 0;
-  padding: 10px;
-  height: 50px;
-  border: 1px solid #d3b9ab;
-  border-right: none;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  outline: none;
+.header p {
+  color: #a0785b;
   font-size: 14px;
 }
 
-
-.sendCode button {
-    margin: 0;
-    width: 152px;
-    height: 50px;
-    padding: 10px 10px;
-    border: 1px solid #d3b9ab;
-    background-color: #f5eeeb;
-    color: #6a2c1b;
-    cursor: pointer;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-    font-size: 14px;
-    transition: 0.2s;
+/* Register box */
+.register-box {
+  background: white;
+  border-radius: 16px;
+  padding: 35px;
+  width: 500px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px;
 }
 
-.sendCode button:hover {
-  background-color: #e6d7d0;
+/* --- Title, First Name, Last Name Row --- */
+.name-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 1fr; /* Title = 110px, First/Last เท่าๆ กัน */
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: start; /* ป้ายชื่อชิดบน */
 }
 
-/* DatePicker Input Styling */
-.react-datepicker-wrapper {
-    width: 474px;
+/* ให้ label แสดงเป็นบรรทัดบนสุดและมีช่องว่างด้านล่างเล็กน้อย */
+.name-row .ant-form-item-label {
+  display: block !important;
+  margin-bottom: 6px;
+}
+.name-row .ant-form-item-label label {
+  display: block;
+  color: #53311c;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
 }
 
-.react-datepicker__input-container input {
-    width: 474px !important;
-    height: 50px !important;
+/* ปรับความสูงของ control ให้พอดีสำหรับ label + input */
+.name-row .ant-form-item {
+  /* ปรับให้แต่ละฟอร์มไอเท็มเป็นคอลัมน์เต็ม เพื่อให้ error อยู่ใต้ input เสมอ */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  margin-bottom: 0 !important;
+}
+.name-row .ant-form-item-control {
+  min-height: 56px; /* เพียงพอสำหรับ label + input */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+/* ให้ input/select ใน row นี้ มีความสูงและ padding เท่ากัน */
+.name-row .ant-input,
+.name-row .ant-select-selector,
+.name-row .ant-picker,
+.name-row .ant-input-affix-wrapper {
+  height: 42px !important;
+  border-radius: 9px !important;
+  padding-left: 12px !important;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* กำหนดขนาด select ของ Title ให้ไม่ยืด */
+.name-row .ant-select-selector {
+  width: 100%;
+  max-width: 110px; /* ยืนยันความกว้างเท่าคอลัมน์แรก */
+}
+
+/* ให้ error message มีพื้นที่คงที่ ป้องกันกระโดด */
+.name-row .ant-form-item-explain-error {
+  margin: 6px 0 0 0 !important;
+  padding: 0 !important;
+  text-align: left;
+  visibility: hidden;
+  min-height: 18px !important;
+  font-size: 12px;
+  margin-top: 6px;
+  color: #a0522d !important;
+  line-height: 1.2;
+  display: block;
+}
+.name-row .ant-form-item-has-error .ant-form-item-explain-error {
+  visibility: visible !important;
+  color: #ff4d4f !important;
+}
+
+/* --- Password & Confirm Password --- */
+.ant-form-item-control-input {
+  min-height: 42px; /* ทำให้ความสูง input เสมอ */
+}
+
+.ant-form-item-explain-error {
+  min-height: 16px; /* ทุกกล่องมีพื้นที่ error เท่ากัน */
+  font-size: 12px;
+  margin-top: 4px;
+  color: #a0522d !important;
+}
+
+/* ✅ Align Password & Confirm Password */
+.ant-input-password {
+  height: 42px !important;
+  border-radius: 9px;
+}
+
+/* input, select, datepicker (ปกติ) */
+.ant-input,
+.ant-picker,
+.ant-select-selector,
+.ant-input-affix-wrapper {
+  border-radius: 9px !important;
+  height: 42px !important;
+  font-size: 14px;
+  border: 1px solid #a0522d !important;
+  font-family: "Segoe UI", sans-serif;
+  color: #53311c;
+  padding-left: 12px !important;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* ✅ แก้กรอบซ้อนใน Password - ลบกรอบด้านใน */
+.ant-input-affix-wrapper input {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-family: "Segoe UI", sans-serif !important;
+  font-size: 14px !important;
+  color: #53311c !important;
+  height: 38px !important;
+  padding: 0 !important;
+}
+
+/* ✅ ลบ border ที่อาจเหลืออยู่ใน input ภายใน */
+.ant-input-affix-wrapper input:focus {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* focus */
+.ant-input:focus,
+.ant-picker-focused,
+.ant-select-focused .ant-select-selector,
+.ant-input-affix-wrapper-focused {
+  border-color: #8b4513 !important;
+  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2) !important;
+  border-radius: 8px !important;
+}
+
+/* ✅ error state - แก้กรอบซ้อนและปรับ layout */
+.ant-form-item-has-error .ant-input,
+.ant-form-item-has-error .ant-input-affix-wrapper,
+.ant-form-item-has-error .ant-picker,
+.ant-form-item-has-error .ant-select-selector {
+  border: 1px solid #ff4d4f !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2) !important;
+  border-radius: 8px !important;
+}
+
+/* ✅ แก้กรอบซ้อนใน Password ตอน error */
+.ant-form-item-has-error .ant-input-affix-wrapper input {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
+/* ✅ Error message ให้มีพื้นที่คงที่ */
+.name-row .ant-form-item-explain-error {
+    min-height: 20px !important; /* กำหนดพื้นที่คงที่สำหรับ error */
+    font-size: 12px;
     margin-top: 4px;
-    border: 1px solid #8B5A40 !important;
-    border-radius: 10px !important;
-    padding: 8px 6px !important;
-    background: #fff !important;
-    box-sizing: border-box;
-    font-size: 15px;
-    font-family: 'Inter';
+    color: #a0522d !important;
+    line-height: 1.3;
+    display: block; /* แสดงเสมอเพื่อกันการกระโดด */
+    visibility: hidden; /* ซ่อนเมื่อไม่มี error */
 }
 
-/* Calendar Popup Styling */
-.my-custom-calendar {
-    background-color: #ffffff !important;  /* พื้นหลังสีขาวทึบ */
-    border: 2px solid #8B5A40 !important;  /* ขอบสีน้ำตาล */
-    border-radius: 10px !important;        /* มุมโค้ง */
-    padding: 10px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important; /* เงา */
+/* แสดง error message เมื่อมี error */
+.name-row .ant-form-item-has-error .ant-form-item-explain-error {
+    visibility: visible !important;
+    color: #ff4d4f !important;
 }
 
-.my-custom-calendar .react-datepicker__header {
-    background-color: #86422A !important; /* หัวปฏิทินสีน้ำตาล */
-    border-bottom: 1px solid #8B5A40 !important;
-    border-radius: 8px 8px 0 0 !important;
+/* ✅ Normalize Select ให้เท่ากับ Input */
+.name-row .ant-select-selector {
+    height: 42px !important;
+    display: flex;
+    align-items: center;
+    border-radius: 9px !important;
+}
+/* กัน layout กระโดดรวม */
+.ant-form-item {
+  margin-bottom: 20px !important;
 }
 
-.my-custom-calendar .react-datepicker__current-month {
-    color: white !important; /* ข้อความเดือน/ปีสีขาว */
-    font-weight: bold !important;
+/* icon ตา */
+.ant-input-password-icon {
+  color: #a0522d;
+}
+.ant-input-password-icon:hover {
+  color: #8b4513;
 }
 
-.my-custom-calendar .react-datepicker__day-name {
-    color: white !important; /* ชื่อวันสีขาว */
-    font-weight: bold !important;
+/* Verify code input + button */
+.verify-code {
+  display: flex;
+  gap: 10px;
+}
+.verify-code .send-btn {
+  background: #f2e6da;
+  border: 1px solid #e0cbb5;
+  color: #53311c;
+  font-size: 13px;
+  padding: 0 18px;
+  border-radius: 8px;
+  height: 42px;
 }
 
-.my-custom-calendar .react-datepicker__navigation {
-    top: 13px !important;
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  background-color: #8b4513 !important;
+  border-color: #8b4513 !important;
+  border-radius: 8px;
+  margin-top: 10px;
+  height: 45px;
+  font-weight: 500;
+  font-size: 15px;
 }
 
-.my-custom-calendar .react-datepicker__navigation--previous {
-    border-right-color: white !important;
+/* Login link */
+.login-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 13px;
+  color: #a0785b;
 }
-
-.my-custom-calendar .react-datepicker__navigation--next {
-    border-left-color: white !important;
+.login-link a {
+  color: #8b4513;
+  font-weight: 500;
 }
-
-.my-custom-calendar .react-datepicker__day {
-    background-color: #ffffff !important; /* พื้นหลังวันสีขาว */
-    color: #333 !important;
-    border-radius: 4px !important;
-    margin: 2px !important;
-}
-
-.my-custom-calendar .react-datepicker__day:hover {
-    background-color: #f5eeeb !important; /* เมื่อ hover */
-    color: #6a2c1b !important;
-}
-
-.my-custom-calendar .react-datepicker__day--selected {
-    background-color: #86422A !important;  /* วันที่ถูกเลือกสีน้ำตาล */
-    color: white !important;
-    border-radius: 50% !important;
-    font-weight: bold !important;
-}
-
-.my-custom-calendar .react-datepicker__day--today {
-    background-color: #BC956B !important; /* วันนี้สีน้ำตาลอ่อน */
-    color: white !important;
-    font-weight: bold !important;
-}
-
-.my-custom-calendar .react-datepicker__month-container {
-    background-color: #ffffff !important; /* พื้นหลังเดือนสีขาว */
+.login-link a:hover {
+  text-decoration: underline;
 }
