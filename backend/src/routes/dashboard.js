@@ -1,12 +1,10 @@
 import express from 'express';
 import { dailyBookings, mostBookedRooms } from '../controllers/dashboardController.js';
 import { borrowingsByCategory, topBorrowedBooks } from '../controllers/borrowingDashboardController.js';
-import { auth, requireRole } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Protect all dashboard endpoints (admin only)
-router.use(auth, requireRole('admin'));
+// NOTE: Dashboard endpoints are now public (no auth). Re-add auth if sensitive.
 
 router.get('/daily', dailyBookings);
 router.get('/most-booked', mostBookedRooms);
