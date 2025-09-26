@@ -192,8 +192,8 @@ function Login() {
             height: auto;
             position: absolute;
             right: 16px;
-            top: 50%;
-            transform: translateY(-185%);
+            top: 16%;
+            transform: translateY(0%);
             background: none;
             border: none;
             color: #BC956B;
