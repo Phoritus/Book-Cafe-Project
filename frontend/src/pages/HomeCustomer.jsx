@@ -10,7 +10,7 @@ const HomeCustomer = () => {
     <div className="page-container">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cream-100/90 to-brown-100/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br bg-[#F6F3ED]"></div>
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-fade-in">
             <img
@@ -27,20 +27,19 @@ const HomeCustomer = () => {
             </p>
 
             {/* Primary CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <div className="font-sans flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               {!isAuthenticated ? (
                 <>
                   {/* Room Booking */}
                   <Link
                     to="/choose-room"
-                    className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2"
+                    className="card w-[270px] min-h-[175px] flex flex-col items-center text-center px-7 py-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
                   >
-                    <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-1" />
-
-                    <h3 className="text-sm font-semibold text-brown-800 mb-1">
+                    <Calendar className="h-8 w-8 mx-auto text-brown-500 mb-4" />
+                    <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                       Room Booking
                     </h3>
-                    <p className="text-sm text-brown-600 max-w-s mx-auto leading-relaxed px-2">
+                    <p className="text-brown-600 text-[12.5px] leading-snug">
                       Reserve your perfect study space
                     </p>
                   </Link>
@@ -49,13 +48,13 @@ const HomeCustomer = () => {
                   {/* Upcoming Booking */}
                   <Link
                     to="/upcoming"
-                    className="block rounded-2xl shadow-md p-6 bg-white text-center hover:shadow-lg transition px-2"
+                    className="card w-[270px] min-h-[175px] flex flex-col items-center text-center px-7 py-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
                   >
-                    <Clock className="h-8 w-8 mx-auto text-brown-500 mb-1" />
-                    <h3 className="text-sm font-semibold text-brown-800 mb-1">
+                    <Clock className="h-8 w-8 mx-auto text-brown-500 mb-4" />
+                    <h3 className="text-[15px] font-semibold text-darkBrown-500 mb-2 leading-snug tracking-tight">
                       Upcoming Booking
                     </h3>
-                    <p className="text-sm text-brown-600 max-w-s mx-auto leading-relaxed px-2">
+                    <p className="text-brown-600 text-[12.5px] leading-snug">
                       Reserve your perfect study space
                     </p>
                   </Link>
