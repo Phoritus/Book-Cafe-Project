@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProfileInformation.css';
 
 const ProfileHeader = () => (
@@ -16,7 +17,8 @@ const ProfileHeader = () => (
 );
 
 const ProfileInformation = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+const [isLoaded, setIsLoaded] = useState(false);
+const navigate = useNavigate();
 
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 100);
@@ -41,7 +43,9 @@ const HexIcon = () => (
     </g>
   </svg>
 );
-  const handleEditProfile = () => alert('Edit Profile functionality would be implemented here');
+  // replace alert with navigation to edit page
+  const handleEditProfile = () => navigate('/customer/profile/edit');
+
   const profileData = [
     { label: 'Title', value: 'Ms.', icon: <HexIcon /> },
     { label: 'Phone', value: '080-000-0000', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" stroke="#c7a451" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -106,7 +110,7 @@ const HexIcon = () => (
                   <p className="setting-description">demo@example.com</p>
                 </div>
               </div>
-              <button className="change-btn">Change Email</button>
+              <button className="change-btn" onClick={() => navigate('/customer/profile/change-email')}>Change Email</button>
             </div>
 
             <div className="setting-item last">
@@ -122,7 +126,7 @@ const HexIcon = () => (
                   <p className="setting-description">********</p>
                 </div>
               </div>
-              <button className="change-btn">Change Password</button>
+              <button className="change-btn" onClick={() => navigate('/customer/profile/change-password')}>Change Password</button>
             </div>
           </div>
         </div>
