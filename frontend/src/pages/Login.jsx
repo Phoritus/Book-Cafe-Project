@@ -7,7 +7,7 @@ import logo from "../assets/Coffee.svg";
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from "../store/authStore";
 
-const API_URL = 'https://api-book-cafe.onrender.com/auth/login';
+const API_URL = 'https://book-cafe-project.vercel.app/auth/login';
 
 function Login() {
   const [email, setEmail] = useState('');
