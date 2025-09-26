@@ -121,9 +121,11 @@
 }
 
 .ant-form-item-explain-error {
+  position: absolute;
   min-height: 16px; /* ทุกกล่องมีพื้นที่ error เท่ากัน */
   font-size: 12px;
   margin-top: 4px;
+  margin-bottom: 30px;
   color: #a0522d !important;
 }
 
