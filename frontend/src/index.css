@@ -3,25 +3,6 @@
 
 @import "tailwindcss";
 
-/* Base Styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-family: 'Inter', system-ui, sans-serif;
-  scroll-behavior: smooth;
-}
-
-body {
-  background: linear-gradient(135deg, #FDFCF8 0%, #F5F2E8 50%, #EDE7D3 100%);
-  color: #3C2415;
-  min-height: 100vh;
-  line-height: 1.5;
-}
-
 /* Base styles */
 * {
   box-sizing: border-box;
