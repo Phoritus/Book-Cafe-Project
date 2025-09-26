@@ -23,21 +23,38 @@ const Dashboard = () => {
     try {
       setLoading(true);
 
-      // API Daily
+      // --- Daily API ---
+      // Backend expects a concrete date=YYYY-MM-DD. Our filter uses 'today' or 'month'. If not a date, fallback to today.
+      const todayStr = new Date().toISOString().slice(0,10);
+      const dailyParam = dailyFilter === 'today' ? todayStr : todayStr; // simple fallback; extend later if you add a date picker
       const resDaily = await fetch(
-        `http://localhost:4000/api/daily?range=${dailyFilter}`
+        `https://book-cafe-project.vercel.app/dashboard/daily?date=${dailyParam}`
       );
-      const daily = await resDaily.json();
-      setDailyData(daily);
+      const dailyJson = await resDaily.json();
+      const dailyRooms = Array.isArray(dailyJson.rooms)
+        ? dailyJson.rooms.map(r => ({
+            name: r.room_name || r.room_number,
+            bookings: Number(r.bookings) || 0
+          }))
+        : [];
+      setDailyData(dailyRooms);
 
-      // API Monthly
+      // --- Monthly / Range API --- (most-booked)
       const resMonthly = await fetch(
-        `http://localhost:4000/api/monthly?range=${monthlyFilter}`
+        `https://book-cafe-project.vercel.app/dashboard/most-booked?range=${monthlyFilter}`
       );
-      const monthly = await resMonthly.json();
-      setMonthlyData(monthly);
+      const monthlyJson = await resMonthly.json();
+      const monthlyRooms = Array.isArray(monthlyJson.rooms)
+        ? monthlyJson.rooms.map(r => ({
+            name: r.room_name || r.room_number,
+            bookings: Number(r.bookings) || 0
+          }))
+        : [];
+      setMonthlyData(monthlyRooms);
     } catch (err) {
-      console.error("❌ Error fetching data:", err);
+      console.error('❌ Error fetching data:', err);
+      setDailyData([]);
+      setMonthlyData([]);
     } finally {
       setLoading(false);
     }

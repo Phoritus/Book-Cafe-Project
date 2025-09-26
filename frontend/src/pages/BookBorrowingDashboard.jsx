@@ -25,10 +25,26 @@ const BookBorrowingDashboard = () => {
         const res = await fetch(
           `https://book-cafe-project.vercel.app/dashboard/borrowings/by-category?range=${categoryFilter}`
         );
-        const category = await res.json();
-        setCategoryData(category);
+        const json = await res.json();
+        // API shape: { range, start, end, categories: [ { category, borrowings } ] }
+        if (json && Array.isArray(json.categories)) {
+          const mapped = json.categories.map(c => ({
+            name: c.category,
+            borrowings: Number(c.borrowings) || 0
+          }));
+          setCategoryData(mapped);
+        } else if (Array.isArray(json)) {
+          // fallback if server returns raw array
+            setCategoryData(json.map(c => ({
+              name: c.category || c.name,
+              borrowings: Number(c.borrowings) || 0
+            })));
+        } else {
+          setCategoryData([]);
+        }
       } catch (err) {
-        console.error("❌ Error fetching category data:", err);
+        console.error('❌ Error fetching category data:', err);
+        setCategoryData([]);
       }
     };
     fetchCategory();
@@ -41,10 +57,25 @@ const BookBorrowingDashboard = () => {
         const res = await fetch(
           `https://book-cafe-project.vercel.app/dashboard/borrowings/top-books?range=${topBooksFilter}`
         );
-        const topBooks = await res.json();
-        setTopBooksData(topBooks);
+        const json = await res.json();
+        // API shape: { range, start, end, limit, books: [ { book_name, borrowings } ] }
+        if (json && Array.isArray(json.books)) {
+          const mapped = json.books.map(b => ({
+            name: b.book_name || b.name,
+            borrowings: Number(b.borrowings) || 0
+          }));
+          setTopBooksData(mapped);
+        } else if (Array.isArray(json)) {
+          setTopBooksData(json.map(b => ({
+            name: b.book_name || b.name,
+            borrowings: Number(b.borrowings) || 0
+          })));
+        } else {
+          setTopBooksData([]);
+        }
       } catch (err) {
-        console.error("❌ Error fetching top books data:", err);
+        console.error('❌ Error fetching top books data:', err);
+        setTopBooksData([]);
       }
     };
     fetchTopBooks();
