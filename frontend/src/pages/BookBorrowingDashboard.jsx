@@ -18,12 +18,14 @@ const BookBorrowingDashboard = () => {
   const [categoryFilter, setCategoryFilter] = useState("today");
   const [topBooksFilter, setTopBooksFilter] = useState("today");
 
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
   // 📌 ดึงข้อมูล Category
   useEffect(() => {
     const fetchCategory = async () => {
       try {
         const res = await fetch(
-          `https://book-cafe-project.vercel.app/dashboard/borrowings/by-category?range=${categoryFilter}`
+          `${API_BASE}/dashboard/borrowings/by-category?range=${categoryFilter}`
         );
         const json = await res.json();
         // API shape: { range, start, end, categories: [ { category, borrowings } ] }
@@ -55,7 +57,7 @@ const BookBorrowingDashboard = () => {
     const fetchTopBooks = async () => {
       try {
         const res = await fetch(
-          `https://book-cafe-project.vercel.app/dashboard/borrowings/top-books?range=${topBooksFilter}`
+          `${API_BASE}/dashboard/borrowings/top-books?range=${topBooksFilter}`
         );
         const json = await res.json();
         // API shape: { range, start, end, limit, books: [ { book_name, borrowings } ] }

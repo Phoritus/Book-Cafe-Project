@@ -32,12 +32,12 @@ export async function   requestChangeEmail(req, res) {
 
   // Always regenerate a fresh code (Option A: always allow re-request)
   const code = randomCode();
-  const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  const expires = new Date(Date.now() + 60 * 1000); // 60 seconds
   await setPendingEmail(user.person_id, newEmail, code, expires);
 
     try {
       await sendVerificationCode(newEmail, code);
-      return res.json({ success: true, message: 'Verification code sent to new email' });
+  return res.json({ success: true, message: 'Verification code sent to new email (valid 60s)' });
     } catch (mailErr) {
       // If email send fails, optionally clear pending data to let user retry
       console.error('[changeEmail] email send failed', mailErr);

@@ -6,9 +6,9 @@ import { ArrowLeft } from 'lucide-react';
 import axios from "axios";
 
 // Backend endpoints (same base as login/register)
-const API_BASE = 'https://api-book-cafe.onrender.com/auth';
-const API_REQUEST_CODE = `${API_BASE}/reset-password/request`;
-const API_RESET_PASSWORD = `${API_BASE}/reset-password`;
+const API_BASE = import.meta.env.VITE_API_BASE;
+const API_REQUEST_CODE = `${API_BASE}/auth/reset-password/request`;
+const API_RESET_PASSWORD = `${API_BASE}/auth/reset-password`;
 
 function ResetPassword() {
   const [email, setEmail] = useState("");

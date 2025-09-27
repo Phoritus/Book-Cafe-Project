@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from "../assets/Coffee.svg";
 import { ArrowLeft } from 'lucide-react';
 
@@ -9,45 +9,90 @@ function ChangeEmail() {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState(''); // success หรือ error
+  const [sendingCode, setSendingCode] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown(cooldown - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
   
-  const handleSendCode = () => {
-    if (!newEmail.trim()) {
-      setErrors({ newEmail: 'Please enter your new email first' });
+  const handleSendCode = async () => {
+    const errs = {};
+    if (!currentEmail.trim()) errs.currentEmail = 'Enter current email';
+    if (!newEmail.trim()) errs.newEmail = 'Enter new email';
+    if (Object.keys(errs).length) {
+      setErrors(errs); setMessage(''); setMessageType(''); return;
+    }
+    // Basic email format
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailRegex.test(currentEmail)) errs.currentEmail = 'Invalid email';
+    if (!emailRegex.test(newEmail)) errs.newEmail = 'Invalid email';
+    if (Object.keys(errs).length) { setErrors(errs); return; }
+    try {
+      setSendingCode(true);
+      setErrors({});
       setMessage('');
       setMessageType('');
-      return;
+      const res = await fetch(`${API_BASE}/auth/change-email/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentEmail, newEmail })
+      });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok) throw new Error(data.message || 'Failed to send code');
+      setMessage('Verification code sent (valid 60s)');
+      setMessageType('success');
+      setCooldown(60);
+    } catch (e) {
+      setMessage(e.message);
+      setMessageType('error');
+    } finally {
+      setSendingCode(false);
     }
-    setErrors({});
-    console.log("Send verification code to:", newEmail);
-    setMessage("Verification code sent to your new email.");
-    setMessageType("success");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
     setMessage('');
     setMessageType('');
 
-    if (!currentEmail.trim()) {
-      newErrors.currentEmail = 'Please enter your current email';
-    }
-    if (!newEmail.trim()) {
-      newErrors.newEmail = 'Please enter your new email';
-    }
-    if (!verifyCode.trim()) {
-      newErrors.verifyCode = 'Please enter the verification code';
-    }
-
+    if (!currentEmail.trim()) newErrors.currentEmail = 'Please enter your current email';
+    if (!newEmail.trim()) newErrors.newEmail = 'Please enter your new email';
+    if (!verifyCode.trim()) newErrors.verifyCode = 'Please enter the verification code';
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (currentEmail && !emailRegex.test(currentEmail)) newErrors.currentEmail = 'Invalid email format';
+    if (newEmail && !emailRegex.test(newEmail)) newErrors.newEmail = 'Invalid email format';
+    if (verifyCode && !/^\d{6}$/.test(verifyCode)) newErrors.verifyCode = 'Code must be 6 digits';
     setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Change email attempt:", { currentEmail, newEmail, verifyCode });
-      setMessage("Your email has been changed successfully.");
-      setMessageType("success");
-    } else {
-      setMessage("Some details are incorrect. Please check and try again.");
-      setMessageType("error");
+    if (Object.keys(newErrors).length) {
+      setMessage('Some details are incorrect. Please check and try again.');
+      setMessageType('error');
+      return;
+    }
+    try {
+      setSubmitting(true);
+      const res = await fetch(`${API_BASE}/auth/change-email/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentEmail, newEmail, code: verifyCode })
+      });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok) throw new Error(data.message || 'Failed to verify code');
+      setMessage('Your email has been changed successfully.');
+      setMessageType('success');
+      // Optional: reset form after success
+      // setVerifyCode('');
+    } catch (e2) {
+      setMessage(e2.message);
+      setMessageType('error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -241,13 +286,14 @@ function ChangeEmail() {
                 <button
                   type="button"
                   onClick={handleSendCode}
+                  disabled={sendingCode || cooldown > 0}
                   style={{
                     position: 'absolute',
                     right: '0',
                     top: '0',
                     bottom: '0',
                     height: '100%',
-                    backgroundColor: '#f8f6f4',
+                    backgroundColor: sendingCode || cooldown > 0 ? '#d8d3cf' : '#f8f6f4',
                     color: '#86422A',
                     border: '1px solid #86422A',
                     borderTopLeftRadius: '6px',
@@ -255,19 +301,19 @@ function ChangeEmail() {
                     padding: '0 16px',
                     fontSize: '14px',
                     fontWeight: '500',
-                    cursor: 'pointer',
+                    cursor: sendingCode || cooldown > 0 ? 'not-allowed' : 'pointer',
                     borderTopRightRadius: '6px',
                     borderBottomRightRadius: '6px',
                     transition: 'background-color 0.2s ease'
                   }}
                   onMouseOver={(e) => {
-                    e.target.style.backgroundColor = '#eae6e3';
+                    if (!(sendingCode || cooldown > 0)) e.target.style.backgroundColor = '#eae6e3';
                   }}
                   onMouseOut={(e) => {
-                    e.target.style.backgroundColor = '#f8f6f4';
+                    if (!(sendingCode || cooldown > 0)) e.target.style.backgroundColor = '#f8f6f4';
                   }}
                 >
-                  Send Code
+                  {sendingCode ? 'Sending...' : cooldown > 0 ? `Resend (${cooldown})` : 'Send Code'}
                 </button>
               </div>
               {errors.verifyCode && (
@@ -301,33 +347,38 @@ function ChangeEmail() {
             <button
               type="button"
               onClick={handleSubmit}
+              disabled={submitting}
               style={{
                 width: '100%',
                 padding: '16px',
-                background: '#86422A',
+                background: submitting ? '#6d3a22' : '#86422A',
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '1.1rem',
                 fontWeight: '600',
-                cursor: 'pointer',
+                cursor: submitting ? 'not-allowed' : 'pointer',
                 boxShadow: '0 4px 12px rgba(139, 90, 64, 0.3)',
                 marginBottom: '10px',
                 marginTop: '10px',
                 transition: 'all 0.3s ease'
               }} className='font-sans'
               onMouseOver={(e) => {
-                e.target.style.background = '#421f07';
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 6px 16px rgba(139, 90, 64, 0.4)';
+                if (!submitting) {
+                  e.target.style.background = '#421f07';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 6px 16px rgba(139, 90, 64, 0.4)';
+                }
               }}
               onMouseOut={(e) => {
-                e.target.style.background = '#86422A';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 12px rgba(139, 90, 64, 0.3)';
+                if (!submitting) {
+                  e.target.style.background = '#86422A';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(139, 90, 64, 0.3)';
+                }
               }}
             >
-              Change Email
+              {submitting ? 'Processing...' : 'Change Email'}
             </button>
           </div>
         </div>

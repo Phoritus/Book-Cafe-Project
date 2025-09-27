@@ -101,24 +101,24 @@
 
 .item-label {
   font-size: 0.875rem;
-  color: #d97706;
+  color: #B37E32;
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
 
 .item-value {
-  font-size: 1rem;
-  color: #1f2937;
+  font-size: 0.9rem;
+  color: #3C2415;
   font-weight: 600;
 }
 
 /* Edit Button */
 .edit-btn {
   width: 100%;
-  background-color: #92400e;
+  background-color: #86422A;
   color: white;
   border: none;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
@@ -187,18 +187,18 @@
 .change-btn {
   padding: 0.75rem 1.25rem;
   background-color: white;
-  color: #92400e;
-  border: 2px solid #92400e;
-  border-radius: 0.5rem;
+  color: #53311C;
+  border: 1px solid #53311C;
+  border-radius: 1rem;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 180px;
+  width: 170px;
 }
 
 .change-btn:hover {
-  background-color: #92400e;
+  background-color: #53311C;
   color: white;
   transform: translateY(-1px);
 }

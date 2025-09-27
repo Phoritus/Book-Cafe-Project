@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Coffee from "../assets/Coffee.svg";
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft ,CalendarDays} from 'lucide-react';
 import arrow from "../assets/Arrowcategory.svg";
 
 function EditProfile() {
@@ -54,7 +54,7 @@ function EditProfile() {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-1 items-center justify-center" style={{ backgroundColor: "#F6F3ED" }}>
+    <section className="relative min-h-screen flex flex-1 items-center justify-center f" style={{ backgroundColor: "#F6F3ED" ,fontFamily: "'inter', sans-serif"}}>
 
       <div className="min-h-screen " style={{ minHeight: '110vh' }}>
         {/* Back Button */}
@@ -67,18 +67,18 @@ function EditProfile() {
 
         {/* Header Section */}
         <div className="text-center mb-8 !mt-10">
-          <img src={Coffee} alt="Coffee icon" className="!h-28 !w-28 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
+          <img src={Coffee} alt="Coffee icon" className="!h-20 !w-20 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
 
 
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-darkBrown-800 font-crimson">
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-darkBrown-800 font-crimson" style={{ fontFamily: "'crimson text', sans-serif" }}>
             Edit Profile
           </h2>
           <p className="mt-1 text-brown-600">Change your information</p>
         </div>
 
         {/* Card Section (form) */}
-        <div className="card p-8 mt-6 max-w-md w-full mx-auto mb-20">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="card p-8 mt-6 max-w-md w-full mx-auto mb-20" style={{background: "#FBFBFB"}} >
+          <form onSubmit={handleSubmit} className="space-y-6" >
             <div className="flex gap-4">
               <div className="flex-1 max-w-[80px]">
                 <label className="block text-sm font-medium text-brown-600 mb-2">
@@ -93,7 +93,6 @@ function EditProfile() {
                     onBlur={() => setIsOpen(false)}
                     className="input-field pr-8 appearance-none" // เพิ่ม padding ขวาให้วาง icon
                   >
-                    <option value="">---</option>
                     <option value="Mr.">Mr.</option>
                     <option value="Ms.">Ms.</option>
                     <option value="Mrs.">Mrs.</option>
@@ -102,7 +101,7 @@ function EditProfile() {
                                           <img
                                             src={arrow}
                                             alt="arrow"
-                                            className={`h-5 w-5 transition-transform duration-200 ${isOpen ? "-rotate-90" : "rotate-0"}`}
+                                            className={`h-3 w-3 transition-transform duration-200 ${isOpen ? "-rotate-90" : "rotate-0"}`}
                                           />
                                         </span>
                 </div>
@@ -159,22 +158,7 @@ function EditProfile() {
                 />
                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
                   {/* SVG ไอคอนปฏิทิน */}
-                  <svg
-                    width="30"
-                    height="30"
-                    viewBox="0 0 39 38"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect x="5.07617" y="9.5" width="28.5" height="23.75" rx="2" stroke="#C2A15E" strokeWidth="1.5" />
-                    <path d="M5.07617 13.5C5.07617 11.6144 5.07617 10.6716 5.66196 10.0858C6.24774 9.5 7.19055 9.5 9.07617 9.5H29.5762C31.4618 9.5 32.4046 9.5 32.9904 10.0858C33.5762 10.6716 33.5762 11.6144 33.5762 13.5V15.8333H5.07617V13.5Z" fill="#C2A15E" />
-                    <path d="M11.4102 4.75L11.4102 9.5" stroke="#C2A15E" strokeLinecap="round" />
-                    <path d="M27.2422 4.75L27.2422 9.5" stroke="#C2A15E" strokeLinecap="round" />
-                    <rect x="11.4102" y="19" width="6.33333" height="3.16667" rx="0.5" fill="#C2A15E" />
-                    <rect x="11.4102" y="25.3335" width="6.33333" height="3.16667" rx="0.5" fill="#C2A15E" />
-                    <rect x="20.9102" y="19" width="6.33333" height="3.16667" rx="0.5" fill="#C2A15E" />
-                    <rect x="20.9102" y="25.3335" width="6.33333" height="3.16667" rx="0.5" fill="#C2A15E" />
-                  </svg>
+                  <CalendarDays size={25} color="#C2985B" strokeWidth={1.5} />
                 </div>
               </div>
               {errors.dob && <p className="text-red-500 text-sm mt-1">{errors.dob}</p>}

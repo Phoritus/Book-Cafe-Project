@@ -19,6 +19,8 @@ const Dashboard = () => {
   const [dailyFilter, setDailyFilter] = useState("today");
   const [monthlyFilter, setMonthlyFilter] = useState("today");
 
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -28,7 +30,7 @@ const Dashboard = () => {
       const todayStr = new Date().toISOString().slice(0,10);
       const dailyParam = dailyFilter === 'today' ? todayStr : todayStr; // simple fallback; extend later if you add a date picker
       const resDaily = await fetch(
-        `https://book-cafe-project.vercel.app/dashboard/daily?date=${dailyParam}`
+        `${API_BASE}/dashboard/daily?date=${dailyParam}`
       );
       const dailyJson = await resDaily.json();
       const dailyRooms = Array.isArray(dailyJson.rooms)
@@ -41,7 +43,7 @@ const Dashboard = () => {
 
       // --- Monthly / Range API --- (most-booked)
       const resMonthly = await fetch(
-        `https://book-cafe-project.vercel.app/dashboard/most-booked?range=${monthlyFilter}`
+        `${API_BASE}/dashboard/most-booked?range=${monthlyFilter}`
       );
       const monthlyJson = await resMonthly.json();
       const monthlyRooms = Array.isArray(monthlyJson.rooms)

@@ -5,6 +5,7 @@ import { validatePassword } from '../utils/password.js';
 // In-memory map for reset password codes (email -> { code, expiresAt })
 // We reuse the pattern used in authController registration codes to keep consistent.
 const resetPasswordCodes = new Map();
+const RESET_CODE_TTL_MS = 60 * 1000; // 60 seconds
 
 function generateNumericCode(len = 6) {
   let c = '';
@@ -12,7 +13,7 @@ function generateNumericCode(len = 6) {
   return c;
 }
 
-function setResetCode(email, code, ttlMs = 10 * 60 * 1000) { // 10 minutes
+function setResetCode(email, code, ttlMs = RESET_CODE_TTL_MS) { // 60 seconds
   resetPasswordCodes.set(email, { code, expiresAt: Date.now() + ttlMs });
 }
 function getResetCodeEntry(email) {
@@ -49,7 +50,7 @@ export async function requestResetPasswordCode(req, res) {
       return res.status(500).json({ error: true, message: 'Failed to send code' });
     }
 
-    return res.json({ success: true, message: 'If that email exists, a code has been sent' });
+  return res.json({ success: true, message: 'If that email exists, a code has been sent (valid 60s)' });
   } catch (e) {
     console.error('[requestResetPasswordCode]', e);
     return res.status(500).json({ error: true, message: 'Failed to request reset password code' });

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import logo from "../assets/Coffee.svg";
 import { ArrowLeft } from 'lucide-react';
+import axios from 'axios';
 
 function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -16,36 +17,71 @@ function ChangePassword() {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const API_BASE = import.meta.env.VITE_API_BASE;
+  const ENDPOINT = `${API_BASE}/auth/change-password`;
+
+  const validate = () => {
+    const errs = {};
+    if (!currentPassword.trim()) errs.currentPassword = 'Please enter your current password';
+    if (!newPassword.trim()) errs.newPassword = 'Please enter your new password';
+    if (newPassword && newPassword.length < 8) errs.newPassword = 'Password must be at least 8 characters';
+    if (newPassword && /\s/.test(newPassword)) errs.newPassword = errs.newPassword || 'Password should not contain spaces';
+    if (!confirmPassword.trim()) errs.confirmPassword = 'Please confirm your new password';
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) errs.confirmPassword = 'Passwords do not match';
+    if (currentPassword && newPassword && currentPassword === newPassword) errs.newPassword = 'New password must be different from current password';
+    return errs;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = {};
     setMessage('');
     setMessageType('');
-
-    if (!currentPassword.trim()) {
-      newErrors.currentPassword = 'Please enter your current password';
-    }
-    if (!newPassword.trim()) {
-      newErrors.newPassword = 'Please enter your new password';
-    } else if (newPassword.trim().length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters';
-    }
-    if (!confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Please confirm your new password';
-    } else if (confirmPassword !== newPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Change password attempt:', { currentPassword, newPassword, confirmPassword });
-      setMessage('Your password has been changed successfully.');
-      setMessageType('success');
-    } else {
+    const errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length) {
       setMessage('Some details are incorrect. Please check and try again.');
       setMessageType('error');
+      return;
+    }
+    try {
+      setSubmitting(true);
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        setMessage('You must be logged in to change password.');
+        setMessageType('error');
+        return;
+      }
+      const payload = { currentPassword: currentPassword.trim(), newPassword: newPassword.trim(), confirmPassword: confirmPassword.trim() };
+      const { data } = await axios.post(ENDPOINT, payload, { headers: { Authorization: `Bearer ${token}` } });
+      if (data?.success) {
+        setMessage(data.message || 'Password updated successfully.');
+        setMessageType('success');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setMessage(data?.message || 'Failed to change password.');
+        setMessageType('error');
+      }
+    } catch (err) {
+      console.error('[ChangePassword][submit]', err);
+      const status = err?.response?.status;
+      if (status === 401 || status === 403) {
+        setMessage(err?.response?.data?.message || 'Session expired. Please login again.');
+        setMessageType('error');
+        // Optionally redirect after short delay
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1500);
+      } else {
+        const apiMsg = err?.response?.data?.message || 'Failed to change password.';
+        setMessage(apiMsg);
+        setMessageType('error');
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -139,7 +175,7 @@ function ChangePassword() {
               fontSize: '1rem',
               margin: '0'
             }}>
-              Don't forgot your password
+              Update your password securely
             </p>
           </div>
 
@@ -339,7 +375,7 @@ function ChangePassword() {
                 padding: '10px',
                 marginBottom: '12px',
                 borderRadius: '6px',
-                fontSize : '0.875rem',
+                fontSize: '0.875rem',
                 backgroundColor: messageType === 'success' ? '#e6ffed' : '#fef2f2',
                 color: messageType === 'success' ? '#28a745' : '#b91c1c',
                 border: messageType === 'success' ? '1px solid #28a745' : '1px solid #d9534f'
@@ -352,6 +388,7 @@ function ChangePassword() {
             <button 
               type="button" 
               onClick={handleSubmit} 
+              disabled={submitting}
               style={{
                 width: '100%',
                 padding: '16px',
@@ -365,20 +402,17 @@ function ChangePassword() {
                 boxShadow: '0 4px 12px rgba(139, 90, 64, 0.3)',
                 marginBottom: '10px',
                 marginTop: '10px',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                opacity: submitting ? 0.7 : 1
               }}
-              onMouseOver={(e) => {
-                e.target.style.background = '#421f07';
-                e.target.style.transform = 'translateY(-1px)';
-                e.target.style.boxShadow = '0 6px 16px rgba(139, 90, 64, 0.4)';
-              }}
+              onMouseOver={(e) => { if (!submitting) { e.target.style.background = '#421f07'; e.target.style.transform = 'translateY(-1px)'; e.target.style.boxShadow = '0 6px 16px rgba(139, 90, 64, 0.4)'; } }}
               onMouseOut={(e) => {
                 e.target.style.background = '#86422A';
                 e.target.style.transform = 'translateY(0)';
                 e.target.style.boxShadow = '0 4px 12px rgba(139, 90, 64, 0.3)';
               }}
             >
-              Change Password
+              {submitting ? 'Updating...' : 'Change Password'}
             </button>
           </div>
         </div>
