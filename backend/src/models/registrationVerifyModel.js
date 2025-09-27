@@ -1,10 +1,12 @@
 import { query } from '../config/db.js';
 
+export const REGISTRATION_DB_CODE_TTL_MS = 60 * 1000; // 60 seconds
+
 // NOTE: Table names normalized to lowercase snake_case.
 // This model manages transient registration verification codes.
 
 // Upsert a verification code for an email
-export async function upsertRegistrationCode(email, code, expiresAt) {
+export async function upsertRegistrationCode(email, code, expiresAt = new Date(Date.now() + REGISTRATION_DB_CODE_TTL_MS)) {
   const sql = `INSERT INTO registration_verify (email, code, expiresAt)
                VALUES (?, ?, ?)
                ON DUPLICATE KEY UPDATE code = VALUES(code), expiresAt = VALUES(expiresAt)`;

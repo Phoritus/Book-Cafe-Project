@@ -7,6 +7,7 @@ import { deleteVerificationEntry } from '../models/registrationVerifyModel.js';
 // In-memory registration code store (email -> { code, expiresAt })
 // This replaces the previous Registration_Verify table to keep things simple.
 const registrationCodes = new Map();
+const REGISTRATION_CODE_TTL_MS = 60 * 1000; // 60 seconds
 
 function generateNumericCode(len = 6) {
   let c = '';
@@ -14,7 +15,7 @@ function generateNumericCode(len = 6) {
   return c;
 }
 
-function setRegistrationCode(email, code, ttlMs = 10 * 60 * 1000) { // default 10 minutes
+function setRegistrationCode(email, code, ttlMs = REGISTRATION_CODE_TTL_MS) { // default 60 seconds
   registrationCodes.set(email, { code, expiresAt: Date.now() + ttlMs });
 }
 
@@ -154,9 +155,9 @@ export async function sendRegisterCode(req, res) {
     const existing = await findByEmail(email);
     if (existing) return res.status(409).json({ error: true, message: 'Email already registered' });
     const code = generateNumericCode();
-    setRegistrationCode(email, code);
+  setRegistrationCode(email, code);
     await sendVerificationCode(email, code); // reuse same email template
-    return res.json({ success: true, message: 'Verification code sent' });
+  return res.json({ success: true, message: 'Verification code sent (valid 60s)' });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: true, message: 'Failed to send code' });
