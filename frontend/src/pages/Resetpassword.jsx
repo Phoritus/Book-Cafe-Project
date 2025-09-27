@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import axios from "axios";
 
 // Backend endpoints (same base as login/register)
-const API_BASE = 'https://api-book-cafe.onrender.com/auth';
+const API_BASE = 'https://book-cafe-project.vercel.app/auth';
 const API_REQUEST_CODE = `${API_BASE}/reset-password/request`;
 const API_RESET_PASSWORD = `${API_BASE}/reset-password`;
 
