@@ -9,7 +9,7 @@ function ChangePassword() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  // 👇 แยก state สำหรับแต่ละช่อง
+  // state สำหรับแต่ละช่อง
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);

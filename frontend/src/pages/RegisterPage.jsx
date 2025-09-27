@@ -107,8 +107,41 @@ export default function RegisterPage() {
             title="Account created successfully"
             subTitle="You can now sign in with your credentials."
             extra={[
-              <Button type="primary" key="login" href="/login">Go to Login</Button>,
-              <Button key="home" href="/Home">Back Home</Button>
+              <Button
+                key="login"
+                href="/login"
+                style={{
+                  backgroundColor: '#844C3B',
+                  borderColor: '#844C3B',
+                  color: '#fff'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#723300';
+                  e.currentTarget.style.borderColor = '#723300';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#844C3B';
+                  e.currentTarget.style.borderColor = '#844C3B';
+                }}
+              >
+                Go to Login
+              </Button>,
+              <Button
+                key="home"
+                href="/Home"
+                style={{
+                  borderColor: '#844C3B',
+                  color: '#844C3B'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f3e9df';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                Back Home
+              </Button>
             ]}
           />
         ) : (
@@ -218,6 +251,21 @@ export default function RegisterPage() {
                 onClick={handleSendCode}
                 disabled={sendingCode || cooldown > 0}
                 loading={sendingCode}
+                style={{
+                  backgroundColor: '#5a2a00',
+                  borderColor: '#5a2a00',
+                  color: '#fff'
+                }}
+                onMouseEnter={(e) => {
+                  if (!(sendingCode || cooldown > 0)) {
+                    e.currentTarget.style.backgroundColor = '#723300';
+                    e.currentTarget.style.borderColor = '#723300';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#5a2a00';
+                  e.currentTarget.style.borderColor = '#5a2a00';
+                }}
               >
                 {cooldown > 0 ? `Resend (${cooldown})` : 'Send Code'}
               </Button>
@@ -265,7 +313,31 @@ export default function RegisterPage() {
             />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit" className="submit-btn" loading={submitting} disabled={submitting}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="submit-btn"
+            loading={submitting}
+            disabled={submitting}
+            style={{
+              backgroundColor: '#5a2a00',
+              borderColor: '#5a2a00',
+              color: '#fff',
+              width: '100%',
+              height: '42px',
+              fontWeight: 500
+            }}
+            onMouseEnter={(e) => {
+              if (!submitting) {
+                e.currentTarget.style.backgroundColor = '#723300';
+                e.currentTarget.style.borderColor = '#723300';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#5a2a00';
+              e.currentTarget.style.borderColor = '#5a2a00';
+            }}
+          >
             {submitting ? 'Creating...' : 'Create Account'}
           </Button>
 
