@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProfileInformation.css';
-import { Mail } from 'lucide-react';
+import { Mail,Phone,IdCard,CalendarDays,LockKeyhole,User} from 'lucide-react';
 
 const ProfileHeader = () => (
   <div className="profile-header">
     <div className="profile-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
-        <circle cx="50" cy="30" r="15" stroke="#A66A2B" stroke-width="8" fill="none" />
-        <path d="M20 80C20 65 35 55 50 55C65 55 80 65 80 80"
-          stroke="#A66A2B" stroke-width="8" fill="none" stroke-linecap="round" />
-      </svg>
+      <User size={80} color="#C2985B" />
 
     </div>
-    <h1 className="profile-title">Profile Information</h1>
+    <h1 className="profile-title" style={{ color: "#53311C", fontFamily: "'crimson text', sans-serif" ,fontWeight: "bold"}}>Profile Information</h1>
   </div>
 );
 
@@ -50,33 +46,23 @@ const ProfileInformation = () => {
   const profileData = [
     { label: 'Title', value: 'Ms.', icon: <HexIcon /> },
     {
-      label: 'Phone', value: '080-000-0000', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" stroke="#C2985B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.89.72 2.78a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.11-.45c.89.35 1.82.59 2.78.72A2 2 0 0 1 22 16.92z" />
-      </svg>
+      label: 'Phone', value: '080-000-0000', icon: (<Phone size={32} color="#C2985B" strokeWidth={1.5} />
       )
     },
     { label: 'First Name', value: 'Alice', icon: <HexIcon /> },
     {
-      label: 'National ID', value: '1-2345-67890-12-3', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="none" stroke="#C2985B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-        <rect x="3" y="5" width="18" height="14" rx="2" ry="2" />
-        <line x1="3" y1="11" x2="21" y2="11" />
-      </svg>
+      label: 'National ID', value: '1-2345-67890-12-3', icon: (<IdCard size={40} color="#C2985B" strokeWidth={1.5}/>
       )
     },
     { label: 'Last Name', value: 'Wonderman', icon: <HexIcon /> },
     {
-      label: 'Date of Birth', value: '15 / 08 / 1996', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="none" stroke="#C2985B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-      </svg>
+      label: 'Date of Birth', value: '15 / 08 / 1996', icon: (<CalendarDays size={44} color="#C2985B" strokeWidth={1.5} />
       )
     },
   ];
 
   return (
-    <div className="profile-wrapper">
+    <div className="profile-wrapper" style={{ fontFamily: "'inter', sans-serif" , color: "#B37E32"}}>
       {/* Header นอกกล่อง */}
       <ProfileHeader />
 
@@ -90,7 +76,7 @@ const ProfileInformation = () => {
                   <span>{item.icon}</span>
                 </div>
                 <div className="item-content">
-                  <div className="item-label">{item.label}</div>
+                  <div className="item-label text-[#B37E32]">{item.label}</div>
                   <div className="item-value">{item.value}</div>
                 </div>
               </div>
@@ -107,11 +93,11 @@ const ProfileInformation = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-icon">
-                  <Mail size={36} color="#C2985B" strokeWidth={2.5} />
+                  <Mail size={36} color="#C2985B" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <p className="setting-title">Email</p>
-                  <p className="setting-description">demo@example.com</p>
+                  <p className="setting-title" style={{ fontFamily: "'inter', sans-serif" ,color: "#B37E32"}}>Email</p>
+                  <p className="setting-description" style={{ fontFamily: "'inter', sans-serif" }}>demo@example.com</p>
                 </div>
               </div>
               <button className="change-btn" onClick={() => navigate('/customer/profile/change-email')}>Change Email</button>
@@ -120,14 +106,11 @@ const ProfileInformation = () => {
             <div className="setting-item last">
               <div className="setting-info">
                 <div className="setting-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" stroke="#c7a451" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <rect x="4" y="11" width="16" height="11" rx="2" ry="2" />
-                    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-                  </svg>
+                  <LockKeyhole size={44} color="#C2985B" strokeWidth={1.5}/>
                 </div>
                 <div>
-                  <p className="setting-title">Password</p>
-                  <p className="setting-description">********</p>
+                  <p className="setting-title" style={{ fontFamily: "'inter', sans-serif" ,color: "#B37E32"}}>Password</p>
+                  <p className="setting-description" style={{ fontFamily: "'inter', sans-serif" }}>********</p>
                 </div>
               </div>
               <button className="change-btn" onClick={() => navigate('/customer/profile/change-password')}>Change Password</button>

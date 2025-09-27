@@ -93,7 +93,6 @@ function EditProfile() {
                     onBlur={() => setIsOpen(false)}
                     className="input-field pr-8 appearance-none" // เพิ่ม padding ขวาให้วาง icon
                   >
-                    <option value="">---</option>
                     <option value="Mr.">Mr.</option>
                     <option value="Ms.">Ms.</option>
                     <option value="Mrs.">Mrs.</option>
