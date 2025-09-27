@@ -71,10 +71,10 @@ function Upcoming() {
 
     return (
         <div className="flex flex-col items-center min-h-screen bg-[#FBF7F3] p-4" style={{ backgroundColor: "#F6F3ED" }}>
-            <header className="flex flex-col items-center gap-4 mb-6 mt-3 justify-center ">
-                <img src={logo} alt="Logo" className="h-16 w-16 text-brown-500 mb-1" />
-                <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#53311C] text-center font-crimson mb-1">Upcoming Booking</h1>
-                <p className={`text-sm text-center ${within30 ? 'text-red-600 animate-pulse' : 'text-[#B37E32]' }`}>
+            <header className="flex !mt-10 flex-col items-center gap-4 mb-6 mt-3 justify-center ">
+                <img src={logo} alt="Logo" className="h-16 w-16 text-brown-500 mb-1 animate-bounce-subtle !mb-4" />
+                <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#53311C] text-center font-crimson !-mb-0">Upcoming Booking</h1>
+                <p className={`text-md text-center font-sans ${within30 ? 'text-red-600 animate-pulse' : 'text-[#B37E32]' }`}>
                     Check in with staff within 30 minutes of your booking start,<br/> or your booking will be cancelled
                 </p>
                 {minutesLeft !== null && minutesLeft >= 0 && (

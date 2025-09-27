@@ -1,132 +1,270 @@
-import React, { useState } from 'react';
-import ArrowBack from "../assets/ArrowBack.svg";
-import roomImage from "../assets/10p_room.jpg";
-import arrow from "../assets/Arrowcategory.svg";
-import Success from "../assets/Success.svg";
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Clock, Calendar, MapPin } from 'lucide-react';
+import p6Room from '../assets/6p_room.png';
+import p10Room from '../assets/10p_room.jpg';
 
-const FillBookRoompage = () => {
+const BookingConfirmPage = () => {
+  // State for booking data - would normally come from router params or global state
+  const [bookingData, setBookingData] = useState({
+    roomId: 'Room 4',
+    date: '17/08/2025',
+    startTime: '10:00',
+    endTime: '12:00',
+    pricePerHour: 50,
+    image: 'p10Room', 
+  });
+
+  const [selectedStartTime, setSelectedStartTime] = useState(bookingData.startTime);
+  const [selectedEndTime, setSelectedEndTime] = useState(bookingData.endTime);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   
-  const money = 150;
-  const [isOpenStart, setIsOpenStart] = useState(false);
-  const [isOpenEnd, setIsOpenEnd] = useState(false);
-  const timeStart =["09:00","10:00","11:00"]
-  const timeEnd =["10:00","11:00","12:00"]
-  const [timeSelectedStart, setTimeSelectedStart] = useState(timeStart[0]);
-  const [timeSelectedEnd, setTimeSelectedEnd] = useState(timeEnd[2]);
-  const [showModal, setShowModal] = useState(false);
-  const [Task,setTask] = useState({});
-  const hour = parseInt(timeSelectedEnd.split(":")[0], 10)-parseInt(timeSelectedStart.split(":")[0], 10);
-  function handleConfirmBooking() {
-    if (hour <= 0) {}
-    else{
-    try{
-    setTask({date: "11/09/2025", timeStart: timeSelectedStart, timeEnd: timeSelectedEnd, room: "Room 4", price: money,hour: hour});
-    setShowModal(true);
+  // Room configurations
+  const roomConfig = {
+    'Room 1': { 
+      image: p6Room, 
+      pricePerHour: 50
+    },
+    'Room 2': { 
+      image: p6Room, 
+      pricePerHour: 50
+    },
+    'Room 3': { 
+      image: p10Room, 
+      pricePerHour: 50
+    },
+    'Room 4': { 
+      image: p10Room, 
+      pricePerHour: 50
     }
-  
-    catch(err){
-      console.error("Error setting task");
-      setShowModal(false);
+  };
+
+  const currentRoom = roomConfig[bookingData.roomId] || roomConfig['Room 4'];
+
+  // Available time slots - would come from API
+  const availableStartTimes = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+  const availableEndTimes = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+
+  // Calculate hours and total price
+  const calculateHours = () => {
+    const start = parseInt(selectedStartTime.split(':')[0]);
+    const end = parseInt(selectedEndTime.split(':')[0]);
+    return Math.max(0, end - start);
+  };
+
+  const hours = calculateHours();
+  const totalPrice = hours * currentRoom.pricePerHour;
+
+  const handleConfirmBooking = () => {
+    if (hours <= 0) {
+      alert('Please select valid time range');
+      return;
     }
-  }
-}
+    
+    // Simulate API call
+    console.log('Booking confirmed:', {
+      ...bookingData,
+      startTime: selectedStartTime,
+      endTime: selectedEndTime,
+      hours,
+      totalPrice
+    });
+    
+    setShowSuccessModal(true);
+    
+    // Auto close modal after 3 seconds
+    setTimeout(() => {
+      setShowSuccessModal(false);
+    }, 3000);
+  };
 
   return (
     <>
-    {showModal && (
+      {/* Google Fonts */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet"
+      />
+
+      {/* Success Modal */}
+      {showSuccessModal && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/40" onClick={() => setShowModal(false)}></div>
-          <div className="fixed top-1/4 left-1/2 -translate-x-1/2 bg-white rounded-xl shadow-lg w-[320px] h-[200px] z-50 flex flex-col items-center justify-center animate-fade-in">
-            <img src={Success} alt="success" className="h-30 w-30 mb-4" />
-            <h2 className="text-xl font-bold text-darkBrown-500 text-center">
-             Successful
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setShowSuccessModal(false)}
+          />
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-80 p-8 z-50 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-amber-900 mb-2 font-crimson">
+              Booking Successful!
             </h2>
+            <p className="text-amber-700">
+              Your room has been reserved successfully.
+            </p>
           </div>
         </>
       )}
-      <header className="header flex items-center gap-4 mb-6 relative">
-        <button className="back-button" style={{ position: 'absolute', left: 0, top: 0 }} onClick={() => window.history.back()}>
-          <img src={ArrowBack} alt="Back" style={{ width: 50, height: 50 }} />
-        </button>
-        <div className="header-content flex-1">
-          <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Booking Room</h1>
+
+      <div className="min-h-screen bg-[#F6F3ED] font-inter">
+        {/* Header */}
+        <div className="flex items-center justify-center relative">
+          <button
+            className="absolute left-6 !mt-30 !ml-10 p-2 text-amber-800 hover:text-amber-900 transition-colors"
+            onClick={() => window.history.back()}
+          >
+            <ArrowLeft size={28} className="w-10 h-10 mr-5 color-[#86422A]" />
+          </button>
+
+          
         </div>
-      </header>
-      <div className="Fill-book-room-container text-[#53311C] w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-6 font-Inter">
-        <div className="flex flex-row  gap-6">
-          {/* Left Side (A) */}
-          <div id="A" className="flex-1">
-            <h1 className="room-name text-base text-sm text-[#53311C] mb-4" style={{ fontSize: '30px' }}>Room 4</h1>
-            <div className=" grid grid-cols-2 mb-6 text-sm ">
-              <div className="mb-2" >
-                <label>Date</label>
-                <input
-                  type="text"
-                  placeholder="11/09/2025"
-                  disabled
-                  style={{ color: '#E9E0D8',width: '80%', padding: '0.25rem '   }} className="block mb-2 border px-10 py-1 rounded"
-                />
+
+        <div className="text-center mb-8 !mt-10">
+                  <h1 className="text-4xl !mt-30 font-bold text-[#53311C] p-7 font-crimson justify-center">
+            Booking Room
+          </h1>
+                </div>
+
+        {/* Main Content */}
+        <div className="max-w-4xl !w- mx-auto !h-50 py-auto px-6 pb-20 font-sans">
+          <div className=" bg-[#FBFBFB] rounded-3xl shadow-lg overflow-hidden !pl-8 !pr-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[440px]">
+              {/* Left Side - Booking Details */}
+              <div className="p-8 space-y-4">
+                <div>
+                  <h2 className="text-4xl flex items-center gap-3 mb-6 font-semibold text-[#53311C]">
+                    {bookingData.roomId}
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      Date
+                    </label>
+                    <div className="flex items-center gap-2 p-3 border-2 border-[#E9E0D8] rounded-xl">
+                      <Calendar size={16} className="text-[#c5bcb4]" />
+                      <span className="text-[#a69f99] font-medium">
+                        {bookingData.date}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Total Hours */}
+                  <div>
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      Total Hours
+                    </label>
+                    <div className="flex items-center gap-2 p-3 border-2 border-[#E9E0D8] rounded-xl">
+                      <Clock size={16} className="text-[#c5bcb4]" />
+                      <span className="text-[#a69f99] font-medium">
+                        {hours} hrs
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Start Time */}
+                  <div>
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      Start Time
+                    </label>
+                    <select
+                      value={selectedStartTime}
+                      onChange={(e) => setSelectedStartTime(e.target.value)}
+                      className="w-full p-3 border-2 border-[#E9E0D8] rounded-xl bg-white font-medium focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] transition-colors"
+                    >
+                      {availableStartTimes.map((time) => (
+                        <option key={time} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* End Time */}
+                  <div>
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      End Time
+                    </label>
+                    <select
+                      value={selectedEndTime}
+                      onChange={(e) => setSelectedEndTime(e.target.value)}
+                      className="w-full p-3 border-2 border-[#E9E0D8] rounded-xl bg-white text-amber-900 font-medium focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)]  transition-colors"
+                    >
+                      {availableEndTimes.map((time) => (
+                        <option key={time} value={time}>
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Price Summary */}
+                <div className="flex justify-center items-center text-xl space-x-3">
+                  <span className="font-medium text-[#BB8F6E]">
+                    Total Price
+                  </span>
+                  <span className="font-medium text-[#53311C]">
+                    {totalPrice} THB
+                  </span>
+                </div>
+
+                {/* Confirm Button */}
+                <button
+                  onClick={handleConfirmBooking}
+                  disabled={hours <= 0}
+                  className="w-full bg-gradient-to-r from-[#86422A] to-[#86422A] hover:from-[#53311C] hover:to-[#86422A] text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  Confirm Booking
+                </button>
               </div>
-              <div>
-                <label>Total Time</label>
-                <input type="text"  placeholder={hour}
-                  disabled="true" 
-                  style={{ color: '#E9E0D8',width: '80%', padding: '0.25rem '  }} className="block mb-2 border px-10 py-1 rounded"
-                  />
+
+              {/* Right Side - Room Image & Info */}
+              <div className="relative p-8 flex flex-col !mt-13  ">
+                {/* Room specific image and info */}
+                <div className="rounded-2xl flex items-center justify-center">
+                  <div className="text-center text-amber-700">
+                    <img
+                      src={currentRoom.image}
+                      alt={bookingData.roomId}
+                      className="w-full object-cover rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                {/* Check-in Info */}
+                <div className="rounded-xl p-4 ">
+                  <div className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 bg-amber-900 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="text-sm font-medium text-amber-900 leading-relaxed ">
+                        Check in within 30 minutes of your booking start, or
+                        your reservation will be cancelled.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="relative">
-                <label>Select Start Time</label>
-                <select style={{ borderColor: '#B37E32',width: '80%',padding: '0.25rem ',color:'#53311C' }} className="block mb-2 border px-10 py-1 rounded focus:border-[#8b5a40] focus:shadow-[0_0_0_3px_rgba(139,90,64,0.1)] focus:bg-white"
-                onChange={e => setTimeSelectedStart(e.target.value)}
-                        onFocus={() => setIsOpenStart(true)}
-                        onBlur={() => setIsOpenStart(false)}>
-                  {timeStart.map((time)=>(<option key={time} value={time} style={{ color: '#53311C' }}>{time}</option>))}
-                </select>
-                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-[5%] -translate-x-[3%] text-yellow-700 ">
-                  <img
-                    src={arrow}
-                    alt="arrow"
-                    className={`h-4 w-4.5 transition-transform duration-200 ${isOpenStart ? "-rotate-90" : "rotate-0"}`}
-                  />
-                </span>
-              </div>
-              <div className="relative">
-                <label>Select End Time</label>
-                <select style={{ borderColor: '#B37E32',width: '80%',padding: '0.25rem ',color:'#53311C' }} className="block mb-2 border px-10 py-1 rounded focus:border-[#8b5a40] focus:shadow-[0_0_0_3px_rgba(139,90,64,0.1)] focus:bg-white"
-                onChange={e => setTimeSelectedEnd(e.target.value)}
-                        onFocus={() => setIsOpenEnd(true)}
-                        onBlur={() => setIsOpenEnd(false)}>
-                  {timeEnd.map((time)=>(<option key={time} value={time} style={{ color: '#53311C' }}>{time}</option>))}
-                </select>
-                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-[5%] -translate-x-[4%] text-yellow-700 ">
-                  <img
-                    src={arrow}
-                    alt="arrow"
-                    className={`h-4 w-4 transition-transform duration-200 ${isOpenEnd ? "-rotate-90" : "rotate-0"}`}
-                  />
-                </span>
-              </div>
-            </div>
-            <div className="mb-2 text-center"><h1 className="text-base text-lg font-bold inline " style={{color:'#BB8F6E'}}>Total Price</h1> <h1 className="text-lg font-bold inline " style={{color:'#3C2415'}}></h1>{money} THB</div>
-            <button className="w-full bg-brown-500 text-white py-2 px-4 rounded hover:bg-brown-600 transition duration-300 mt-2" onClick={() => handleConfirmBooking()}>Confirm Booking</button>
-          </div>
-          {/* Right Side (B) */}
-          <div id="B" className="flex flex-1 flex-col items-center justify-center">
-            <img src={roomImage} alt="Room" style={{ width: 'auto', height: '70%' }} className="rounded-lg" />
-            <div className="mt-6 text-center text-sm text-[#53311C]">
-              <p className="font-bold inline">&middot;</p> Check in within 30 minutes of your booking start, or your reservation will be cancelled.
             </div>
           </div>
         </div>
       </div>
-      
     </>
   );
+};
 
-
-
-}
-
-
-
-export default FillBookRoompage;
+export default BookingConfirmPage;

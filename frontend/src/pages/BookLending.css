@@ -28,6 +28,22 @@
 .modal-delete-btn:hover {
   background: #d12c2c;
 }
+
+.modal-return-btn {
+  background: #0fac31;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.modal-return-btn:hover {
+  background: #019b22;
+}
+
 .return-btn-wrapper {
   margin-left: auto;
   display: flex;
@@ -133,7 +149,7 @@ body {
 /* Buttons */
 .return-btn,
 .add-btn,
-.borrow-btn {
+.borrowi-btn {
   background: #86422A;
   color: #fff;
   border: none;
@@ -165,16 +181,16 @@ body {
 }
 .add-btn:hover { background: #5f2c1a; }
 
-.borrow-btn {
+.borrowi-btn {
   border-radius: 14px;
-  padding: 8px 10px;
+  padding: 10px 10px;
   font-size: 1rem;
 }
-.borrow-btn:hover { background: #5f2c1a; }
+.borrowi-btn:hover { background: #5f2c1a; }
 
 /* Edit/Delete Buttons */
 
-.edit-btn,
+.op-btn,
 .delete-btn {
   background: none;
   border: none;
@@ -188,17 +204,16 @@ body {
   height: 36px;
   min-width: 0;
   min-height: 0;
-  box-sizing: border-box;
-  transition: box-shadow 0.2s;
+ 
   z-index: 2;
 }
-.edit-btn svg,
+.op-btn svg,
 .delete-btn svg {
   width: clamp(18px, 5vw, 28px);
   height: clamp(18px, 5vw, 28px);
   transition: filter 0.2s;
 }
-.edit-btn svg:hover,
+.op-btn svg:hover,
 .delete-btn svg:hover {
   filter: brightness(0.7);
 }
