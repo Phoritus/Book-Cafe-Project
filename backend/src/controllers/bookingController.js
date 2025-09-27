@@ -1,4 +1,4 @@
-import { createBooking, listBookingsByPerson, deleteBooking, getBookingById } from '../models/bookingModel.js';
+import { createBooking, listBookingsByPerson, deleteBooking, getBookingById, getUpcomingBookingForUser } from '../models/bookingModel.js';
 import { query } from '../config/db.js';
 
 export async function createBookingHandler(req, res) {
@@ -48,4 +48,25 @@ export async function deleteBookingHandler(req, res) {
   }
 }
 
-export default { createBookingHandler, listBookingsHandler, deleteBookingHandler };
+// GET /bookings/upcoming - next upcoming booking for current user
+export async function upcomingBookingHandler(req, res) {
+  try {
+    const booking = await getUpcomingBookingForUser(req.user.id);
+    if (!booking) return res.json({ booking: null });
+    // Add derived fields for client convenience
+    const now = new Date();
+    const bookingDate = booking.checkIn; // assuming DATE string YYYY-MM-DD
+    let within30 = false;
+    if (booking.startTime) {
+      const startDateTime = new Date(`${bookingDate}T${booking.startTime}`);
+      const diffMs = startDateTime - now;
+      const diffMin = diffMs / 60000;
+      within30 = diffMin <= 30 && diffMin >= 0;
+    }
+    res.json({ booking, meta: { within30Minutes: within30 } });
+  } catch (e) {
+    res.status(500).json({ error: true, message: e.message });
+  }
+}
+
+export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler };

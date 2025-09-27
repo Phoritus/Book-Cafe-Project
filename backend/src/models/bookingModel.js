@@ -50,6 +50,30 @@ export async function listBookingsByRoom(room_number) {
   return rows;
 }
 
+// Get the nearest upcoming booking for a user (today or future),
+// ordering by checkIn date then (startTime if present else checkIn time columns) ascending.
+// Assumptions: checkIn stores the booking date (DATE), optional startTime/endTime are HH:MM:SS.
+export async function getUpcomingBookingForUser(person_id) {
+  // We consider a booking upcoming if its date is today or later AND:
+  // - if date > today -> always upcoming
+  // - if date = today -> startTime is null OR startTime >= now (within day)
+  // We still return the next one even if within the 30 minute check-in window; frontend will handle messaging.
+  const now = new Date();
+  const today = now.toISOString().slice(0,10); // YYYY-MM-DD
+  const currentTime = now.toTimeString().slice(0,8); // HH:MM:SS
+  const sql = `SELECT * FROM booking_room
+               WHERE person_id = ?
+                 AND (
+                      checkIn > ?
+                      OR (checkIn = ? AND (startTime IS NULL OR startTime >= ?))
+                 )
+               ORDER BY checkIn ASC, COALESCE(startTime, '23:59:59') ASC
+               LIMIT 1`;
+  const params = [person_id, today, today, currentTime];
+  const [rows] = await query(sql, params);
+  return rows[0] || null;
+}
+
 export async function deleteBooking(booking_id, requesterPersonId, isAdmin = false) {
   if (!isAdmin) {
     const booking = await getBookingById(booking_id);
