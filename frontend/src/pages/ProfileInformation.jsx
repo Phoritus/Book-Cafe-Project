@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProfileInformation.css';
-import { Mail,Phone,IdCard,CalendarDays,LockKeyhole,User} from 'lucide-react';
+import { Mail,Phone,IdCard,CalendarDays,LockKeyhole,User,Ellipsis} from 'lucide-react';
 
 const ProfileHeader = () => (
   <div className="profile-header">
@@ -21,24 +21,7 @@ const ProfileInformation = () => {
     setTimeout(() => setIsLoaded(true), 100);
   }, []);
   const HexIcon = () => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 120 40"
-      width="40"
-      height="30"
-      aria-hidden="true"
-    >
-      <defs>
-        <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="1" stdDeviation="1.2" floodColor="#000" floodOpacity="0.18" />
-        </filter>
-      </defs>
-      <g fill="#C2985B" filter="url(#softShadow)">
-        <polygon points="26,20 23,14.8 17,14.8 14,20 17,25.2 23,25.2" />
-        <polygon points="66,20 63,14.8 57,14.8 54,20 57,25.2 63,25.2" />
-        <polygon points="106,20 103,14.8 97,14.8 94,20 97,25.2 103,25.2" />
-      </g>
-    </svg>
+    <Ellipsis size={36} color="#C2985B" strokeWidth={2} />
   );
   // replace alert with navigation to edit page
   const handleEditProfile = () => navigate('/customer/profile/edit');
@@ -46,17 +29,17 @@ const ProfileInformation = () => {
   const profileData = [
     { label: 'Title', value: 'Ms.', icon: <HexIcon /> },
     {
-      label: 'Phone', value: '080-000-0000', icon: (<Phone size={32} color="#C2985B" strokeWidth={1.5} />
+      label: 'Phone', value: '080-000-0000', icon: (<Phone size={28} color="#C2985B" strokeWidth={1.5} />
       )
     },
     { label: 'First Name', value: 'Alice', icon: <HexIcon /> },
     {
-      label: 'National ID', value: '1-2345-67890-12-3', icon: (<IdCard size={40} color="#C2985B" strokeWidth={1.5}/>
+      label: 'National ID', value: '1-2345-67890-12-3', icon: (<IdCard size={30} color="#C2985B" strokeWidth={1.5}/>
       )
     },
     { label: 'Last Name', value: 'Wonderman', icon: <HexIcon /> },
     {
-      label: 'Date of Birth', value: '15 / 08 / 1996', icon: (<CalendarDays size={44} color="#C2985B" strokeWidth={1.5} />
+      label: 'Date of Birth', value: '15 / 08 / 1996', icon: (<CalendarDays size={30} color="#C2985B" strokeWidth={1.5} />
       )
     },
   ];
@@ -76,7 +59,7 @@ const ProfileInformation = () => {
                   <span>{item.icon}</span>
                 </div>
                 <div className="item-content">
-                  <div className="item-label text-[#B37E32]">{item.label}</div>
+                  <div className="item-label" >{item.label}</div>
                   <div className="item-value">{item.value}</div>
                 </div>
               </div>
@@ -85,7 +68,7 @@ const ProfileInformation = () => {
 
           <hr className="divider" />
 
-          <button className="edit-btn" onClick={handleEditProfile}>
+          <button className="edit-btn !mt-10" onClick={handleEditProfile}>
             Edit Profile
           </button>
 
@@ -93,24 +76,23 @@ const ProfileInformation = () => {
             <div className="setting-item">
               <div className="setting-info">
                 <div className="setting-icon">
-                  <Mail size={36} color="#C2985B" strokeWidth={1.5} />
+                  <Mail size={30} color="#C2985B" strokeWidth={1.5} />
                 </div>
                 <div>
                   <p className="setting-title" style={{ fontFamily: "'inter', sans-serif" ,color: "#B37E32"}}>Email</p>
-                  <p className="setting-description" style={{ fontFamily: "'inter', sans-serif" }}>demo@example.com</p>
+                  <p className="setting-description" style={{ fontFamily: "'inter', sans-serif" ,color: "#3C2415" }}>demo@example.com</p>
                 </div>
               </div>
               <button className="change-btn" onClick={() => navigate('/customer/profile/change-email')}>Change Email</button>
             </div>
-
             <div className="setting-item last">
               <div className="setting-info">
                 <div className="setting-icon">
-                  <LockKeyhole size={44} color="#C2985B" strokeWidth={1.5}/>
+                  <LockKeyhole size={30} color="#C2985B" strokeWidth={1.5}/>
                 </div>
                 <div>
                   <p className="setting-title" style={{ fontFamily: "'inter', sans-serif" ,color: "#B37E32"}}>Password</p>
-                  <p className="setting-description" style={{ fontFamily: "'inter', sans-serif" }}>********</p>
+                  <p className="setting-description" style={{ fontFamily: "'inter', sans-serif" ,color: "#3C2415"}}>********</p>
                 </div>
               </div>
               <button className="change-btn" onClick={() => navigate('/customer/profile/change-password')}>Change Password</button>
