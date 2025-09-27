@@ -107,15 +107,15 @@ const BookBorrowingDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8F4F0] flex flex-col font-sans">
-      <main className="flex-1 px-8 py-6 flex flex-col items-center gap-10">
-        {/* Back Arrow */}
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center text-[#7B3F00] font-medium hover:opacity-80 transition self-start"
-        >
-          <ArrowLeft className="w-10 h-10 mr-5" />
-        </button>
+    <div className="min-h-screen bg-[#F8F4F0] flex flex-col font-sans"  style={{ backgroundColor: "#F6F3ED" }}>
+      <main className="flex-1 !ml-15 px-8 py-6 flex flex-col items-center gap-10">
+              {/* Back Arrow */}
+              <button
+                        onClick={() => window.history.back()}
+                        className="flex items-center text-[#7B3F00] font-medium hover:opacity-80 transition self-start"
+                      >
+                        <ArrowLeft className="w-10 h-10 mr-5 color-[#86422A]" />
+                      </button>
 
         {/* Title */}
         <div className="text-center max-w-xl">

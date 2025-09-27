@@ -25,7 +25,7 @@ const RoomBookingSchedule = () => {
   return (
     <section className="relative min-h-screen flex flex-1 items-center justify-center font-sans" style={{ backgroundColor: "#F6F3ED" }}>
 
-      <div className="!w-160 mx-auto">
+      <div className="!w-160 !ml-6 ">
         <div
           className="absolute left-6 top-6 cursor-pointer"
           onClick={() => window.history.back()}
