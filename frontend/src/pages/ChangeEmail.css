@@ -1,3 +1,5 @@
+/*
+
 * {
   margin: 0;
   padding: 0;
@@ -5,7 +7,7 @@
 }
 
 :root {
-  --color-primary: #7a4f37; /* เลือกสีเข้มจาก gradient */
+  --color-primary: #7a4f37;
 }
 
 .form-label,
@@ -29,7 +31,7 @@
   max-width: 450px;
 }
 
-/* ปุ่มย้อนกลับ */
+
 .back-button {
   position: absolute;
   top: 20px;
@@ -38,13 +40,13 @@
   background: none;
   border: none;
   padding: 4px;
-  color: #86422A; /* ใช้สีน้ำตาลเดียวกับปุ่ม Reset Password */
+  color: #86422A;
   transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .back-button:hover {
   transform: scale(1.1);
-  color: #5c2e1b; /* น้ำตาลเข้มขึ้นตอน hover */
+  color: #5c2e1b;
 }
 
 .logo-container {
@@ -182,7 +184,7 @@
 .signin-button {
   width: 100%;
   padding: 16px;
-  background: #5c2e0f;   /* ✅ เปลี่ยนเป็นสีเดียว */
+  background: #5c2e0f;
   color: white;
   border: none;
   border-radius: 12px;
@@ -196,7 +198,7 @@
 }
 
 .signin-button:hover {
-  background: #421f07;   /* ✅ สีเข้มขึ้นเวลา hover */
+  background: #421f07; 
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(139, 90, 64, 0.4);
 }
@@ -227,7 +229,7 @@
   color: #86422a;
 }
 
-/* Mobile Responsive */
+
 @media (max-width: 768px) {
   .login-container {
     padding: 15px;
@@ -287,10 +289,9 @@
   
 }
 
-/* ตั้งค่ามาตรฐานทุกช่อง input */
 .form-input {
   width: 100%;
-  height: 44px;              /* fix ความสูงให้เท่ากันทุกช่อง */
+  height: 44px;
   padding: 0 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -298,28 +299,25 @@
   box-sizing: border-box;
 }
 
-/* wrapper สำหรับช่อง Verify Code */
 .verify-input-wrapper {
   position: relative;
   width: 100%;
   display: flex;
 }
 
-/* ช่องกรอก Verify Code */
 .verify-input-wrapper .form-input {
   flex: 1;
-  padding-right: 100px;      /* กันที่สำหรับปุ่ม */
+  padding-right: 100px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
 }
 
-/* ปุ่ม Send Code */
 .sendcode-inside-button {
   position: absolute;
   right: 0;
   top: 0;
   bottom: 0;
-  height: 100%;              /* ให้สูงเท่าช่อง input */
+  height: 100%;
   background-color: #f8f6f4;
   font-family: var(--font-sans);
   color: #86422A;
@@ -349,16 +347,15 @@
   font-family: var(--font-sans);
 }
 
-/* ✅ สีเขียวเมื่อ success */
 .message-box.success {
   background-color: #e6ffed;
   color: #28a745;
   border: 1px solid #28a745;
 }
 
-/* ❌ สีแดงเมื่อ error */
 .message-box.error {
   background-color: #ffe5e5;
   color: #d9534f;
   border: 1px solid #d9534f;
 }
+  */
