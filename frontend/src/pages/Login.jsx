@@ -118,7 +118,6 @@ function Login() {
           .welcome-title {
             font-size: 2.2rem;
             font-weight: bold;
-            color: #53311C;
             letter-spacing: -0.5px;
             font-family: 'Crimson Text', serif;
           }
@@ -350,7 +349,7 @@ function Login() {
 
           {/* Welcome Text */}
           <div className="welcome-container">
-            <h1 className="welcome-title">Welcome Back</h1>
+            <h1 className="welcome-title !text-[#53311c]">Welcome Back</h1>
             <p className="welcome-subtitle">Sign in to your Book Café account</p>
           </div>
 

@@ -1,43 +1,51 @@
+
 /* Container */
 .register-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex;
   align-items: center;
   min-height: 100vh;
   background: #faf5f0;
-  font-family: "Segoe UI", sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   padding: 40px 0;
 }
 
 /* Header */
 .header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .header img {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .header h2 {
   color: #53311c;
+  font-size: 2.2rem;
+  font-weight: bold;
+  letter-spacing: -0.5px;
   margin-bottom: 5px;
 }
 
 .header p {
-  color: #a0785b;
-  font-size: 14px;
+  color: #BC956B;
+  font-size: 1rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
 }
 
 /* Register box */
 .register-box {
-  background: white;
+  background: #FBFBFB;
+  justify-content: center;
+  align-items: center;
   border-radius: 16px;
   padding: 35px;
   width: 500px;
+  margin-bottom: 25px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 50px;
 }
 
 /* --- Title, First Name, Last Name Row --- */
@@ -143,8 +151,8 @@
   border-radius: 9px !important;
   height: 42px !important;
   font-size: 14px;
-  border: 1px solid #a0522d !important;
-  font-family: "Segoe UI", sans-serif;
+  border: 2px solid #e8ddd4, !important;
+  font-family: 'Inter', system-ui, sans-serif;
   color: #53311c;
   padding-left: 12px !important;
   display: flex;
@@ -158,7 +166,7 @@
   box-shadow: none !important;
   outline: none !important;
   background: transparent !important;
-  font-family: "Segoe UI", sans-serif !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
   font-size: 14px !important;
   color: #53311c !important;
   height: 38px !important;
@@ -231,10 +239,10 @@
 
 /* icon ตา */
 .ant-input-password-icon {
-  color: #a0522d;
+  color: #BC956B;
 }
 .ant-input-password-icon:hover {
-  color: #8b4513;
+  color: #BC956B;
 }
 
 /* Verify code input + button */
@@ -255,26 +263,40 @@
 /* Submit button */
 .submit-btn {
   width: 100%;
+  padding: 16px;
   background-color: #8b4513 !important;
-  border-color: #8b4513 !important;
-  border-radius: 8px;
-  margin-top: 10px;
-  height: 45px;
-  font-weight: 500;
-  font-size: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
+  height: px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(139, 90, 64, 0.4);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
 }
 
 /* Login link */
 .login-link {
+  padding: 1%;
   text-align: center;
   margin-top: 18px;
-  font-size: 13px;
-  color: #a0785b;
+  font-size: 1rem;
+  color: #BC956B;
+  font-weight: 500;
 }
 .login-link a {
-  color: #8b4513;
-  font-weight: 500;
+  margin-left: 0.2rem;
+  color: #BC956B;
+  font-weight: bold;
 }
 .login-link a:hover {
   text-decoration: underline;
+  color: #8b4513;
 }
