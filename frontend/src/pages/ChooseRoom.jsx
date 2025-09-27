@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import './ChooseRoom.css';
 import roomImage from '../assets/10p_room.jpg'; // ใช้รูปภาพที่ส่งมา
@@ -9,51 +9,50 @@ import toast from 'react-hot-toast';
 function ChooseRoom() {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuthStore();
-    const rooms = [
-        {
-            id: 1,
-            name: "Room 1",
-            capacity: "Fit for 6 people",
-            price: "50 THB",
-            status: "Booked",
-            available: false,
-            image: roomImage
-        },
-        {
-            id: 2, 
-            name: "Room 2",
-            capacity: "Fit for 6 people",
-            price: "50 THB",
-            status: "Booked", 
-            available: false,
-            image: roomImage
-        },
-        {
-            id: 3,
-            name: "Room 3",
-            capacity: "Fit for 10 people",
-            price: "50 THB",
-            status: "Occupied",
-            available: false,
-            image: roomImage
-        },
-        {
-            id: 4,
-            name: "Room 4", 
-            capacity: "Fit for 10 people",
-            price: "50 THB",
-            status: "Available",
-            available: true,
-            image: roomImage
-        },
-    ];
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        let cancelled = false;
+        async function loadRooms() {
+            try {
+                setLoading(true);
+                const res = await fetch('https://book-cafe-project.vercel.app/rooms');
+                if (!res.ok) throw new Error('Failed to load rooms');
+                const data = await res.json();
+                if (cancelled) return;
+                // Expecting array of objects: { room_number, price, room_status, number_people }
+                const mapped = (Array.isArray(data) ? data : []).map((r, idx) => {
+                    const statusRaw = (r.room_status || '').toLowerCase();
+                    const statusCap = statusRaw.charAt(0).toUpperCase() + statusRaw.slice(1);
+                    return {
+                        id: idx + 1,
+                        name: r.room_number || `Room ${idx + 1}`,
+                        capacity: r.number_people ? `Fit for ${r.number_people} people` : '—',
+                        price: r.price ? `${parseFloat(r.price).toFixed(0)} THB` : '—',
+                        status: statusCap,
+                        available: statusRaw === 'available',
+                        image: roomImage
+                    };
+                });
+                setRooms(mapped);
+            } catch (e) {
+                if (!cancelled) setError(e.message || 'Error loading rooms');
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
+        loadRooms();
+        return () => { cancelled = true; };
+    }, []);
 
     const handleRoomSchedule = (roomId) => {
         if (!isAuthenticated) {
             toast.error('Please login first');
             return;
         }
-        navigate('/room-booking', { state: { roomId } });
+        navigate('/fill-book-room', { state: { roomId } });
     };
 
     const getStatusIcon = (status) => {
@@ -110,7 +109,14 @@ function ChooseRoom() {
 
                 {/* Room Grid 2x2 */}
                 <div className="rooms-grid">
-                    {rooms.map((room) => (
+                    {loading && (
+                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '1rem' }}>
+                            <p className='text-2xl'>Loading rooms...</p></div>
+                    )}
+                    {error && !loading && (
+                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '1rem', color: 'red' }}>{error}</div>
+                    )}
+                    {!loading && !error && rooms.map((room) => (
                         <div key={room.id} className="room-card-item">
                             <div className="room-image-container">
                                 <img src={room.image} alt={room.name} className="room-img" />
