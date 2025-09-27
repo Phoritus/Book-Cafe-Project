@@ -5,6 +5,7 @@ import {
   EyeTwoTone,
   CalendarOutlined,
 } from "@ant-design/icons";
+import { Eye, EyeOff} from 'lucide-react';
 import "antd/dist/reset.css";
 import "./RegisterPage.css";
 import logo from "../assets/Coffee.svg";
@@ -91,21 +92,23 @@ export default function RegisterPage() {
   return (
     <div className="register-container" style={{ backgroundColor: "#F6F3ED" }}>
       <div className="header">
-        <img
-          src={logo}
-          alt="Logo"
-          className="!h-12 !w-12 mx-auto text-brown-500 mb-5 "
-        />
-        <h2>Join Book Café</h2>
-        <p>Create your account to access room bookings</p>
+        <div className="animate-fade-in">
+          <img src={logo} alt="Logo" className="h-16 w-16 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
+        </div>
+        <h2 className="font-crimson" >Join Book Café</h2>
+        <p >Create your account to access room bookings</p>
       </div>
 
-      <div className="register-box">
+      <div className="register-box ">
         {success ? (
           <Result
             status="success"
-            title="Account created successfully"
-            subTitle="You can now sign in with your credentials."
+            title={<span style={{ fontWeight: "600", color: "#844C3B", fontFamily: "'Inter', serif" }}>
+              Account created successfully </span>
+            }
+            subTitle={<span style={{ fontWeight: "400", fontFamily: "'Inter', serif" }}>
+              You can now sign in with your credentials. </span>
+            }
             extra={[
               <Button
                 key="login"
@@ -113,7 +116,12 @@ export default function RegisterPage() {
                 style={{
                   backgroundColor: '#844C3B',
                   borderColor: '#844C3B',
-                  color: '#fff'
+                  color: '#fff',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  padding: '20px 30px',
+                  borderRadius: '12px',
+                  transition: 'all 0.3s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#723300';
@@ -126,22 +134,6 @@ export default function RegisterPage() {
               >
                 Go to Login
               </Button>,
-              <Button
-                key="home"
-                href="/Home"
-                style={{
-                  borderColor: '#844C3B',
-                  color: '#844C3B'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f3e9df';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
-              >
-                Back Home
-              </Button>
             ]}
           />
         ) : (
@@ -150,13 +142,14 @@ export default function RegisterPage() {
           onFinish={submitButton}
           onFinishFailed={onError}
           layout="vertical"
+          requiredMark={false}
         >
           {/* ✅ Title + First + Last name */}
           <div className="flex flex-col sm:flex-row sm:gap-4 w-full">
             {/* Title */}
             <Form.Item
               name="title"
-              label="Title"
+              label={<label className="text-brown-700 font-sans font-semibold">Title *</label>}
               rules={[{ required: true, message: "Enter your title" }]}
               className="flex flex-col justify-end min-h-[90px] !w-20 sm:w-24"
             >
@@ -171,7 +164,7 @@ export default function RegisterPage() {
             {/* First Name */}
             <Form.Item
               name="firstname"
-              label="First Name"
+              label={<label className="text-brown-700 font-sans font-semibold">First Name *</label>}
               rules={[{ required: true, message: "Please enter your first name" }]}
               className="flex flex-col justify-end min-h-[90px] w-full sm:flex-1"
             >
@@ -181,7 +174,7 @@ export default function RegisterPage() {
             {/* Last Name */}
             <Form.Item
               name="lastname"
-              label="Last Name"
+              label={<label className="text-brown-700 font-sans font-semibold">Last Name *</label>}
               rules={[{ required: true, message: "Please enter your last name" }]}
               className="flex flex-col justify-end min-h-[90px] w-full sm:flex-1"
             >
@@ -192,7 +185,7 @@ export default function RegisterPage() {
 
           <Form.Item
             name="dateOfBirth"
-            label="Date of Birth"
+            label={<label className="text-brown-700 font-sans font-semibold">Date of Birth *</label>}
             rules={[
               { required: true, message: "Please select your date of birth" },
             ]}
@@ -207,7 +200,7 @@ export default function RegisterPage() {
 
           <Form.Item
             name="citizen_id"
-            label="National ID Number"
+            label={<label className="text-brown-700 font-sans font-semibold">National ID Number *</label>}
             rules={[
               { required: true, message: 'Please enter your national ID number' },
               { pattern: /^\d{13}$/, message: 'Must be 13 digits (numbers only)' }
@@ -218,7 +211,7 @@ export default function RegisterPage() {
 
           <Form.Item
             name="phone"
-            label="Phone Number"
+            label={<label className="text-brown-700 font-sans font-semibold">Phone Number *</label>}
             rules={[
               { required: true, message: 'Please enter your phone number' },
               { pattern: /^[0-9\-+ ()]{7,20}$/, message: 'Invalid phone format' }
@@ -229,7 +222,7 @@ export default function RegisterPage() {
 
           <Form.Item
             name="email"
-            label="Email Address"
+            label={<label className="text-brown-700 font-sans font-semibold">Email Address *</label>}
             rules={[
               { required: true, message: "Please enter your email address" },
               { type: "email", message: "Invalid email format" },
@@ -240,7 +233,7 @@ export default function RegisterPage() {
 
           <Form.Item
             name="verifyCode"
-            label="Verify Code"
+            label={<label className="text-brown-700 font-sans font-semibold">Verify Code *</label>}
             rules={[{ required: true, message: 'Please enter verify code' }, { pattern: /^\d{6}$/, message: 'Must be 6 digits' }]}
           >
             <div className="verify-code">
@@ -252,19 +245,19 @@ export default function RegisterPage() {
                 disabled={sendingCode || cooldown > 0}
                 loading={sendingCode}
                 style={{
-                  backgroundColor: '#5a2a00',
-                  borderColor: '#5a2a00',
-                  color: '#fff'
+                  backgroundColor: '#f8f6f4',
+                  color: '#86422A',
+                  borderColor: '#86422A',
                 }}
                 onMouseEnter={(e) => {
                   if (!(sendingCode || cooldown > 0)) {
-                    e.currentTarget.style.backgroundColor = '#723300';
+                    e.currentTarget.style.backgroundColor = '#eae6e3';
                     e.currentTarget.style.borderColor = '#723300';
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#5a2a00';
-                  e.currentTarget.style.borderColor = '#5a2a00';
+                  e.currentTarget.style.backgroundColor = '#f8f6f4';
+                  e.currentTarget.style.borderColor = '#86422A';
                 }}
               >
                 {cooldown > 0 ? `Resend (${cooldown})` : 'Send Code'}
@@ -274,7 +267,7 @@ export default function RegisterPage() {
 
           <Form.Item
             name="password"
-            label="Password"
+            label={<label className="text-brown-700 font-sans font-semibold">Password *</label>}
             rules={[
               { required: true, message: 'Please enter your password' },
               { min: 8, message: 'At least 8 characters' },
@@ -284,14 +277,14 @@ export default function RegisterPage() {
             <Input.Password
               placeholder="Enter your password"
               iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                visible ? <EyeOff size={23} /> : <Eye size={23}/>
               }
             />
           </Form.Item>
 
           <Form.Item
             name="confirmPassword"
-            label="Confirm Password"
+            label={<label className="text-brown-700 font-sans font-semibold">Confirm Password *</label>}
             dependencies={["password"]}
             rules={[
               { required: true, message: "Please confirm your password" },
@@ -308,7 +301,7 @@ export default function RegisterPage() {
             <Input.Password
               placeholder="Enter your password"
               iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                visible ? <EyeOff size={23} /> : <Eye size={23}/>
               }
             />
           </Form.Item>
@@ -324,7 +317,7 @@ export default function RegisterPage() {
               borderColor: '#5a2a00',
               color: '#fff',
               width: '100%',
-              height: '42px',
+              height: '54px',
               fontWeight: 500
             }}
             onMouseEnter={(e) => {
@@ -341,7 +334,7 @@ export default function RegisterPage() {
             {submitting ? 'Creating...' : 'Create Account'}
           </Button>
 
-          <div className="login-link">
+          <div className="login-link font-sans">
             Already have an account? <a href="/login">Sign in here</a>
           </div>
         </Form>

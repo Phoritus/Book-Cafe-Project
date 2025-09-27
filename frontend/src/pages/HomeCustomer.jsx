@@ -18,7 +18,7 @@ const HomeCustomer = () => {
               alt="Logo"
               className="!h-20 !w-20 mx-auto text-brown-500 mb-6 animate-bounce-subtle"
             />
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-darkBrown-500 mb-6 text-shadow">
+            <h1 className="text-4xl md:text-6xl font-crimson font-bold text-darkBrown-500 mb-6 text-shadow">
               Welcome to Book Café
             </h1>
             <p className="text-xl md:text-2xl text-brown-600 mb-8 max-w-2xl mx-auto leading-relaxed">
