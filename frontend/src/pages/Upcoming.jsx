@@ -5,11 +5,11 @@ function Upcoming() {
     const bookingDetails = "booking-room4-11092025"
     return (
         <>
-            <div className="flex flex-col items-center min-h-screen bg-[#FBF7F3] p-4">
+            <div className="flex flex-col items-center min-h-screen bg-[#FBF7F3] p-4" style={{ backgroundColor: "#F6F3ED" }}>
                 {/* Header Section */}
                 <header className="flex flex-col items-center gap-4 mb-6 mt-3 justify-center ">
                     <img src={logo} alt="Logo" className="h-16 w-16 text-brown-500 mb-1" />
-                    <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#8B4513] text-center font-crimson mb-1">Upcoming Booking</h1>
+                    <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#53311C] text-center font-crimson mb-1">Upcoming Booking</h1>
                     <p className="text-sm text-[#B37E32] text-center ">
                         Check in with staff within 30 minutes of your booking start,<br/> or your booking will be cancelled
                     </p>
