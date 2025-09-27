@@ -6,7 +6,7 @@ import logo from "../assets/Coffee.svg";
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from "../store/authStore";
 
-const API_URL = 'https://book-cafe-project.vercel.app/auth/login';
+const API_URL = `${import.meta.env.VITE_API_BASE}/auth/login`;
 
 function Login() {
   const [email, setEmail] = useState('');

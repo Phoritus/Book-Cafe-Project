@@ -18,7 +18,7 @@ export default function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [success, setSuccess] = useState(false);
-  const API_BASE = 'https://book-cafe-project.vercel.app';
+  const API_BASE = import.meta.env.VITE_API_BASE;
 
   // cooldown timer
   React.useEffect(() => {

@@ -40,7 +40,6 @@ function ChangePassword() {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log('Change password attempt:', { currentPassword, newPassword, confirmPassword });
       setMessage('Your password has been changed successfully.');
       setMessageType('success');
     } else {

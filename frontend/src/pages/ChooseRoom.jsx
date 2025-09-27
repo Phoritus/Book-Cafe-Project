@@ -13,12 +13,14 @@ function ChooseRoom() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const API_BASE = import.meta.env.VITE_API_BASE;
+
     useEffect(() => {
         let cancelled = false;
         async function loadRooms() {
             try {
                 setLoading(true);
-                const res = await fetch('https://book-cafe-project.vercel.app/rooms');
+                const res = await fetch(`${API_BASE}/rooms`);
                 if (!res.ok) throw new Error('Failed to load rooms');
                 const data = await res.json();
                 if (cancelled) return;
