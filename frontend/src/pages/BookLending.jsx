@@ -3,12 +3,13 @@ import "./BookLending.css";
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate } from 'react-router-dom';
+import { getApiBase } from '../utils/apiBase';
 
 export default function BookLendingPage() {
   const { user } = useAuthStore();
   const token = localStorage.getItem('accessToken');
   const navigate = useNavigate();
-  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api-book-cafe.onrender.com';
+  const API_BASE = getApiBase();
 
   // All books
   const [books, setBooks] = useState([]);
@@ -44,24 +45,25 @@ export default function BookLendingPage() {
       setBooksLoading(true); setBooksError('');
       const { data } = await axios.get(`${API_BASE}/books`);
       setBooks(data);
-      if (searchId) {
-        const found = data.find(b => String(b.book_id) === searchId.trim());
-        setSelectedBook(found || null);
-      }
     } catch (e) {
       setBooksError(e?.response?.data?.message || 'Failed to load books');
     } finally {
       setBooksLoading(false);
     }
-  }, [API_BASE, searchId]);
+  }, [API_BASE]);
 
   useEffect(() => { loadBooks(); }, [loadBooks]);
 
-  // Search handler
+  // Input typing ONLY updates value; clearing selection so user sees it must press search
   const handleSearchChange = (val) => {
     setSearchId(val);
-    if (!val) { setSelectedBook(null); return; }
-    const found = books.find(b => String(b.book_id) === val.trim());
+    if (!val) setSelectedBook(null);
+  };
+
+  // Manual search action (icon click / Enter key)
+  const executeSearch = () => {
+    if (!searchId.trim()) { setSelectedBook(null); return; }
+    const found = books.find(b => String(b.book_id) === searchId.trim());
     setSelectedBook(found || null);
   };
 
@@ -154,14 +156,14 @@ export default function BookLendingPage() {
                   className="search-box"
                   value={searchId}
                   onChange={e => handleSearchChange(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') executeSearch(); }}
                   style={{ paddingRight: '2.5rem' }}
                 />
                 <button
                   className="search-icon-btn"
-                  tabIndex={-1}
                   type="button"
-                  onClick={() => { /* focus retained */ }}
-                  aria-label="Focus Book ID input"
+                  onClick={executeSearch}
+                  aria-label="Search Book ID"
                 >
                   <svg className="search-icon-svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="8" cy="8" r="7" stroke="#B37E32" strokeWidth="2" />
@@ -201,7 +203,6 @@ export default function BookLendingPage() {
                       </div>
                     </div>
                     <p><strong className="label-strong">ID:</strong> {selectedBook ? selectedBook.book_id : '—'}</p>
-                    <p><strong className="label-strong">Status:</strong> {selectedBook ? selectedBook.book_status : '—'}</p>
                     {selectedBook && selectedBook.category && <p><strong className="label-strong">Category:</strong> {selectedBook.category}</p>}
                   </div>
                 </div>
@@ -256,22 +257,20 @@ export default function BookLendingPage() {
                       </svg>
                     </div>
                     <div className="book-details">
-                      <p><strong className="label-strong">Book:</strong> {record.book_name || record.book_id}</p>
-                      <p><strong className="label-strong">Record:</strong> {record.record_id}</p>
-                      <p><strong className="label-strong">Citizen:</strong> {record.citizen_id}</p>
-                      <p style={{ color: '#B37E32', fontSize: '0.75em', margin: 0 ,fontWeight:600}}>
-                        Borrowed: <span style={{ color:'#53311C', fontWeight:400 }}>{new Date(record.borrowTime).toLocaleString()}</span>
-                      </p>
-                      {record.returnTime && (
-                        <p style={{ color: '#2b6a2b', fontSize: '0.7em', margin: 0}}>
-                          Returned: {new Date(record.returnTime).toLocaleString()}
-                        </p>
-                      )}
+                      <p><strong className="label-strong">Name:</strong> {record.book_name || record.book_id}</p>
+                      <p><strong className="label-strong">ID:</strong> {record.book_id}</p>
+                      <p><strong className="label-strong">National ID:</strong> {record.citizen_id}</p>
+                      
+    
                     </div>
                     <div className="return-btn-wrapper">
-                      {!record.returnTime && (
-                        <button className="return-btn" onClick={() => handleReturn(record)}>Return</button>
-                      )}
+                      <button
+                        className={`return-btn${record.returnTime ? ' returned-disabled' : ''}`}
+                        disabled={!!record.returnTime}
+                        onClick={() => { if (!record.returnTime) handleReturn(record); }}
+                      >
+                        Return
+                      </button>
                     </div>
                   </li>
                 ))}

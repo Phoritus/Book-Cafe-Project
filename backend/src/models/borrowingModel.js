@@ -25,7 +25,7 @@ export async function borrowBook({ book_id, citizen_id }) {
 
   // Insert record
   // NOTE: DB column appears misspelled as 'cibzen_id' (per screenshot). Try both.
-  const insertSql = `INSERT INTO borrowing_record (book_id, cibzen_id) VALUES (?, ?)`;
+  const insertSql = `INSERT INTO borrowing_record (book_id) VALUES (?, ?)`;
   await query(insertSql, [book_id, citizen_id]);
   await updateBookStatus(book_id, 'borrowed');
   return await listBorrowingByCitizen(citizen_id);
@@ -65,6 +65,7 @@ export async function listBorrowingByCitizen(citizen_id) {
     FROM borrowing_record br
     LEFT JOIN book b ON b.book_id = br.book_id
     WHERE COALESCE(br.citizen_id) = ?
+      AND br.returnTime IS NULL
     ORDER BY br.borrowTime DESC`;
   const [rows] = await query(sql, [citizen_id]);
   return rows;
