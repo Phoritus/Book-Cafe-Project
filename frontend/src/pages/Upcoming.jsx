@@ -168,7 +168,7 @@ function Upcoming() {
         </div>
       )}
       {!loading && !error && booking && (
-        <div className="bg-white rounded-2xl shadow-md p-8 mt-3 w-full max-w-lg mx-auto flex flex-col items-center font-sans">
+        <div className="bg-white rounded-2xl shadow-md p-8 mt-3 w-full max-w-lg mx-auto flex flex-col items-center font-sans !mb-20">
           <h2 className="text-3xl text-[#53311C] mb-6">{booking.room_number}</h2>
           <div className="grid grid-cols-2 gap-y-10 gap-x-12 mb-6 text-sm text-[#B37E32] w-xs">
             <div>
@@ -198,7 +198,7 @@ function Upcoming() {
               Present your QR code and ID card at check-in
             </p>
           </div>
-          <div className="flex flex-col items-center w-full">
+          <div className="flex flex-col items-center w-full mb-">
             <p className="text-lg text-[#BB8F6E] font-medium mb-4">
               Price <span className="text-[#53311C] font-semibold ">{booking.totalPrice} THB</span>
             </p>
