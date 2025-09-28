@@ -71,6 +71,7 @@ export async function updatePersonProfile(person_id, fields) {
   const sql = `UPDATE person SET ${sets.join(', ')} WHERE person_id = ?`;
   params.push(person_id);
   await query(sql, params);
-  const [rows] = await query('SELECT person_id, firstname, lastname, nameTitle, phone, dateOfBirth, citizen_id, email, role, updated_at FROM person WHERE person_id = ? LIMIT 1', [person_id]);
+  // Return a safe subset of columns (exclude updated_at to avoid schema mismatch errors in some environments)
+  const [rows] = await query('SELECT person_id, firstname, lastname, nameTitle, phone, dateOfBirth, citizen_id, email, role FROM person WHERE person_id = ? LIMIT 1', [person_id]);
   return rows[0] || null;
 }
