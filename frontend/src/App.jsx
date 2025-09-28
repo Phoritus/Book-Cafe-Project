@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
@@ -22,6 +22,8 @@ import ChangePassword from './pages/ChangePassword';
 import CheckIn from './pages/CheckIn.jsx';
 import Checkout from './pages/Checkout.jsx';
 import RoomBookingCustomer from './pages/RoomBookingCustomer.jsx';
+import { useEffect } from 'react';
+import { useAuthStore } from './store/authStore.js';
 
 function RequireRole({ role, children }) {
   // ถ้าคุณมี auth store ใช้แทน localStorage
@@ -37,13 +39,25 @@ function RequireRole({ role, children }) {
   return children;
 }
 
-function App() {
+function AppInner() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, role } = useAuthStore();
+
+  // On mount / role change: if authenticated and refreshing on a neutral/auth page -> redirect to role home
+  useEffect(() => {
+    const neutralPaths = ['/', '/login', '/register'];
+    if (isAuthenticated && neutralPaths.includes(location.pathname)) {
+      if (role === 'admin') navigate('/admin', { replace: true });
+      else if (role === 'user') navigate('/customer', { replace: true });
+    }
+  }, [isAuthenticated, role, location.pathname, navigate]);
+
   return (
-    <Router>
-      <div className="min-h-screen bg-cream-50 flex flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Routes>
+    <div className="min-h-screen bg-cream-50 flex flex-col">
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/edit-book" element={<EditBook />} />
             <Route
@@ -173,10 +187,17 @@ function App() {
 
             {/* ถ้าเข้า path ที่ไม่เจอ -> redirect ไปหน้า HomePage */}
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppInner />
     </Router>
   );
 }
