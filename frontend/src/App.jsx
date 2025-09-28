@@ -3,6 +3,7 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import EditBook from './pages/EditBook.jsx';
+import AddBook from './pages/AddBook.jsx';
 import Login from './pages/Login.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import EditProfile from './pages/EditProfile.jsx';
@@ -59,6 +60,14 @@ function AppInner() {
       <main className="flex-1">
         <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route
+              path="/add-book"
+              element={
+                <RequireRole role="admin">
+                  <AddBook />
+                </RequireRole>
+              }
+            />
             <Route path="/edit-book" element={<EditBook />} />
             <Route
               path="/edit-profile"

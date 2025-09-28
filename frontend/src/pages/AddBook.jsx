@@ -13,8 +13,8 @@ const AddBook = () => {
   const [category, setCategory] = useState('Academic');
   const categories = ['Academic', 'Documentary', 'Novels', 'Comics', 'Other'];
   const [id, setId] = useState('');
-  const [isOpen, setIsOpen] = useState(false); // state สำหรับลูกศร
-  const [showSuccess, setShowSuccess] = useState(false); // state สำหรับ popup
+  const [isOpen, setIsOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [errorName, setErrorName] = useState("");
   const [errorId, setErrorId] = useState("");
 
@@ -35,7 +35,11 @@ const AddBook = () => {
     }
 
     if (!id.trim()) {
-      setErrorId("ID invalid");
+      setErrorId("ID required");
+      hasError = true;
+    } else if (!/^[A-Z0-9]+$/.test(id.trim())) {
+      // Accept only letters & digits (uppercase). Example: B011
+      setErrorId("Use letters/numbers only (e.g. B011)");
       hasError = true;
     } else {
       setErrorId("");
@@ -75,7 +79,7 @@ const AddBook = () => {
       <section className="relative min-h-screen flex flex-1 items-center justify-center" style={{ backgroundColor: "#F6F3ED" }}>
 
         <div
-          className="absolute left-6 top-6 cursor-pointer left-30"
+          className="absolute left-6 top-6 cursor-pointer"
           onClick={() => window.history.back()}
         >
           <ArrowLeft size={48} color="#86422A" />
@@ -118,11 +122,12 @@ const AddBook = () => {
                     <div className="flex items-center gap-4">
                       <label className="text-md md:text-xl text-yellow-700  w-32 text-left " style={{ fontFamily: 'Inter, sans-serif' }}>ID:</label>
                       <input
-                        className={`input-field h-10 border flex-1 px-3 font-sans ${errorName ? '!border-red-500' : 'border-gray-300'} ` }
+                        className={`input-field h-10 border flex-1 px-3 font-sans ${errorId ? '!border-red-500' : 'border-gray-300'} ` }
                         type='text'
-                        placeholder='Enter ID '
+                        placeholder='Enter ID' 
                         value={id}
-                        onChange={e => setId(e.target.value.replace(/[^0-9]/g, ""))}
+                        onChange={e => setId(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
+                        maxLength={20}
                       />
                     </div>
                     {errorId && <span className="text-red-500 text-sm mt-1 !mr-23" style={{ fontFamily: 'Inter, sans-serif' }}>{errorId}</span>}
