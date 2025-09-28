@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Calendar, ChartLine, BookOpen } from "lucide-react";
+import ChooseRoom from "./ChooseRoom";
 import logo from "../assets/Coffee.svg";
 
 const HomeAdmin = () => {
@@ -34,7 +35,7 @@ const HomeAdmin = () => {
                   <>
                     {/* Room Booking */}
                     <Link
-                      to="/roombooking"
+                      to="/choose-room"
                       className="card w-[270px] min-h-[175px] flex flex-col items-center text-center px-7 py-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
                     >
                       <Calendar className="h-8 w-8 text-brown-500 mx-auto mb-4" />

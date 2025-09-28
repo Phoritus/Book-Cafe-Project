@@ -10,6 +10,9 @@ import axios from 'axios';
 function ChooseRoom() {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuthStore();
+    const user = (() => {
+        try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; }
+    })();
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -59,7 +62,12 @@ function ChooseRoom() {
         } catch (e) {
             // fallback silently
         }
-        navigate('/fill-book-room');
+        // If admin -> go to check-in / management page (assumed /roombooking)
+        if (user?.role === 'admin') {
+            navigate('/roombooking');
+        } else {
+            navigate('/fill-book-room');
+        }
     };
 
     const getStatusIcon = (status) => {
@@ -144,10 +152,9 @@ function ChooseRoom() {
                                 
                                 <button
                                     type="button"
-                                    className={`room-schedule-btn ${room.status.toLowerCase()}`}
-                                    disabled={!room.available}
-                                    aria-disabled={!room.available}
-                                    onClick={() => room.available && handleRoomSchedule(room.name)}
+                                    className={`room-schedule-btn ${room.status.toLowerCase()} ${!room.available ? 'force-clickable' : ''}`}
+                                    onClick={() => handleRoomSchedule(room.name)}
+                                    title={!room.available ? 'Status: ' + room.status : ''}
                                 >
                                     {room.name} Schedule
                                 </button>
