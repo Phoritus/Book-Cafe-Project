@@ -1,8 +1,7 @@
 const whiteList = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://book-cafe-project-8iba.vercel.app/',
-  'https://book-cafe-project-zj9f.vercel.app/'
+  'https://book-cafe-project-zk8h.vercel.app'
   // add your deployed frontend origins here, e.g. 'https://your-frontend.example.com'
 ];
 
