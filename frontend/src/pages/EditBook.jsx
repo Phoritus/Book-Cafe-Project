@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 import logo from "../assets/Book.svg";
 import arrow from "../assets/Arrowcategory.svg";
 import successIcon from "../assets/Success.svg";
 import { ArrowLeft } from 'lucide-react';
 
-const AddBook = () => {
-  const isAuthenticated = false; // ตั้งค่า default ไปก่อน
+const EditBook = () => {
+  const { user } = useAuthStore();
+  const token = localStorage.getItem('accessToken');
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Academic');
   const categories = ['Academic', 'Documentary', 'Novels', 'Comics', 'Other'];
@@ -14,28 +18,57 @@ const AddBook = () => {
   const [showSuccess, setShowSuccess] = useState(false); // state สำหรับ popup
   const [errorName, setErrorName] = useState("");
   const [errorId, setErrorId] = useState("");
+  const [apiError, setApiError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api-book-cafe.onrender.com';
 
-  const handleAddBook = (e) => {
+  // Extract book_id from query param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const bid = params.get('book_id');
+    if (bid) {
+      setId(bid);
+      (async () => {
+        try {
+          setLoading(true);
+            const { data } = await axios.get(`${API_BASE}/books/${bid}`);
+            setName(data.book_name || '');
+            if (data.category) setCategory(data.category);
+        } catch (e) {
+          setApiError(e?.response?.data?.message || 'Failed to load book');
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [location.search]);
+
+  const handleEditBook = async (e) => {
     e.preventDefault();
+    setApiError("");
     let hasError = false;
-
-    if (!name) {
-      setErrorName("Book Name invalid");
+    if (!name.trim()) {
+      setErrorName('Book Name invalid');
       hasError = true;
-    } else {
-      setErrorName("");
-    }
-
-    if (!id) {
-      setErrorId("ID invalid");
+    } else setErrorName('');
+    if (!id.trim()) {
+      setErrorId('ID invalid');
       hasError = true;
-    } else {
-      setErrorId("");
-    }
-
-    if (!hasError) {
+    } else setErrorId('');
+    if (hasError) return;
+    try {
+      setLoading(true);
+      await axios.patch(`${API_BASE}/books/${id.trim()}`, { book_name: name.trim(), category }, { headers: { Authorization: `Bearer ${token}` }});
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setTimeout(() => {
+        setShowSuccess(false);
+        window.history.back();
+      }, 1200);
+    } catch (err) {
+      setApiError(err?.response?.data?.message || err.message || 'Failed to update');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,7 +169,8 @@ const AddBook = () => {
                   </div>
 
                   {/* Add Book Button */}
-                  <button className="btn-primary !w-50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleAddBook}>Edit Book</button>
+                  {apiError && <div className="text-red-500 text-sm -mt-2">{apiError}</div>}
+                  <button disabled={loading} className="btn-primary !w-50 mt-4 disabled:opacity-60" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleEditBook}>{loading ? 'Saving...' : 'Edit Book'}</button>
                 </div>
               </div>
             </div>
@@ -147,4 +181,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default EditBook;

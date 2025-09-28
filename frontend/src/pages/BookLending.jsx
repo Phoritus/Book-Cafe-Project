@@ -1,72 +1,138 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./BookLending.css";
+import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+import { useNavigate } from 'react-router-dom';
 
-export default function TestPage() {
-  // state สำหรับ borrowed books
-  const [borrowedBooks, setBorrowedBooks] = useState([
-    { name: "Systems Analysis and Design", id: "101", nationalId: "1265074629027" },
-    { name: "Modern SAD", id: "102", nationalId: "0696449551245" },
-    { name: "SAD Methods", id: "103", nationalId: "3339791158101" },
-    { name: "Essentials SAD", id: "104", nationalId: "3306534867518" },
-    { name: "Structured SAD", id: "105", nationalId: "4210585274348" },
-    { name: "Object-Oriented Programming", id: "106", nationalId: "0149496314596" },
-  ]);
-  // state สำหรับ input
-  const [nationalId, setNationalId] = useState("");
-  const [nationalIdError, setNationalIdError] = useState("");
+export default function BookLendingPage() {
+  const { user } = useAuthStore();
+  const token = localStorage.getItem('accessToken');
+  const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api-book-cafe.onrender.com';
 
-  // state สำหรับป๊อปอัพยืนยันลบ
+  // All books
+  const [books, setBooks] = useState([]);
+  const [booksLoading, setBooksLoading] = useState(false);
+  const [booksError, setBooksError] = useState('');
+
+  // Selected (searched) book
+  const [searchId, setSearchId] = useState('');
+  const [selectedBook, setSelectedBook] = useState(null);
+
+  // Borrowing
+  const [citizenId, setCitizenId] = useState('');
+  const [citizenError, setCitizenError] = useState('');
+
+  // Borrowed list for given citizen (shows only their current+history)
+  const [borrowedList, setBorrowedList] = useState([]);
+  const [borrowLoading, setBorrowLoading] = useState(false);
+  const [borrowError, setBorrowError] = useState('');
+
+  // Modals / confirmations
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-  const [confirmReturn, setConfirmReturn] = useState(null);
+  const [confirmReturnRecord, setConfirmReturnRecord] = useState(null);
 
+  // General UI
+  const [actionMessage, setActionMessage] = useState('');
+  const [actionError, setActionError] = useState('');
 
-  // ตัวอย่างข้อมูลหนังสือใน card (ควรเปลี่ยนเป็น dynamic ในอนาคต)
-  const bookCard = { name: "Systems Analysis", id: "100" };
+  const authHeader = useCallback(() => ({ Authorization: `Bearer ${token}` }), [token]);
 
-  // handle borrow
-  const handleBorrow = () => {
-    // Validation: must be 13 digits, not blank
-    if (!nationalId.trim()) {
-      setNationalIdError("Please enter your 13-digit National ID.");
-      return;
+  // Fetch all books
+  const loadBooks = useCallback(async () => {
+    try {
+      setBooksLoading(true); setBooksError('');
+      const { data } = await axios.get(`${API_BASE}/books`);
+      setBooks(data);
+      if (searchId) {
+        const found = data.find(b => String(b.book_id) === searchId.trim());
+        setSelectedBook(found || null);
+      }
+    } catch (e) {
+      setBooksError(e?.response?.data?.message || 'Failed to load books');
+    } finally {
+      setBooksLoading(false);
     }
-    if (!/^\d{13}$/.test(nationalId)) {
-      setNationalIdError("National ID must be exactly 13 digits.");
-      return;
+  }, [API_BASE, searchId]);
+
+  useEffect(() => { loadBooks(); }, [loadBooks]);
+
+  // Search handler
+  const handleSearchChange = (val) => {
+    setSearchId(val);
+    if (!val) { setSelectedBook(null); return; }
+    const found = books.find(b => String(b.book_id) === val.trim());
+    setSelectedBook(found || null);
+  };
+
+  // Borrowing list for citizen
+  const loadBorrowingForCitizen = useCallback(async (cid) => {
+    if (!cid) return;
+    try {
+      setBorrowLoading(true); setBorrowError('');
+      const { data } = await axios.get(`${API_BASE}/borrowing?citizen_id=${cid}`, { headers: authHeader() });
+      setBorrowedList(data);
+    } catch (e) {
+      setBorrowError(e?.response?.data?.message || 'Failed to load borrowed list');
+    } finally {
+      setBorrowLoading(false);
     }
-    setNationalIdError("");
-    setBorrowedBooks([
-      { name: bookCard.name, id: bookCard.id },
-      ...borrowedBooks,
-    ]);
-    setNationalId("");
+  }, [API_BASE, authHeader]);
+
+  // Borrow book
+  const handleBorrow = async () => {
+    setCitizenError(''); setActionError(''); setActionMessage('');
+    if (!selectedBook) { setActionError('No book selected'); return; }
+    if (!citizenId.trim()) { setCitizenError('Please enter citizen ID'); return; }
+    if (!/^\d{13}$/.test(citizenId.trim())) { setCitizenError('Must be exactly 13 digits'); return; }
+    if (selectedBook.book_status === 'borrowed') { setActionError('Book already borrowed'); return; }
+    try {
+      await axios.post(`${API_BASE}/borrowing/borrow`, { book_id: selectedBook.book_id, citizen_id: citizenId.trim() }, { headers: authHeader() });
+      setActionMessage('Borrowed successfully');
+      await loadBooks();
+      await loadBorrowingForCitizen(citizenId.trim());
+    } catch (e) {
+      setActionError(e?.response?.data?.message || 'Borrow failed');
+    }
   };
 
-  // handle return (แสดงป๊อปอัพยืนยัน)
-  const handleReturn = (id) => {
-    setConfirmReturn(id);
+  // Return book (confirm dialog sets record)
+  const handleReturn = (record) => setConfirmReturnRecord(record);
+  const cancelReturn = () => setConfirmReturnRecord(null);
+  const confirmReturnBook = async () => {
+    if (!confirmReturnRecord) return;
+    try {
+      await axios.post(`${API_BASE}/borrowing/return`, { record_id: confirmReturnRecord.record_id }, { headers: authHeader() });
+      setActionMessage('Returned successfully');
+      setConfirmReturnRecord(null);
+      await loadBooks();
+      await loadBorrowingForCitizen(citizenId.trim());
+    } catch (e) {
+      setActionError(e?.response?.data?.message || 'Return failed');
+    }
   };
 
-  const cancelReturn = () => {
-    setConfirmReturn(null);
+  // Delete book
+  const cancelDelete = () => setConfirmDeleteId(null);
+  const confirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    try {
+      await axios.delete(`${API_BASE}/books/${confirmDeleteId}`, { headers: authHeader() });
+      setActionMessage('Deleted book');
+      setConfirmDeleteId(null);
+      if (selectedBook && String(selectedBook.book_id) === String(confirmDeleteId)) setSelectedBook(null);
+      await loadBooks();
+    } catch (e) {
+      setActionError(e?.response?.data?.message || 'Delete failed');
+    }
   };
 
-  // ยืนยัน return
-  const confirmReturnBook = () => {
-    setBorrowedBooks(borrowedBooks.filter(book => book.id !== confirmReturn));
-    setConfirmReturn(null);
-  };
+  // Navigate to pages
+  const goAdd = () => navigate('/add-book');
+  const goEdit = () => { if (selectedBook) navigate(`/edit-book?book_id=${selectedBook.book_id}`); };
 
-  // ยืนยันลบจริง
-  const confirmDelete = () => {
-    setBorrowedBooks(borrowedBooks.filter(book => book.id !== confirmDeleteId));
-    setConfirmDeleteId(null);
-  };
-
-  // ยกเลิก
-  const cancelDelete = () => {
-    setConfirmDeleteId(null);
-  };
+  // Watch citizenId to load list lazily when 13 digits
+  useEffect(() => { if (/^\d{13}$/.test(citizenId)) loadBorrowingForCitizen(citizenId); }, [citizenId, loadBorrowingForCitizen]);
 
   return (
     <div className="min-h-screen bg-[#f9f6f2] p-6 font-sans">
@@ -86,14 +152,15 @@ export default function TestPage() {
                   type="text"
                   placeholder="Book ID:"
                   className="search-box"
-                  ref={el => (window.__bookIdInput = el)}
+                  value={searchId}
+                  onChange={e => handleSearchChange(e.target.value)}
                   style={{ paddingRight: '2.5rem' }}
                 />
                 <button
                   className="search-icon-btn"
                   tabIndex={-1}
                   type="button"
-                  onClick={() => { if (window.__bookIdInput) window.__bookIdInput.focus(); }}
+                  onClick={() => { /* focus retained */ }}
                   aria-label="Focus Book ID input"
                 >
                   <svg className="search-icon-svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -116,16 +183,16 @@ export default function TestPage() {
                   </div>
                   <div>
                     <div className="name-row">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '9rem', marginTop: '0rem' }}>
-                        <p style={{ margin: 0 }}><strong className="label-strong">Name:</strong> {bookCard.name}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginTop: '0rem', justifyContent:'space-between' }}>
+                        <p style={{ margin: 0 }}><strong className="label-strong">Name:</strong> {selectedBook ? selectedBook.book_name : '—'}</p>
                         <span className="book-actions-inline">
-                          <button className="op-btn !mb-0 !mr-4 " title="Edit" style={{ marginRight: '0.3rem', marginTop: 0, backgroundColor: "white" }}>
+                          <button disabled={!selectedBook} onClick={goEdit} className="op-btn !mb-0 !mr-4 disabled:opacity-40" title="Edit" style={{ marginRight: '0.3rem', marginTop: 0, backgroundColor: "white" }}>
                             <svg width="28" height="27" viewBox="0 0 28 27" fill="white" xmlns="http://www.w3.org/2000/svg">
                               <path d="M20.4336 1.65723C20.8509 1.70097 21.1853 1.88883 21.4521 2.08789C21.7337 2.298 22.0359 2.59598 22.3457 2.89844L24.7324 5.22852C25.0567 5.54511 25.3748 5.85179 25.5986 6.13867C25.8403 6.44845 26.0684 6.85192 26.0684 7.375C26.0684 7.89808 25.8403 8.30155 25.5986 8.61133C25.3748 8.89821 25.0567 9.20489 24.7324 9.52148L10.8398 23.083L10.8232 23.0996L10.8057 23.1152C10.6534 23.2647 10.4604 23.4577 10.2168 23.5928C9.95521 23.7377 9.6691 23.7996 9.45605 23.8516L3.79688 25.2324C3.6488 25.2686 3.42682 25.3248 3.23242 25.3428C3.02562 25.3618 2.57375 25.366 2.20703 24.9951C1.84035 24.6242 1.84969 24.1724 1.87109 23.9658C1.89123 23.7718 1.95047 23.551 1.98828 23.4033L3.39258 17.9199C3.44834 17.7021 3.51459 17.4089 3.66797 17.1436L3.79297 16.9561C3.92737 16.7794 4.08243 16.6354 4.20312 16.5176L18.1543 2.89844C18.4641 2.59598 18.7663 2.298 19.0479 2.08789C19.3527 1.86044 19.7457 1.64746 20.25 1.64746L20.4336 1.65723Z" stroke="#86422A" stroke-width="2" />
                               <path d="M15.875 4.81217L21.125 1.39551L26.375 6.52051L22.875 11.6455L15.875 4.81217Z" fill="#86422A" />
                             </svg>
                           </button>
-                          <button className="delete-btn " title="Delete" onClick={() => setConfirmDeleteId(bookCard.id)} style={{ marginTop: 0 }}>
+                          <button disabled={!selectedBook} className="delete-btn disabled:opacity-40" title="Delete" onClick={() => selectedBook && setConfirmDeleteId(selectedBook.book_id)} style={{ marginTop: 0 }}>
                             <svg width="26" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M8 2.6V1.3C8 0.955219 8.14048 0.624558 8.39052 0.380761C8.64057 0.136964 8.97971 0 9.33333 0L14.6667 0C15.0203 0 15.3594 0.136964 15.6095 0.380761C15.8595 0.624558 16 0.955219 16 1.3V2.6H21.3333C22.0406 2.6 22.7189 2.87393 23.219 3.36152C23.719 3.84912 24 4.51044 24 5.2V6.5C24 7.18956 23.719 7.85088 23.219 8.33848C22.7189 8.82607 22.0406 9.1 21.3333 9.1H21.156L20.2493 22.36C20.1817 23.3471 19.7319 24.2722 18.9909 24.948C18.25 25.6238 17.2733 25.9999 16.2587 26H7.768C6.75423 26 5.77829 25.6247 5.03748 24.9499C4.29667 24.2752 3.84627 23.3513 3.77733 22.3652L2.84933 9.1H2.66667C1.95942 9.1 1.28115 8.82607 0.781049 8.33848C0.280952 7.85088 0 7.18956 0 6.5V5.2C0 4.51044 0.280952 3.84912 0.781049 3.36152C1.28115 2.87393 1.95942 2.6 2.66667 2.6H8ZM21.3333 5.2H2.66667V6.5H21.3333V5.2ZM5.52133 9.1L6.43733 22.1884C6.46032 22.5172 6.61051 22.8252 6.85754 23.0501C7.10458 23.275 7.43 23.4001 7.768 23.4H16.2587C16.5971 23.4001 16.9229 23.2746 17.17 23.0492C17.4171 22.8237 17.567 22.515 17.5893 22.1858L18.4827 9.1H5.52133ZM9.33333 10.4C9.68696 10.4 10.0261 10.537 10.2761 10.7808C10.5262 11.0246 10.6667 11.3552 10.6667 11.7V20.8C10.6667 21.1448 10.5262 21.4754 10.2761 21.7192C10.0261 21.963 9.68696 22.1 9.33333 22.1C8.97971 22.1 8.64057 21.963 8.39052 21.7192C8.14048 21.4754 8 21.1448 8 20.8V11.7C8 11.3552 8.14048 11.0246 8.39052 10.7808C8.64048 10.537 8.97971 10.4 9.33333 10.4ZM14.6667 10.4C15.0203 10.4 15.3594 10.537 15.6095 10.7808C15.8595 11.0246 16 11.3552 16 11.7V20.8C16 21.1448 15.8595 21.4754 15.6095 21.7192C15.3594 21.963 15.0203 22.1 14.6667 22.1C14.313 22.1 13.9739 21.963 13.7239 21.7192C13.4738 21.4754 13.3333 21.1448 13.3333 20.8V11.7C13.3333 11.3552 13.4738 11.0246 13.7239 10.7808C13.9739 10.537 14.313 10.4 14.6667 10.4Z" fill="#FF5656" />
                             </svg>
@@ -133,7 +200,9 @@ export default function TestPage() {
                         </span>
                       </div>
                     </div>
-                    <p><strong className="label-strong">ID:</strong> {bookCard.id}</p>
+                    <p><strong className="label-strong">ID:</strong> {selectedBook ? selectedBook.book_id : '—'}</p>
+                    <p><strong className="label-strong">Status:</strong> {selectedBook ? selectedBook.book_status : '—'}</p>
+                    {selectedBook && selectedBook.category && <p><strong className="label-strong">Category:</strong> {selectedBook.category}</p>}
                   </div>
                 </div>
                 {/* National ID input and Borrow button BELOW all text and actions */}
@@ -142,25 +211,20 @@ export default function TestPage() {
                   <div className="borrow-row " style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.5rem', marginTop: 0, padding: 0 }}>
                     <input
                       type="text"
-                      placeholder="1-XXXX-XXXXX-XX-X"
+                      placeholder="13-digit citizen id"
                       className="national-id"
-                      value={nationalId}
-                      onChange={e => {
-                        setNationalId(e.target.value);
-                        setNationalIdError("");
-                      }}
+                      value={citizenId}
+                      onChange={e => { setCitizenId(e.target.value.replace(/[^0-9]/g,'')); setCitizenError(''); }}
                       style={{ marginBottom: 0 }}
                     />
-                    <button className="borrowi-btn !ml-4 !w-30 " onClick={handleBorrow} style={{ fontSize: '0.92rem', height: '2.5rem', minWidth: '6.5rem', maxWidth: '7.5rem', padding: '0.55rem 1rem', margin: '0,0,0,0' }}>Borrow</button>
+                    <button disabled={!selectedBook} className="borrowi-btn !ml-4 !w-30 disabled:opacity-40" onClick={handleBorrow} style={{ fontSize: '0.92rem', height: '2.5rem', minWidth: '6.5rem', maxWidth: '7.5rem', padding: '0.55rem 1rem', margin: '0,0,0,0' }}>Borrow</button>
                   </div>
-                  {nationalIdError && (
-                    <div style={{ color: '#FF5656', fontSize: '0.85rem', marginTop: '0.2rem', marginLeft: '2px', fontWeight: 500 }}>
-                      {nationalIdError}
-                    </div>
-                  )}
+                  {citizenError && <div style={{ color:'#FF5656', fontSize:'0.85rem', marginTop:4 }}>{citizenError}</div>}
+                  {actionError && <div style={{ color:'#FF5656', fontSize:'0.8rem', marginTop:4 }}>{actionError}</div>}
+                  {actionMessage && <div style={{ color:'#2b6a2b', fontSize:'0.8rem', marginTop:4 }}>{actionMessage}</div>}
                 </div>
               </div>
-              <button className="add-btn">
+              <button className="add-btn" onClick={goAdd}>
                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '100%' }}>
                   <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" clipRule="evenodd" d="M0.666992 14.0003C0.666992 6.63633 6.63633 0.666992 14.0003 0.666992C21.3643 0.666992 27.3337 6.63633 27.3337 14.0003C27.3337 21.3643 21.3643 27.3337 14.0003 27.3337C6.63633 27.3337 0.666992 21.3643 0.666992 14.0003ZM14.0003 3.33366C11.1713 3.33366 8.45824 4.45747 6.45785 6.45785C4.45747 8.45824 3.33366 11.1713 3.33366 14.0003C3.33366 16.8293 4.45747 19.5424 6.45785 21.5428C8.45824 23.5432 11.1713 24.667 14.0003 24.667C16.8293 24.667 19.5424 23.5432 21.5428 21.5428C23.5432 19.5424 24.667 16.8293 24.667 14.0003C24.667 11.1713 23.5432 8.45824 21.5428 6.45785C19.5424 4.45747 16.8293 3.33366 14.0003 3.33366Z" fill="white" />
@@ -176,9 +240,12 @@ export default function TestPage() {
           <main className="md:col-span-1 !mb-10">
             <section className="borrowed-list">
               <h3>List of borrowed books</h3>
+              {borrowError && <div style={{ color:'#FF5656', fontSize:'0.8rem'}}>{borrowError}</div>}
+              {borrowLoading && <div>Loading borrowing history...</div>}
+              {!borrowLoading && borrowedList.length === 0 && <div className="text-sm text-gray-500">No records.</div>}
               <ul>
-                {borrowedBooks.map((book, idx) => (
-                  <li className="borrowed-item" key={book.id + idx}>
+                {borrowedList.map((record) => (
+                  <li className="borrowed-item" key={record.record_id}>
                     <div className="book-icon">
                       {/* ...SVG icon... */}
                       <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -189,16 +256,22 @@ export default function TestPage() {
                       </svg>
                     </div>
                     <div className="book-details">
-                      <p><strong className="label-strong">Name:</strong> {book.name}</p>
-                      <p><strong className="label-strong">ID:</strong> {book.id}</p>
-                      {book.nationalId && (
-                        <p style={{ color: '#B37E32', fontSize: '0.92em', margin: 0 ,fontWeight:700}}>
-                          National ID: <span style={{ color: '#53311C' ,fontWeight:500}}>{book.nationalId}</span>
+                      <p><strong className="label-strong">Book:</strong> {record.book_name || record.book_id}</p>
+                      <p><strong className="label-strong">Record:</strong> {record.record_id}</p>
+                      <p><strong className="label-strong">Citizen:</strong> {record.citizen_id}</p>
+                      <p style={{ color: '#B37E32', fontSize: '0.75em', margin: 0 ,fontWeight:600}}>
+                        Borrowed: <span style={{ color:'#53311C', fontWeight:400 }}>{new Date(record.borrowTime).toLocaleString()}</span>
+                      </p>
+                      {record.returnTime && (
+                        <p style={{ color: '#2b6a2b', fontSize: '0.7em', margin: 0}}>
+                          Returned: {new Date(record.returnTime).toLocaleString()}
                         </p>
                       )}
                     </div>
                     <div className="return-btn-wrapper">
-                      <button className="return-btn" onClick={() => handleReturn(book.id)}>Return</button>
+                      {!record.returnTime && (
+                        <button className="return-btn" onClick={() => handleReturn(record)}>Return</button>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -220,8 +293,7 @@ export default function TestPage() {
                   </div>
                 </div>
               )}
-
-              {confirmReturn && (
+              {confirmReturnRecord && (
                 <div style={{
                   position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
                   background: 'rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000

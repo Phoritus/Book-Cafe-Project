@@ -24,8 +24,9 @@ export async function borrowBook({ book_id, citizen_id }) {
   }
 
   // Insert record
-  const sql = `INSERT INTO borrowing_record (book_id, citizen_id) VALUES (?, ?)`;
-  await query(sql, [book_id, citizen_id]);
+  // NOTE: DB column appears misspelled as 'cibzen_id' (per screenshot). Try both.
+  const insertSql = `INSERT INTO borrowing_record (book_id, cibzen_id) VALUES (?, ?)`;
+  await query(insertSql, [book_id, citizen_id]);
   await updateBookStatus(book_id, 'borrowed');
   return await listBorrowingByCitizen(citizen_id);
 }
@@ -55,6 +56,16 @@ export async function returnBook({ record_id }) {
 }
 
 export async function listBorrowingByCitizen(citizen_id) {
-  const [rows] = await query('SELECT * FROM borrowing_record WHERE citizen_id = ? ORDER BY borrowTime DESC', [citizen_id]);
+  // Select with fallback WHERE on cibzen_id or citizen_id (in case of schema variation)
+  const sql = `
+    SELECT br.record_id, br.book_id,
+           COALESCE(br.citizen_id, br.cibzen_id) AS citizen_id,
+           br.borrowTime, br.returnTime,
+           b.book_name, b.book_status, b.category
+    FROM borrowing_record br
+    LEFT JOIN book b ON b.book_id = br.book_id
+    WHERE COALESCE(br.citizen_id, br.cibzen_id) = ?
+    ORDER BY br.borrowTime DESC`;
+  const [rows] = await query(sql, [citizen_id]);
   return rows;
 }

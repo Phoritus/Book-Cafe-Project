@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
 import logo from "../assets/Book.svg";
 import arrow from "../assets/Arrowcategory.svg";
 import successIcon from "../assets/Success.svg";
 import { ArrowLeft } from 'lucide-react';
 
 const AddBook = () => {
-  const isAuthenticated = false; // ตั้งค่า default ไปก่อน
+  const { user } = useAuthStore();
+  const token = localStorage.getItem('accessToken');
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Academic');
   const categories = ['Academic', 'Documentary', 'Novels', 'Comics', 'Other'];
@@ -15,27 +18,42 @@ const AddBook = () => {
   const [errorName, setErrorName] = useState("");
   const [errorId, setErrorId] = useState("");
 
-  const handleAddBook = (e) => {
+  const [apiError, setApiError] = useState("");
+
+  const API_BASE = import.meta.env.VITE_API_BASE || 'https://api-book-cafe.onrender.com';
+
+  const handleAddBook = async (e) => {
     e.preventDefault();
+    setApiError("");
     let hasError = false;
 
-    if (!name) {
+    if (!name.trim()) {
       setErrorName("Book Name invalid");
       hasError = true;
     } else {
       setErrorName("");
     }
 
-    if (!id) {
+    if (!id.trim()) {
       setErrorId("ID invalid");
       hasError = true;
     } else {
       setErrorId("");
     }
 
-    if (!hasError) {
+    if (hasError) return;
+    try {
+      await axios.post(`${API_BASE}/books`, { book_id: id.trim(), book_name: name.trim(), category }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setTimeout(() => {
+        setShowSuccess(false);
+        window.history.back();
+      }, 1200);
+    } catch (err) {
+      const msg = err?.response?.data?.message || err.message || 'Failed to add book';
+      setApiError(msg);
     }
   };
 
@@ -136,6 +154,7 @@ const AddBook = () => {
                   </div>
 
                   {/* Add Book Button */}
+                  {apiError && <div className="text-red-500 text-sm -mt-2">{apiError}</div>}
                   <button className="btn-primary !w-50 mt-4" style={{ fontFamily: 'Inter, sans-serif' }} onClick={handleAddBook}>Add Book</button>
                 </div>
               </div>
