@@ -115,6 +115,7 @@ function Upcoming() {
         {refreshing && <span className="text-[10px] text-[#B37E32] animate-pulse">Refreshing...</span>}
       </div>
 
+      
       <header className="flex !mt-10 flex-col items-center gap-4 mb-6 justify-center ">
         <img src={logo} alt="Logo" className="h-16 w-16 text-brown-500 animate-bounce-subtle !mb-4" />
         <h1 className="title text-2xl sm:text-3xl md:text-4xl font-bold text-[#53311C] text-center font-crimson !-mb-0">Upcoming Booking</h1>
@@ -122,19 +123,21 @@ function Upcoming() {
           Check in with staff within 30 minutes of your booking start,<br/> or your booking will be cancelled
         </p>
         {minutesLeft !== null && minutesLeft >= 0 && (
-          <p className={`text-xs ${minutesLeft <= 30 ? 'text-red-600' : 'text-[#53311C]'}`}>Starts in {minutesLeft} minute{minutesLeft===1?'':'s'}</p>
+          <p className={`text-xs ${minutesLeft <= 30 ? 'text-[#CA2F2F]' : 'text-[#53311C]'}`}>Starts in {minutesLeft} minute{minutesLeft===1?'':'s'}</p>
         )}
       </header>
 
-      {loading && <p className="text-[#53311C] mt-10">Loading...</p>}
-      {!loading && error && <p className="text-red-600 mt-10 text-sm">{error}</p>}
+      {loading && <p className="text-[#53311C] mt-10 text-sans text-base font-semibold">Loading...</p>}
+      {!loading && error && <p className="text-[#CA2F2F] mt-10 text-sans text-base font-semibold">{error}</p>}
       {!loading && !error && !booking && (
-        <p className="text-[#53311C] mt-10 text-sm">No upcoming booking found.</p>
+        <div className="bg-white rounded-2xl shadow-md p-8 mt-3 mb-0 w-full max-w-lg mx-auto flex flex-col items-center font-sans">
+        <p className="text-[#53311C] mt-10 text-sans text-base font-semibold">No upcoming booking found.</p>
+        </div>
       )}
       {!loading && !error && booking && (
-        <div className="bg-white rounded-2xl shadow-md p-6 mt-4 w-full max-w-sm mx-auto flex flex-col items-center font-Inter">
-          <h2 className="text-3xl text-[#53311C] mb-6">Room {booking.room_number}</h2>
-          <div className="grid grid-cols-2 gap-y-10 gap-x-12 mb-6 text-sm text-[#B37E32]  w-full">
+        <div className="bg-white rounded-2xl shadow-md p-8 mt-3 w-full max-w-lg mx-auto flex flex-col items-center font-sans">
+          <h2 className="text-3xl text-[#53311C] mb-6">{booking.room_number}</h2>
+          <div className="grid grid-cols-2 gap-y-10 gap-x-12 mb-6 text-sm text-[#B37E32] w-xs">
             <div>
               <div className=" mb-4">Date</div>
               <div className=" pb-4 mb-4 text-[#3C2415]">{formatDate(booking.checkIn)}</div>
@@ -163,11 +166,11 @@ function Upcoming() {
             </p>
           </div>
           <div className="flex flex-col items-center w-full">
-            <p className="text-lg text-[#BB8F6E] font-semibold mb-4">
-              Price <span className="text-[#53311C] ">{booking.totalPrice} THB</span>
+            <p className="text-lg text-[#BB8F6E] font-medium mb-4">
+              Price <span className="text-[#53311C] font-semibold ">{booking.totalPrice} THB</span>
             </p>
-            <button style={{ height: 'auto', width: '45%' }} className="w-full bg-brown-500 text-white py-2 px-4 rounded hover:bg-brown-600 transition duration-300 mt-2" onClick={() => window.history.back()}>
-              Back
+            <button style={{ height: 'auto', width: '45%' }} className="btn-primary" onClick={() => window.history.back()}>
+              Cancel Booking
             </button>
           </div>
         </div>
