@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Calendar } from 'lucide-react';
 import p6Room from '../assets/6p_room.png';
 import p10Room from '../assets/10p_room.jpg';
@@ -23,6 +24,7 @@ function overlaps(aStart,aEnd,bStart,bEnd){ return aStart < bEnd && bStart < aEn
 function hmToNum(hm){ return parseInt(hm.split(':')[0],10); }
 
 const BookingConfirmPage = () => {
+  const navigate = useNavigate();
   // Assume room passed from previous page via sessionStorage / or fallback
   const initialRoom = sessionStorage.getItem('selectedRoom') || 'Room 1';
   const [roomId] = useState(initialRoom);
@@ -120,7 +122,8 @@ const BookingConfirmPage = () => {
         endTime: endTime+':00',
         totalPrice
       }, { headers: { Authorization: `Bearer ${token}` }});
-      setShowSuccessModal(true);
+      // Optionally show modal before redirect (not visible due to immediate navigation)
+      // setShowSuccessModal(true);
       // Clear pending session keys so next booking starts fresh
       try {
         sessionStorage.removeItem('pendingStart');
@@ -128,8 +131,10 @@ const BookingConfirmPage = () => {
         sessionStorage.removeItem('pendingDate');
         sessionStorage.removeItem('selectedSlots');
       } catch {}
+      // Redirect to upcoming bookings page immediately per requirement
+      navigate('/upcoming');
     } catch(e){ alert(e.response?.data?.message || e.message); }
-    finally { setSubmitting(false); setTimeout(()=>setShowSuccessModal(false),3000); }
+    finally { setSubmitting(false); }
   }
 
   return (

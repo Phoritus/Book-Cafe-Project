@@ -104,6 +104,19 @@ function Upcoming() {
 
   const minutesLeft = booking?.startTime ? diffMinutesFromNow(booking.checkIn, booking.startTime) : null;
 
+  async function handleCancel() {
+    if(!booking) return;
+    if(!confirm('Cancel this booking?')) return;
+    try {
+      const token = localStorage.getItem('accessToken');
+      if(!token) { alert('Please login'); return; }
+      await axios.post(`${API_BASE}/bookings/${booking.booking_id}/cancel`, {}, { headers: { Authorization: `Bearer ${token}` }});
+      setBooking(null); // remove from view
+    } catch(e) {
+      alert(e?.response?.data?.message || 'Failed to cancel');
+    }
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#FBF7F3] p-4" style={{ backgroundColor: '#F6F3ED' }}>
       {/* Auto-refresh toggle */}
@@ -169,7 +182,7 @@ function Upcoming() {
             <p className="text-lg text-[#BB8F6E] font-medium mb-4">
               Price <span className="text-[#53311C] font-semibold ">{booking.totalPrice} THB</span>
             </p>
-            <button style={{ height: 'auto', width: '45%' }} className="btn-primary" onClick={() => window.history.back()}>
+            <button style={{ height: 'auto', width: '45%' }} className="btn-primary" onClick={handleCancel}>
               Cancel Booking
             </button>
           </div>

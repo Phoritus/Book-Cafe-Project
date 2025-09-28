@@ -133,4 +133,26 @@ export async function checkOutBookingHandler(req, res) {
   }
 }
 
-export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler, listBookingsTodayHandler, checkOutBookingHandler };
+// POST /bookings/:id/cancel - allow cancellation if still BOOKED and before start time
+export async function cancelBookingHandler(req, res) {
+  try {
+    const bookingId = parseInt(req.params.id, 10);
+    const booking = await getBookingById(bookingId);
+    if (!booking) return res.status(404).json({ error: true, message: 'Not found' });
+    if (booking.person_id !== req.user.id && req.user.role !== 'admin') return res.status(403).json({ error: true, message: 'Forbidden' });
+    if (booking.status !== 'BOOKED') return res.status(400).json({ error: true, message: `Cannot cancel from status ${booking.status}` });
+    if (booking.startTime) {
+      const startDateTime = new Date(`${booking.checkIn}T${booking.startTime}`);
+      if (Date.now() > startDateTime.getTime()) {
+        return res.status(400).json({ error: true, message: 'Cannot cancel after start time' });
+      }
+    }
+    await updateBookingStatus(bookingId, { status: 'CANCELLED' });
+    const updated = await getBookingById(bookingId);
+    res.json({ success: true, booking: updated });
+  } catch (e) {
+    res.status(500).json({ error: true, message: e.message });
+  }
+}
+
+export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler, listBookingsTodayHandler, checkOutBookingHandler, cancelBookingHandler };
