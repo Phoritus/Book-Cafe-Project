@@ -55,6 +55,7 @@ export async function listBorrowingByCitizen(citizen_id) {
     FROM borrowing_record br
     LEFT JOIN book b ON b.book_id = br.book_id
     WHERE br.citizen_id = ?
+      AND br.returnTime IS NULL
     ORDER BY br.borrowTime DESC`;
   const [rows] = await query(sql, [citizen_id]);
   return rows;
