@@ -51,8 +51,22 @@ export async function listBookingsByRoom(room_number) {
 }
 
 export async function listBookingsToday(room_number) {
-  const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
-  const [rows] = await query('SELECT * FROM booking_room WHERE room_number = ? AND checkIn = ?', [room_number, today]);
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  // Join person table to enrich booking with user identity details
+  const sql = `SELECT 
+      b.*, 
+      p.firstname, 
+      p.lastname, 
+      p.nameTitle, 
+      p.phone, 
+      p.citizen_id, 
+      p.email, 
+      p.role
+    FROM booking_room b
+    JOIN person p ON p.person_id = b.person_id
+    WHERE b.room_number = ? AND b.checkIn = ?
+    ORDER BY COALESCE(b.startTime,'00:00:00') ASC`;
+  const [rows] = await query(sql, [room_number, today]);
   return rows;
 }
 

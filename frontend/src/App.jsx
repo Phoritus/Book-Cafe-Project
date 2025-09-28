@@ -19,6 +19,7 @@ import ResetPassword from './pages/Resetpassword.jsx';
 import ProfileInformation from './pages/ProfileInformation.jsx';
 import ChangeEmail from './pages/ChangeEmail';
 import ChangePassword from './pages/ChangePassword';
+import CheckIn from './pages/CheckIn.jsx';
 
 function RequireRole({ role, children }) {
   // ถ้าคุณมี auth store ใช้แทน localStorage
@@ -72,6 +73,14 @@ function App() {
               element={
                 <RequireRole role="admin">
                   <Roomdashboard />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/check-in"
+              element={
+                <RequireRole role="admin">
+                  <CheckIn />
                 </RequireRole>
               }
             />

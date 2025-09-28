@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Users, Clock, DollarSign, Calendar } from 'lucide-react';
 import roomImage from '../assets/10p_room.jpg';
@@ -23,7 +24,9 @@ const RoomBookingSchedule = () => {
   const [hasRoom, setHasRoom] = useState(false);
   const [bookings, setBookings] = useState([]); // today's bookings for this room
   const [userId, setUserId] = useState(null);
+  const [role, setRole] = useState(null);
   const API_BASE = import.meta.env.VITE_API_BASE;
+  const navigate = useNavigate();
   useEffect(() => {
     let cancelled = false;
     const stored = (() => {
@@ -35,7 +38,10 @@ const RoomBookingSchedule = () => {
       const rawUser = localStorage.getItem('user');
       if (rawUser) {
         const parsed = JSON.parse(rawUser);
-        if (parsed && parsed.id) setUserId(parsed.id);
+        if (parsed) {
+          if (parsed.id) setUserId(parsed.id);
+          if (parsed.role) setRole(parsed.role);
+        }
       }
     } catch {}
     (async () => {
@@ -76,22 +82,32 @@ const RoomBookingSchedule = () => {
     return () => { abort = true; };
   }, [API_BASE, hasRoom, roomName]);
 
-  // Derive user's own booked slot labels (assuming each booking has startTime/endTime HH:MM:SS)
-  const userBookedSlots = useMemo(() => {
-    if (!userId) return new Set();
+  // Expand booking time range into 1-hour slot labels
+  function expandToHourSlots(startTime, endTime) {
+    if (!startTime || !endTime) return [];
+    const toMinutes = (t) => { const [hh, mm] = t.split(':'); return parseInt(hh,10)*60 + parseInt(mm,10); };
+    const fmt = (m) => `${String(Math.floor(m/60)).padStart(2,'0')}:00`;
+    const startMin = toMinutes(startTime.slice(0,5));
+    const endMin = toMinutes(endTime.slice(0,5));
+    const slots = [];
+    for (let m = startMin; m < endMin; m += 60) {
+      const s = fmt(m);
+      const e = fmt(m + 60);
+      slots.push(`${s} - ${e}`);
+    }
+    return slots;
+  }
+
+  const allowedSlots = useMemo(() => {
     const set = new Set();
-    bookings.filter(b => b.person_id === userId).forEach(b => {
-      if (b.startTime && b.endTime) {
-        // convert times to HH:MM
-        const start = b.startTime.slice(0,5); // HH:MM
-        const end = b.endTime.slice(0,5);
-        // We assume bookings are exactly 1 hour or align to our slot boundaries; create label like 'HH:MM - HH+1:MM' if matches
-        const label = `${start} - ${end}`;
-        set.add(label);
+    bookings.forEach(b => {
+      if (!b.startTime || !b.endTime) return;
+      if (role === 'admin' || (userId && b.person_id === userId)) {
+        expandToHourSlots(b.startTime, b.endTime).forEach(lbl => set.add(lbl));
       }
     });
     return set;
-  }, [bookings, userId]);
+  }, [bookings, userId, role]);
 
   const toggleTime = (slot) => {
     setSelectedSlot(slot);
@@ -159,8 +175,8 @@ const RoomBookingSchedule = () => {
           <div className="flex justify-center p-0 !mt-10 ">
             <div className="grid grid-cols-3 gap-6 !w-130 !mb-10 ">
               {timeSlots.map((slot) => {
-                const allowed = userBookedSlots.size === 0 ? false : userBookedSlots.has(slot);
-                const isSelected = selectedSlot === slot;
+                const allowed = allowedSlots.has(slot);
+                const isSelected = allowed && selectedSlot === slot;
                 return (
                   <button
                     key={slot}
@@ -168,7 +184,7 @@ const RoomBookingSchedule = () => {
                     disabled={!allowed}
                     onClick={() => allowed && toggleTime(slot)}
                     className={`!w-full !mt-2 rounded-xl border !h-15 text-sm transition-transform 
-                      ${allowed ? (isSelected ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105' : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50') : 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'}
+                      ${allowed ? (isSelected ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105' : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50') : 'bg-[#F6F3ED] border border-amber-300 text-amber-700'}
                     `}
                   >
                     {slot}
@@ -183,7 +199,22 @@ const RoomBookingSchedule = () => {
         {/* Continue Button */}
         {hasRoom && (
           <div className="flex justify-center">
-            <button className="!w-110 bg-darkBrown-700 !mt-10 text-white font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20">
+            <button
+              disabled={!selectedSlot || !allowedSlots.has(selectedSlot)}
+              onClick={() => {
+                if (!selectedSlot) return;
+                // store for later use
+                try { sessionStorage.setItem('checkInRoom', roomName); } catch {}
+                try { sessionStorage.setItem('checkInSlot', selectedSlot); } catch {}
+                if (role === 'admin') {
+                  const params = new URLSearchParams({ room: roomName, slot: selectedSlot });
+                  navigate(`/check-in?${params.toString()}`);
+                }
+              }}
+              className={`!w-110 !mt-10 font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20 
+                ${selectedSlot && allowedSlots.has(selectedSlot) ? 'bg-darkBrown-700 text-white hover:bg-darkBrown-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
+              `}
+            >
               <span>Continue</span>
               <ArrowLeft className="w-4 h-4 rotate-180" />
             </button>
