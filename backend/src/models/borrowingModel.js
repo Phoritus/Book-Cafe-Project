@@ -1,9 +1,8 @@
 import { query } from '../config/db.js';
 import { getBook, updateBookStatus } from './bookModel.js';
-import { findByCitizenId } from './personModel.js';
 
 export async function borrowBook({ book_id, citizen_id }) {
-  // Validate existence
+  // Validate book only
   const book = await getBook(book_id);
   if (!book) {
     const err = new Error('Book not found');
@@ -16,15 +15,7 @@ export async function borrowBook({ book_id, citizen_id }) {
     throw err;
   }
 
-  const person = await findByCitizenId(citizen_id);
-  if (!person) {
-    const err = new Error('Person (citizen) not found');
-    err.status = 404;
-    throw err;
-  }
-
-  // Insert record
-  // NOTE: DB column appears misspelled as 'cibzen_id' (per screenshot). Try both.
+  // No longer require citizen to exist in person table; treat citizen_id as external ID
   const insertSql = `INSERT INTO borrowing_record (book_id, citizen_id) VALUES (?, ?)`;
   await query(insertSql, [book_id, citizen_id]);
   await updateBookStatus(book_id, 'borrowed');
@@ -56,16 +47,14 @@ export async function returnBook({ record_id }) {
 }
 
 export async function listBorrowingByCitizen(citizen_id) {
-  // Select with fallback WHERE on cibzen_id or citizen_id (in case of schema variation)
   const sql = `
     SELECT br.record_id, br.book_id,
-           COALESCE(br.citizen_id) AS citizen_id,
+           br.citizen_id AS citizen_id,
            br.borrowTime, br.returnTime,
            b.book_name, b.book_status, b.category
     FROM borrowing_record br
     LEFT JOIN book b ON b.book_id = br.book_id
-    WHERE COALESCE(br.citizen_id) = ?
-      AND br.returnTime IS NULL
+    WHERE br.citizen_id = ?
     ORDER BY br.borrowTime DESC`;
   const [rows] = await query(sql, [citizen_id]);
   return rows;
