@@ -37,10 +37,10 @@ const BookBorrowingDashboard = () => {
           setCategoryData(mapped);
         } else if (Array.isArray(json)) {
           // fallback if server returns raw array
-            setCategoryData(json.map(c => ({
-              name: c.category || c.name,
-              borrowings: Number(c.borrowings) || 0
-            })));
+          setCategoryData(json.map(c => ({
+            name: c.category || c.name,
+            borrowings: Number(c.borrowings) || 0
+          })));
         } else {
           setCategoryData([]);
         }
@@ -109,15 +109,15 @@ const BookBorrowingDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8F4F0] flex flex-col font-sans"  style={{ backgroundColor: "#F6F3ED" }}>
+    <div className="min-h-screen bg-[#F8F4F0] flex flex-col font-sans" style={{ backgroundColor: "#F6F3ED" }}>
       <main className="flex-1 !ml-15 px-8 py-6 flex flex-col items-center gap-10">
-              {/* Back Arrow */}
-              <button
-                        onClick={() => window.history.back()}
-                        className="flex items-center text-[#7B3F00] font-medium hover:opacity-80 transition self-start"
-                      >
-                        <ArrowLeft className="w-10 h-10 mr-5 color-[#86422A]" />
-                      </button>
+        {/* Back Arrow */}
+        <button
+          onClick={() => window.history.back()}
+          className="flex items-center text-[#7B3F00] font-medium hover:opacity-80 transition self-start"
+        >
+          <ArrowLeft className="w-10 h-10 mr-5 color-[#86422A]" />
+        </button>
 
         {/* Title */}
         <div className="text-center max-w-xl">
@@ -159,7 +159,7 @@ const BookBorrowingDashboard = () => {
         </div>
 
         {/* Top 5 Borrowed Books */}
-        <div className="bg-white rounded-xl shadow-md p-6 max-w-4xl mx-auto w-full">
+        <div className="bg-white rounded-xl shadow-md p-6 max-w-4xl mx-auto w-full !mb-20">
           <div className="flex justify-between items-center mb-4">
             <div>
               <h2 className="text-lg font-semibold text-[#53311C]">
