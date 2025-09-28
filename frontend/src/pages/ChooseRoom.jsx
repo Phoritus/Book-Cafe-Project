@@ -55,6 +55,9 @@ function ChooseRoom() {
     const handleRoomSchedule = (roomName) => {
         if (!isAuthenticated) {
             toast.error('Please login first');
+            // optional: remember where user wanted to go
+            try { sessionStorage.setItem('postLoginRoom', roomName); } catch {}
+            navigate(`/login?redirect=${encodeURIComponent('/choose-room')}`);
             return;
         }
         try {
