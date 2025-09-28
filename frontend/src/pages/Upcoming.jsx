@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import logo from "../assets/Coffee.svg";
 import QRCode from 'react-qr-code';
 import axios from 'axios';
@@ -29,6 +30,7 @@ function diffMinutesFromNow(dateStr, timeStr) {
 }
 
 function Upcoming() {
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [booking, setBooking] = useState(null);
@@ -43,6 +45,18 @@ function Upcoming() {
     try {
       if (isRefresh) setRefreshing(true); else setLoading(true);
       setError('');
+      // If we have a freshly navigated booking (state.fromBooking) and this is initial load, skip fetch
+      if (!isRefresh && location.state?.fromBooking) {
+        const fresh = location.state.fromBooking;
+        if (fresh.status !== 'CHECKED_OUT' && fresh.status !== 'CANCELLED') {
+          setBooking(fresh);
+          // Determine within30 based on fresh data
+          const mins = diffMinutesFromNow(fresh.checkIn, fresh.startTime);
+          setWithin30(mins != null && mins <= 30 && mins >= 0);
+          setLoading(false);
+          return; // skip API call
+        }
+      }
       const token = localStorage.getItem('accessToken');
       if (!token) {
         setError('You must be logged in.');
@@ -67,7 +81,7 @@ function Upcoming() {
     } finally {
       if (isRefresh) setRefreshing(false); else setLoading(false);
     }
-  }, [ENDPOINT]);
+  }, [ENDPOINT, location.state]);
 
   useEffect(() => {
     fetchUpcoming(false);

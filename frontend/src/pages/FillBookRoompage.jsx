@@ -74,6 +74,7 @@ const BookingConfirmPage = () => {
     const nowHM = new Date().toTimeString().slice(0,5);
     HOURS_STARTS.forEach(s=>{ map[s]= false; });
     bookingsToday.forEach(b=>{
+      if(b.status === 'CANCELLED') return; // cancelled slot should be free again
       if(!b.startTime||!b.endTime) return; const bs=b.startTime.slice(0,5); const be=b.endTime.slice(0,5);
       HOURS_STARTS.forEach(s=>{ const e = String(hmToNum(s)+1).padStart(2,'0')+':00'; if(overlaps(s,e,bs,be)) map[s]=true; });
     });
@@ -89,6 +90,7 @@ const BookingConfirmPage = () => {
     const nowHM = new Date().toTimeString().slice(0,5);
     HOURS_ENDS.forEach(e=>{ map[e]= false; });
     bookingsToday.forEach(b=>{
+      if(b.status === 'CANCELLED') return; // ignore cancelled
       if(!b.startTime||!b.endTime) return; const bs=b.startTime.slice(0,5); const be=b.endTime.slice(0,5);
       HOURS_ENDS.forEach(e=>{ const s = String(hmToNum(e)-1).padStart(2,'0')+':00'; if(overlaps(s,e,bs,be)) map[e]=true; });
     });
@@ -107,6 +109,7 @@ const BookingConfirmPage = () => {
   async function handleConfirmBooking(){
     if(hours<=0) { alert('Select valid range'); return; }
     const conflict = bookingsToday.some(b=>{
+      if(b.status === 'CANCELLED') return false; // free slot
       if(!b.startTime||!b.endTime) return false; const bs=b.startTime.slice(0,5); const be=b.endTime.slice(0,5); return overlaps(startTime,endTime,bs,be);
     });
     if(conflict){ alert('Time conflict'); return; }
@@ -114,7 +117,7 @@ const BookingConfirmPage = () => {
     try {
       const token = localStorage.getItem('accessToken');
       if(!token){ alert('Please login first'); setSubmitting(false); return; }
-      await axios.post(`${API_BASE}/bookings`, {
+      const createRes = await axios.post(`${API_BASE}/bookings`, {
         room_number: roomId,
         checkIn: bookingDate,
         checkOut: bookingDate,
@@ -132,7 +135,23 @@ const BookingConfirmPage = () => {
         sessionStorage.removeItem('selectedSlots');
       } catch {}
       // Redirect to upcoming bookings page immediately per requirement
-      navigate('/upcoming');
+      // Pass newly created booking to upcoming so it can show instantly without waiting for polling logic
+      let createdBooking = null;
+      try {
+        // Some APIs return the created booking record; if not, synthesize minimal object
+        createdBooking = createRes.data?.booking || {
+          booking_id: createRes.data?.booking_id || createRes.data?.id || 'temp',
+          room_number: roomId,
+          checkIn: bookingDate,
+          checkOut: bookingDate,
+            startTime: startTime+':00',
+            endTime: endTime+':00',
+            totalPrice,
+            status: 'BOOKED',
+            qrCode: createRes.data?.qrCode || null
+        };
+      } catch {}
+      navigate('/upcoming', { state: { fromBooking: createdBooking } });
     } catch(e){ alert(e.response?.data?.message || e.message); }
     finally { setSubmitting(false); }
   }

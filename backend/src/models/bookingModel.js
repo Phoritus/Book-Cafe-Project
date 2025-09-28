@@ -5,8 +5,11 @@ import { query } from '../config/db.js';
 // Time window (startTime/endTime) used only if both have values; simplified assumption.
 
 export async function hasOverlap({ room_number, checkIn, checkOut, startTime = null, endTime = null }) {
+  // Ignore bookings that are already CANCELLED or CHECKED_OUT (their slots should be reusable).
+  // Active blockers: BOOKED, CHECKED_IN (room still occupied until endTime).
   let sql = `SELECT 1 FROM booking_room 
              WHERE room_number = ?
+               AND status NOT IN ('CANCELLED','CHECKED_OUT')
                AND NOT (checkOut < ? OR checkIn > ?)`; // date range overlap
   const params = [room_number, checkIn, checkOut];
 
