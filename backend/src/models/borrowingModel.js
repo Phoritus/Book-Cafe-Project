@@ -59,12 +59,12 @@ export async function listBorrowingByCitizen(citizen_id) {
   // Select with fallback WHERE on cibzen_id or citizen_id (in case of schema variation)
   const sql = `
     SELECT br.record_id, br.book_id,
-           COALESCE(br.citizen_id, br.cibzen_id) AS citizen_id,
+           COALESCE(br.citizen_id) AS citizen_id,
            br.borrowTime, br.returnTime,
            b.book_name, b.book_status, b.category
     FROM borrowing_record br
     LEFT JOIN book b ON b.book_id = br.book_id
-    WHERE COALESCE(br.citizen_id, br.cibzen_id) = ?
+    WHERE COALESCE(br.citizen_id) = ?
     ORDER BY br.borrowTime DESC`;
   const [rows] = await query(sql, [citizen_id]);
   return rows;
