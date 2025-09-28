@@ -57,11 +57,37 @@ export function validateCreateBook(req, res, next) {
   next();
 }
 
+// Profile update: allow partial, require at least one allowed field
+export function validateUpdateProfile(req, res, next) {
+  const allowed = ['nameTitle','firstname','lastname','phone','dateOfBirth','citizen_id'];
+  const body = req.body || {};
+  const provided = allowed.filter(f => body[f] != null && body[f] !== '');
+  if (!provided.length) return fail(res, 'At least one profile field required', allowed);
+  const errors = [];
+  if (body.phone) {
+    const normalized = body.phone.toString().replace(/[^+\d]/g,'');
+    body.phone = normalized; // mutate so controller sees normalized
+    if (!/^[+]?[0-9]{9,15}$/.test(normalized)) errors.push('phone invalid');
+  }
+  if (body.citizen_id) {
+    if (!/^\d{13}$/.test(body.citizen_id)) errors.push('citizen_id must be 13 digits');
+  }
+  if (body.dateOfBirth) {
+    const dob = new Date(body.dateOfBirth);
+    if (isNaN(dob.getTime())) errors.push('dateOfBirth invalid');
+    else if (dob > new Date()) errors.push('dateOfBirth future');
+    else body.dateOfBirth = dob.toISOString().slice(0,10);
+  }
+  if (errors.length) return fail(res, 'Validation errors', errors);
+  next();
+}
+
 export default {
   validateLogin,
   validateRegister,
   validateSendRegisterCode,
   validateCreateBooking,
   validateCreateRoom,
-  validateCreateBook
+  validateCreateBook,
+  validateUpdateProfile
 };
