@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Users, Clock, DollarSign, Calendar } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 import roomImage from '../assets/10p_room.jpg';
 
 const timeSlots = [
@@ -19,6 +19,7 @@ const timeSlots = [
 
 const RoomBookingSchedule = () => {
   const [selectedSlot, setSelectedSlot] = useState('09:00 - 10:00');
+  const [today, setToday] = useState(() => new Date());
   const [roomName, setRoomName] = useState('Room');
   const [roomInfo, setRoomInfo] = useState({ capacity: '—', price: '—' });
   const [hasRoom, setHasRoom] = useState(false);
@@ -73,6 +74,8 @@ const RoomBookingSchedule = () => {
         const token = localStorage.getItem('accessToken');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const encoded = encodeURIComponent(roomName);
+        console.log('Fetching bookings for', roomName, encoded);
++        console.log('Using URL:', `${API_BASE}/bookings/today/${encoded}`);
         const { data } = await axios.get(`${API_BASE}/bookings/today/${encoded}`, { headers });
         if (!abort && Array.isArray(data)) setBookings(data);
       } catch (e) {
@@ -98,24 +101,84 @@ const RoomBookingSchedule = () => {
     return slots;
   }
 
-  // Only allow selecting slots that still have an active booking (BOOKED or CHECKED_IN).
-  // After a booking is CHECKED_OUT its slots become disabled again.
+  // Build set of selectable slots:
+  // Admin: any slot covered by a booking with status not CANCELLED (includes CHECKED_OUT so they can inspect history)
+  // User: their own bookings only (BOOKED / CHECKED_IN so they can proceed to check-in / check-out)
+  // Slot covered if booking.startTime <= slotStart AND booking.endTime >= slotEnd
   const allowedSlots = useMemo(() => {
-    const ACTIVE_STATUSES = new Set(['BOOKED', 'CHECKED_IN']);
+    const ADMIN_ALLOWED = new Set(['BOOKED','CHECKED_IN','CHECKED_OUT']);
+    const USER_ALLOWED = new Set(['BOOKED','CHECKED_IN']);
+    const isAdmin = (role || '').toLowerCase() === 'admin';
+    const toMinutes = (t) => { const [hh, mm] = t.split(':'); return parseInt(hh,10)*60 + parseInt(mm,10); };
     const set = new Set();
     bookings.forEach(b => {
       if (!b.startTime || !b.endTime) return;
-      if (!ACTIVE_STATUSES.has(b.status)) return; // ignore finished / other statuses
-      if (role === 'admin' || (userId && b.person_id === userId)) {
-        expandToHourSlots(b.startTime, b.endTime).forEach(lbl => set.add(lbl));
+      if (isAdmin) {
+        if (!ADMIN_ALLOWED.has(b.status) || b.status === 'CANCELLED') return;
+      } else {
+        if (!(userId && b.person_id === userId)) return;
+        if (!USER_ALLOWED.has(b.status)) return;
       }
+      const bStart = b.startTime.slice(0,5);
+      const bEnd = b.endTime.slice(0,5);
+      const bStartMin = toMinutes(bStart);
+      const bEndMin = toMinutes(bEnd);
+      timeSlots.forEach(slot => {
+        const [s,e] = slot.split('-').map(x => x.trim());
+        const sMin = toMinutes(s);
+        const eMin = toMinutes(e);
+        if (sMin >= bStartMin && eMin <= bEndMin) set.add(slot);
+      });
     });
     return set;
   }, [bookings, userId, role]);
 
+  // Helper: find booking covering a selected slot
+  function findBookingForSlot(slot){
+    if(!slot) return null;
+    const [slotStart, slotEnd] = slot.split('-').map(s=>s.trim());
+    return bookings.find(b => {
+      if(!b.startTime || !b.endTime) return false;
+      const s = b.startTime.slice(0,5);
+      const e = b.endTime.slice(0,5);
+      return s <= slotStart && e >= slotEnd; // spans
+    }) || null;
+  }
+
   const toggleTime = (slot) => {
     setSelectedSlot(slot);
   };
+
+  useEffect(() => {
+    function msUntilMidnight() {
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(24,0,0,0);
+      return next - now;
+    }
+    function refreshIfRolled() {
+      const now = new Date();
+      // if day changed vs stored (compare YYYY-MM-DD)
+      const prevKey = today.toISOString().slice(0,10);
+      const nowKey = now.toISOString().slice(0,10);
+      if (prevKey !== nowKey) setToday(now);
+    }
+    // initial sync
+    refreshIfRolled();
+    let timer = setTimeout(function tick(){
+      refreshIfRolled();
+      timer = setTimeout(tick, 24*60*60*1000);
+    }, msUntilMidnight());
+    const onFocus = () => refreshIfRolled();
+    const onVis = () => { if (!document.hidden) refreshIfRolled(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [today]);
 
   return (
     <section className="relative min-h-screen flex flex-1 items-center justify-center font-sans" style={{ backgroundColor: "#F6F3ED" }}>
@@ -204,40 +267,35 @@ const RoomBookingSchedule = () => {
         {/* Continue Button */}
         {hasRoom && (
           <div className="flex justify-center">
-            <button
-              disabled={!selectedSlot || !allowedSlots.has(selectedSlot)}
-              onClick={() => {
-                if (!selectedSlot) return;
-                // store for later use
-                try { sessionStorage.setItem('checkInRoom', roomName); } catch { }
-                try { sessionStorage.setItem('checkInSlot', selectedSlot); } catch { }
-                if (role === 'admin') {
-                  // determine booking covering this slot
-                  const slotStart = selectedSlot.split('-')[0].trim();
-                  const slotEnd = selectedSlot.split('-')[1].trim();
-                  const match = bookings.find(b => {
-                    if (!b.startTime || !b.endTime) return false;
-                    const s = b.startTime.slice(0, 5);
-                    const e = b.endTime.slice(0, 5);
-                    return s <= slotStart && e >= slotEnd; // booking spans the slot
-                  });
-                  const params = new URLSearchParams({ room: roomName, slot: selectedSlot });
-                  if (match && match.status === 'CHECKED_IN') {
-                    params.set('bookingId', match.booking_id);
-                    navigate(`/checkout?${params.toString()}`);
-                  } else {
-                    if (match && match.booking_id) params.set('bookingId', match.booking_id);
-                    navigate(`/check-in?${params.toString()}`);
-                  }
-                }
-              }}
-              className={`!w-110 !mt-10 font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20 
-                ${selectedSlot && allowedSlots.has(selectedSlot) ? 'bg-darkBrown-700 text-white hover:bg-darkBrown-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
-              `}
-            >
-              <span>Continue</span>
-              <ArrowLeft className="w-4 h-4 rotate-180" />
-            </button>
+            {(() => {
+              const booking = findBookingForSlot(selectedSlot);
+              const actionable = booking && ['BOOKED','CHECKED_IN'].includes(booking.status);
+              return (
+                <button
+                  disabled={!(selectedSlot && allowedSlots.has(selectedSlot) && actionable)}
+                  onClick={() => {
+                    if(!(selectedSlot && actionable)) return;
+                    try { sessionStorage.setItem('checkInRoom', roomName); } catch {}
+                    try { sessionStorage.setItem('checkInSlot', selectedSlot); } catch {}
+                    if ((role || '').toLowerCase() === 'admin') {
+                      const params = new URLSearchParams({ room: roomName, slot: selectedSlot });
+                      if (booking && booking.booking_id) params.set('bookingId', booking.booking_id);
+                      if (booking && booking.status === 'CHECKED_IN') {
+                        navigate(`/checkout?${params.toString()}`);
+                      } else {
+                        navigate(`/check-in?${params.toString()}`);
+                      }
+                    }
+                  }}
+                  className={`!w-110 !mt-10 font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20 
+                    ${selectedSlot && allowedSlots.has(selectedSlot) && actionable ? 'bg-darkBrown-700 text-white hover:bg-darkBrown-800' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
+                  `}
+                >
+                  <span>{actionable ? 'Continue' : booking && booking.status === 'CHECKED_OUT' ? 'Finished' : 'Continue'}</span>
+                  <ArrowLeft className="w-4 h-4 rotate-180" />
+                </button>
+              );
+            })()}
           </div>
         )}
 

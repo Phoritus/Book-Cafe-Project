@@ -4,13 +4,12 @@ import { ArrowLeft, Clock, Calendar } from 'lucide-react';
 import p6Room from '../assets/6p_room.png';
 import p10Room from '../assets/10p_room.jpg';
 import axios from 'axios';
+import dayjs from "dayjs";
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://book-cafe-project.vercel.app';
 
-function todayDateStrDisplay() {
-  return new Date().toLocaleDateString('en-GB');
-}
-function todayDateISO() { return new Date().toISOString().slice(0,10); }
+// Use local date (not UTC slice) to avoid early rollover issues
+function todayDateISO() { return dayjs().format('YYYY-MM-DD'); }
 
 // Generate hourly times between inclusive start and exclusive end
 function genHours(start='08:00', end='18:00') {
@@ -105,6 +104,38 @@ const BookingConfirmPage = () => {
 
   const hours = Math.max(0, hmToNum(endTime) - hmToNum(startTime));
   const totalPrice = hours * currentRoom.pricePerHour;
+
+  // Auto-refresh bookingDate at midnight and when tab regains focus / visibility
+  useEffect(() => {
+    function msUntilMidnight() {
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(24,0,0,0); // local midnight
+      return next - now;
+    }
+    function refreshIfStale() {
+      const today = todayDateISO();
+      setBookingDate(prev => (prev < today ? today : prev));
+    }
+    // Initial sync
+    refreshIfStale();
+    // Schedule next midnight
+    let timer = setTimeout(function tick(){
+      refreshIfStale();
+      timer = setTimeout(tick, 24*60*60*1000); // subsequent days
+    }, msUntilMidnight());
+
+    const onFocus = () => refreshIfStale();
+    const onVisibility = () => { if (!document.hidden) refreshIfStale(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   async function handleConfirmBooking(){
     if(hours<=0) { alert('Select valid range'); return; }
@@ -223,7 +254,7 @@ const BookingConfirmPage = () => {
                     <div className="flex items-center gap-2 p-3 border-2 border-[#E9E0D8] rounded-xl bg-gray-50">
                       <Calendar size={16} className="text-[#c5bcb4]" />
                       <span className="text-[#a69f99] font-medium">
-                        {new Date(bookingDate).toLocaleDateString('en-GB')}
+                        {dayjs(bookingDate).format("DD/MM/YYYY")}
                       </span>
                     </div>
                   </div>
