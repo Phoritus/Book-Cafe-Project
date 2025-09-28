@@ -1,4 +1,4 @@
-import { createBooking, listBookingsByPerson, deleteBooking, getBookingById, getUpcomingBookingForUser } from '../models/bookingModel.js';
+import { createBooking, listBookingsByPerson, deleteBooking, getBookingById, getUpcomingBookingForUser, updateBookingStatus, autoCheckoutExpired } from '../models/bookingModel.js';
 import { query } from '../config/db.js';
 
 export async function createBookingHandler(req, res) {
@@ -51,22 +51,53 @@ export async function deleteBookingHandler(req, res) {
 // GET /bookings/upcoming - next upcoming booking for current user
 export async function upcomingBookingHandler(req, res) {
   try {
-    const booking = await getUpcomingBookingForUser(req.user.id);
+    let booking = await getUpcomingBookingForUser(req.user.id);
     if (!booking) return res.json({ booking: null });
-    // Add derived fields for client convenience
+
+    // Attempt auto checkout if past endTime
+    const changed = await autoCheckoutExpired(booking);
+    if (changed) booking = await getUpcomingBookingForUser(req.user.id) || booking; // re-fetch next upcoming if current auto-checked-out
+    if (!booking) return res.json({ booking: null });
+
     const now = new Date();
-    const bookingDate = booking.checkIn; // assuming DATE string YYYY-MM-DD
+    const bookingDate = booking.checkIn;
     let within30 = false;
+    let canCheckIn = false;
     if (booking.startTime) {
       const startDateTime = new Date(`${bookingDate}T${booking.startTime}`);
       const diffMs = startDateTime - now;
       const diffMin = diffMs / 60000;
-      within30 = diffMin <= 30 && diffMin >= 0;
+      within30 = diffMin <= 30 && diffMin >= -5; // allow a small grace after start
+      if (within30 && booking.status === 'BOOKED') {
+        canCheckIn = true;
+      }
     }
-    res.json({ booking, meta: { within30Minutes: within30 } });
+    res.json({ booking, meta: { within30Minutes: within30, canCheckIn } });
   } catch (e) {
     res.status(500).json({ error: true, message: e.message });
   }
 }
 
-export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler };
+// POST /bookings/:id/check-in
+export async function checkInBookingHandler(req, res) {
+  try {
+    const bookingId = parseInt(req.params.id, 10);
+    const booking = await getBookingById(bookingId);
+    if (!booking) return res.status(404).json({ error: true, message: 'Not found' });
+    if (booking.person_id !== req.user.id && req.user.role !== 'admin') return res.status(403).json({ error: true, message: 'Forbidden' });
+    if (booking.status !== 'BOOKED') return res.status(400).json({ error: true, message: `Cannot check-in from status ${booking.status}` });
+    if (!booking.startTime) return res.status(400).json({ error: true, message: 'Booking has no startTime defined' });
+    const startDateTime = new Date(`${booking.checkIn}T${booking.startTime}`);
+    const diffMin = (startDateTime - Date.now()) / 60000;
+    if (diffMin > 30) return res.status(400).json({ error: true, message: 'Too early to check in' });
+    if (diffMin < -5) return res.status(400).json({ error: true, message: 'Check-in window passed' });
+    const nowStr = new Date().toISOString().slice(0,19).replace('T',' ');
+    await updateBookingStatus(bookingId, { status: 'CHECKED_IN', actualCheckIn: nowStr });
+    const updated = await getBookingById(bookingId);
+    res.json({ success: true, booking: updated });
+  } catch (e) {
+    res.status(500).json({ error: true, message: e.message });
+  }
+}
+
+export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler };

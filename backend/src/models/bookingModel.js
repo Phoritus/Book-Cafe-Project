@@ -21,16 +21,16 @@ export async function hasOverlap({ room_number, checkIn, checkOut, startTime = n
   return rows.length > 0;
 }
 
-export async function createBooking({ person_id, room_number, checkIn, checkOut, startTime = null, endTime = null, totalPrice, qrCode = null }) {
+export async function createBooking({ person_id, room_number, checkIn, checkOut, startTime = null, endTime = null, totalPrice, qrCode = null, status = 'BOOKED' }) {
   const overlap = await hasOverlap({ room_number, checkIn, checkOut, startTime, endTime });
   if (overlap) {
     const err = new Error('Room already booked for the selected period');
     err.status = 409;
     throw err;
   }
-  const sql = `INSERT INTO booking_room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  const params = [person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode];
+  const sql = `INSERT INTO booking_room (person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode, status)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const params = [person_id, room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode, status];
   const [result] = await query(sql, params);
   return await getBookingById(result.insertId);
 }
@@ -92,4 +92,28 @@ export async function deleteBooking(booking_id, requesterPersonId, isAdmin = fal
 export async function assignBookingQrCode(booking_id, qrCode) {
   const [result] = await query('UPDATE booking_room SET qrCode = ? WHERE booking_id = ? AND (qrCode IS NULL OR qrCode = "")', [qrCode, booking_id]);
   return result.affectedRows > 0;
+}
+
+export async function updateBookingStatus(booking_id, { status, actualCheckIn = null, actualCheckOut = null }) {
+  const fields = [];
+  const params = [];
+  if (status) { fields.push('status = ?'); params.push(status); }
+  if (actualCheckIn) { fields.push('actualCheckIn = ?'); params.push(actualCheckIn); }
+  if (actualCheckOut) { fields.push('actualCheckOut = ?'); params.push(actualCheckOut); }
+  if (!fields.length) return false;
+  params.push(booking_id);
+  const [res] = await query(`UPDATE booking_room SET ${fields.join(', ')} WHERE booking_id = ?`, params);
+  return res.affectedRows > 0;
+}
+
+// Automatically mark a booking as CHECKED_OUT if past endTime and currently CHECKED_IN or BOOKED
+export async function autoCheckoutExpired(booking) {
+  if (!booking) return false;
+  if (!booking.endTime) return false;
+  const endDateTime = new Date(`${booking.checkIn}T${booking.endTime}`);
+  if (Date.now() >= endDateTime.getTime() && (booking.status === 'CHECKED_IN' || booking.status === 'BOOKED')) {
+    await updateBookingStatus(booking.booking_id, { status: 'CHECKED_OUT', actualCheckOut: endDateTime.toISOString().slice(0,19).replace('T',' ') });
+    return true;
+  }
+  return false;
 }

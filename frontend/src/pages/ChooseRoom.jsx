@@ -5,6 +5,7 @@ import roomImage from '../assets/10p_room.jpg'; // ใช้รูปภาพ�
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 function ChooseRoom() {
     const navigate = useNavigate();
@@ -20,11 +21,9 @@ function ChooseRoom() {
         async function loadRooms() {
             try {
                 setLoading(true);
-                const res = await fetch(`${API_BASE}/rooms`);
-                if (!res.ok) throw new Error('Failed to load rooms');
-                const data = await res.json();
+                // axios version
+                const { data } = await axios.get(`${API_BASE}/rooms`);
                 if (cancelled) return;
-                // Expecting array of objects: { room_number, price, room_status, number_people }
                 const mapped = (Array.isArray(data) ? data : []).map((r, idx) => {
                     const statusRaw = (r.room_status || '').toLowerCase();
                     const statusCap = statusRaw.charAt(0).toUpperCase() + statusRaw.slice(1);
@@ -40,7 +39,7 @@ function ChooseRoom() {
                 });
                 setRooms(mapped);
             } catch (e) {
-                if (!cancelled) setError(e.message || 'Error loading rooms');
+                if (!cancelled) setError(e?.response?.data?.message || e.message || 'Error loading rooms');
             } finally {
                 if (!cancelled) setLoading(false);
             }
