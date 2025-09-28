@@ -17,6 +17,8 @@ export default function TestPage() {
 
   // state สำหรับป๊อปอัพยืนยันลบ
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [confirmReturn, setConfirmReturn] = useState(null);
+
 
   // ตัวอย่างข้อมูลหนังสือใน card (ควรเปลี่ยนเป็น dynamic ในอนาคต)
   const bookCard = { name: "Systems Analysis", id: "100" };
@@ -42,7 +44,17 @@ export default function TestPage() {
 
   // handle return (แสดงป๊อปอัพยืนยัน)
   const handleReturn = (id) => {
-    setConfirmDeleteId(id);
+    setConfirmReturn(id);
+  };
+
+  const cancelReturn = () => {
+    setConfirmReturn(null);
+  };
+
+  // ยืนยัน return
+  const confirmReturnBook = () => {
+    setBorrowedBooks(borrowedBooks.filter(book => book.id !== confirmReturn));
+    setConfirmReturn(null);
   };
 
   // ยืนยันลบจริง
@@ -57,9 +69,9 @@ export default function TestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f6f2] p-6">
+    <div className="min-h-screen bg-[#f9f6f2] p-6 font-sans">
       <div className="max-w-6xl mx-auto">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Left column - borrow panel */}
           <aside className="md:col-span-1">
             <section className="borrow-panel">
@@ -69,7 +81,7 @@ export default function TestPage() {
                   Review members' borrowing and returning history.
                 </div>
               </div>
-              <div className="search-box-wrapper" style={{marginLeft: -40 }}>
+              <div className="search-box-wrapper" style={{ marginLeft: -40 }}>
                 <input
                   type="text"
                   placeholder="Book ID:"
@@ -85,12 +97,12 @@ export default function TestPage() {
                   aria-label="Focus Book ID input"
                 >
                   <svg className="search-icon-svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="8" cy="8" r="7" stroke="#B37E32" strokeWidth="2"/>
-                    <path d="M17 17L14 14" stroke="#B37E32" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="8" cy="8" r="7" stroke="#B37E32" strokeWidth="2" />
+                    <path d="M17 17L14 14" stroke="#B37E32" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </button>
               </div>
-              <div className="book-card" style={{ minHeight: '70px', paddingTop: '2rem', paddingBottom: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}> 
+              <div className="book-card" style={{ minHeight: '70px', paddingTop: '2rem', paddingBottom: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <div className="book-info" style={{ padding: 0, margin: 0, minHeight: 0, fontSize: '0.85rem', lineHeight: 1 }}>
                   <div className="book-icon">
                     {/* ...SVG icon... */}
@@ -104,20 +116,20 @@ export default function TestPage() {
                   </div>
                   <div>
                     <div className="name-row">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6rem', marginTop: '0rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '9rem', marginTop: '0rem' }}>
                         <p style={{ margin: 0 }}><strong className="label-strong">Name:</strong> {bookCard.name}</p>
                         <span className="book-actions-inline">
-                        <button className="edit-btn !mb-0" title="Edit" style={{ marginRight: '0.3rem', marginTop: 0 ,backgroundColor:"white"}}>
-                          <svg width="28" height="27" viewBox="0 0 28 27" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.4336 1.65723C20.8509 1.70097 21.1853 1.88883 21.4521 2.08789C21.7337 2.298 22.0359 2.59598 22.3457 2.89844L24.7324 5.22852C25.0567 5.54511 25.3748 5.85179 25.5986 6.13867C25.8403 6.44845 26.0684 6.85192 26.0684 7.375C26.0684 7.89808 25.8403 8.30155 25.5986 8.61133C25.3748 8.89821 25.0567 9.20489 24.7324 9.52148L10.8398 23.083L10.8232 23.0996L10.8057 23.1152C10.6534 23.2647 10.4604 23.4577 10.2168 23.5928C9.95521 23.7377 9.6691 23.7996 9.45605 23.8516L3.79688 25.2324C3.6488 25.2686 3.42682 25.3248 3.23242 25.3428C3.02562 25.3618 2.57375 25.366 2.20703 24.9951C1.84035 24.6242 1.84969 24.1724 1.87109 23.9658C1.89123 23.7718 1.95047 23.551 1.98828 23.4033L3.39258 17.9199C3.44834 17.7021 3.51459 17.4089 3.66797 17.1436L3.79297 16.9561C3.92737 16.7794 4.08243 16.6354 4.20312 16.5176L18.1543 2.89844C18.4641 2.59598 18.7663 2.298 19.0479 2.08789C19.3527 1.86044 19.7457 1.64746 20.25 1.64746L20.4336 1.65723Z" stroke="#86422A" stroke-width="2"/>
-                            <path d="M15.875 4.81217L21.125 1.39551L26.375 6.52051L22.875 11.6455L15.875 4.81217Z" fill="#86422A"/>
-                          </svg>
-                        </button>
-                        <button className="delete-btn" title="Delete" onClick={() => setConfirmDeleteId(bookCard.id)} style={{ marginTop: 0 }}>
-                          <svg width="26" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M8 2.6V1.3C8 0.955219 8.14048 0.624558 8.39052 0.380761C8.64057 0.136964 8.97971 0 9.33333 0L14.6667 0C15.0203 0 15.3594 0.136964 15.6095 0.380761C15.8595 0.624558 16 0.955219 16 1.3V2.6H21.3333C22.0406 2.6 22.7189 2.87393 23.219 3.36152C23.719 3.84912 24 4.51044 24 5.2V6.5C24 7.18956 23.719 7.85088 23.219 8.33848C22.7189 8.82607 22.0406 9.1 21.3333 9.1H21.156L20.2493 22.36C20.1817 23.3471 19.7319 24.2722 18.9909 24.948C18.25 25.6238 17.2733 25.9999 16.2587 26H7.768C6.75423 26 5.77829 25.6247 5.03748 24.9499C4.29667 24.2752 3.84627 23.3513 3.77733 22.3652L2.84933 9.1H2.66667C1.95942 9.1 1.28115 8.82607 0.781049 8.33848C0.280952 7.85088 0 7.18956 0 6.5V5.2C0 4.51044 0.280952 3.84912 0.781049 3.36152C1.28115 2.87393 1.95942 2.6 2.66667 2.6H8ZM21.3333 5.2H2.66667V6.5H21.3333V5.2ZM5.52133 9.1L6.43733 22.1884C6.46032 22.5172 6.61051 22.8252 6.85754 23.0501C7.10458 23.275 7.43 23.4001 7.768 23.4H16.2587C16.5971 23.4001 16.9229 23.2746 17.17 23.0492C17.4171 22.8237 17.567 22.515 17.5893 22.1858L18.4827 9.1H5.52133ZM9.33333 10.4C9.68696 10.4 10.0261 10.537 10.2761 10.7808C10.5262 11.0246 10.6667 11.3552 10.6667 11.7V20.8C10.6667 21.1448 10.5262 21.4754 10.2761 21.7192C10.0261 21.963 9.68696 22.1 9.33333 22.1C8.97971 22.1 8.64057 21.963 8.39052 21.7192C8.14048 21.4754 8 21.1448 8 20.8V11.7C8 11.3552 8.14048 11.0246 8.39052 10.7808C8.64048 10.537 8.97971 10.4 9.33333 10.4ZM14.6667 10.4C15.0203 10.4 15.3594 10.537 15.6095 10.7808C15.8595 11.0246 16 11.3552 16 11.7V20.8C16 21.1448 15.8595 21.4754 15.6095 21.7192C15.3594 21.963 15.0203 22.1 14.6667 22.1C14.313 22.1 13.9739 21.963 13.7239 21.7192C13.4738 21.4754 13.3333 21.1448 13.3333 20.8V11.7C13.3333 11.3552 13.4738 11.0246 13.7239 10.7808C13.9739 10.537 14.313 10.4 14.6667 10.4Z" fill="#FF5656"/>
-                          </svg>
-                        </button>
+                          <button className="op-btn !mb-0 !mr-4 " title="Edit" style={{ marginRight: '0.3rem', marginTop: 0, backgroundColor: "white" }}>
+                            <svg width="28" height="27" viewBox="0 0 28 27" fill="white" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M20.4336 1.65723C20.8509 1.70097 21.1853 1.88883 21.4521 2.08789C21.7337 2.298 22.0359 2.59598 22.3457 2.89844L24.7324 5.22852C25.0567 5.54511 25.3748 5.85179 25.5986 6.13867C25.8403 6.44845 26.0684 6.85192 26.0684 7.375C26.0684 7.89808 25.8403 8.30155 25.5986 8.61133C25.3748 8.89821 25.0567 9.20489 24.7324 9.52148L10.8398 23.083L10.8232 23.0996L10.8057 23.1152C10.6534 23.2647 10.4604 23.4577 10.2168 23.5928C9.95521 23.7377 9.6691 23.7996 9.45605 23.8516L3.79688 25.2324C3.6488 25.2686 3.42682 25.3248 3.23242 25.3428C3.02562 25.3618 2.57375 25.366 2.20703 24.9951C1.84035 24.6242 1.84969 24.1724 1.87109 23.9658C1.89123 23.7718 1.95047 23.551 1.98828 23.4033L3.39258 17.9199C3.44834 17.7021 3.51459 17.4089 3.66797 17.1436L3.79297 16.9561C3.92737 16.7794 4.08243 16.6354 4.20312 16.5176L18.1543 2.89844C18.4641 2.59598 18.7663 2.298 19.0479 2.08789C19.3527 1.86044 19.7457 1.64746 20.25 1.64746L20.4336 1.65723Z" stroke="#86422A" stroke-width="2" />
+                              <path d="M15.875 4.81217L21.125 1.39551L26.375 6.52051L22.875 11.6455L15.875 4.81217Z" fill="#86422A" />
+                            </svg>
+                          </button>
+                          <button className="delete-btn " title="Delete" onClick={() => setConfirmDeleteId(bookCard.id)} style={{ marginTop: 0 }}>
+                            <svg width="26" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M8 2.6V1.3C8 0.955219 8.14048 0.624558 8.39052 0.380761C8.64057 0.136964 8.97971 0 9.33333 0L14.6667 0C15.0203 0 15.3594 0.136964 15.6095 0.380761C15.8595 0.624558 16 0.955219 16 1.3V2.6H21.3333C22.0406 2.6 22.7189 2.87393 23.219 3.36152C23.719 3.84912 24 4.51044 24 5.2V6.5C24 7.18956 23.719 7.85088 23.219 8.33848C22.7189 8.82607 22.0406 9.1 21.3333 9.1H21.156L20.2493 22.36C20.1817 23.3471 19.7319 24.2722 18.9909 24.948C18.25 25.6238 17.2733 25.9999 16.2587 26H7.768C6.75423 26 5.77829 25.6247 5.03748 24.9499C4.29667 24.2752 3.84627 23.3513 3.77733 22.3652L2.84933 9.1H2.66667C1.95942 9.1 1.28115 8.82607 0.781049 8.33848C0.280952 7.85088 0 7.18956 0 6.5V5.2C0 4.51044 0.280952 3.84912 0.781049 3.36152C1.28115 2.87393 1.95942 2.6 2.66667 2.6H8ZM21.3333 5.2H2.66667V6.5H21.3333V5.2ZM5.52133 9.1L6.43733 22.1884C6.46032 22.5172 6.61051 22.8252 6.85754 23.0501C7.10458 23.275 7.43 23.4001 7.768 23.4H16.2587C16.5971 23.4001 16.9229 23.2746 17.17 23.0492C17.4171 22.8237 17.567 22.515 17.5893 22.1858L18.4827 9.1H5.52133ZM9.33333 10.4C9.68696 10.4 10.0261 10.537 10.2761 10.7808C10.5262 11.0246 10.6667 11.3552 10.6667 11.7V20.8C10.6667 21.1448 10.5262 21.4754 10.2761 21.7192C10.0261 21.963 9.68696 22.1 9.33333 22.1C8.97971 22.1 8.64057 21.963 8.39052 21.7192C8.14048 21.4754 8 21.1448 8 20.8V11.7C8 11.3552 8.14048 11.0246 8.39052 10.7808C8.64048 10.537 8.97971 10.4 9.33333 10.4ZM14.6667 10.4C15.0203 10.4 15.3594 10.537 15.6095 10.7808C15.8595 11.0246 16 11.3552 16 11.7V20.8C16 21.1448 15.8595 21.4754 15.6095 21.7192C15.3594 21.963 15.0203 22.1 14.6667 22.1C14.313 22.1 13.9739 21.963 13.7239 21.7192C13.4738 21.4754 13.3333 21.1448 13.3333 20.8V11.7C13.3333 11.3552 13.4738 11.0246 13.7239 10.7808C13.9739 10.537 14.313 10.4 14.6667 10.4Z" fill="#FF5656" />
+                            </svg>
+                          </button>
                         </span>
                       </div>
                     </div>
@@ -126,8 +138,8 @@ export default function TestPage() {
                 </div>
                 {/* National ID input and Borrow button BELOW all text and actions */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.12rem', flex: 1, padding: '0.2rem 0 0.2rem 0', marginTop: 0, width: '100%' }}>
-                  <span style={{ fontSize: '0.58rem', color: '#B37E32', marginLeft: '2px', marginBottom: '0.5rem', display: 'inline-block', fontWeight: 500, letterSpacing: '0.01em', lineHeight: 1 }}>National ID*</span>
-                  <div className="borrow-row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.5rem', marginTop: 0, padding: 0 }}>
+                  <span style={{ fontSize: '0.7rem', color: '#B37E32', marginLeft: '2px', marginBottom: '0.5rem', display: 'inline-block', fontWeight: 500, letterSpacing: '0.01em', lineHeight: 1 }}>National ID*</span>
+                  <div className="borrow-row " style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.5rem', marginTop: 0, padding: 0 }}>
                     <input
                       type="text"
                       placeholder="1-XXXX-XXXXX-XX-X"
@@ -139,7 +151,7 @@ export default function TestPage() {
                       }}
                       style={{ marginBottom: 0 }}
                     />
-                    <button className="borrow-btn" onClick={handleBorrow} style={{ fontSize: '0.92rem', height: '2.5rem', minWidth: '6.5rem', maxWidth: '7.5rem', padding: '0.55rem 1rem', margin: '0,0,0,0' }}>Borrow</button>
+                    <button className="borrowi-btn !ml-4 !w-30 " onClick={handleBorrow} style={{ fontSize: '0.92rem', height: '2.5rem', minWidth: '6.5rem', maxWidth: '7.5rem', padding: '0.55rem 1rem', margin: '0,0,0,0' }}>Borrow</button>
                   </div>
                   {nationalIdError && (
                     <div style={{ color: '#FF5656', fontSize: '0.85rem', marginTop: '0.2rem', marginLeft: '2px', fontWeight: 500 }}>
@@ -151,8 +163,8 @@ export default function TestPage() {
               <button className="add-btn">
                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '100%' }}>
                   <svg width="20" height="20" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M0.666992 14.0003C0.666992 6.63633 6.63633 0.666992 14.0003 0.666992C21.3643 0.666992 27.3337 6.63633 27.3337 14.0003C27.3337 21.3643 21.3643 27.3337 14.0003 27.3337C6.63633 27.3337 0.666992 21.3643 0.666992 14.0003ZM14.0003 3.33366C11.1713 3.33366 8.45824 4.45747 6.45785 6.45785C4.45747 8.45824 3.33366 11.1713 3.33366 14.0003C3.33366 16.8293 4.45747 19.5424 6.45785 21.5428C8.45824 23.5432 11.1713 24.667 14.0003 24.667C16.8293 24.667 19.5424 23.5432 21.5428 21.5428C23.5432 19.5424 24.667 16.8293 24.667 14.0003C24.667 11.1713 23.5432 8.45824 21.5428 6.45785C19.5424 4.45747 16.8293 3.33366 14.0003 3.33366Z" fill="white"/>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M15.3333 7.33333C15.3333 6.97971 15.1929 6.64057 14.9428 6.39052C14.6928 6.14048 14.3536 6 14 6C13.6464 6 13.3072 6.14048 13.0572 6.39052C12.8071 6.64057 12.6667 6.97971 12.6667 7.33333V12.6667H7.33333C6.97971 12.6667 6.64057 12.8071 6.39052 13.0572C6.14048 13.3072 6 13.6464 6 14C6 14.3536 6.14048 14.6928 6.39052 14.9428C6.64057 15.1929 6.97971 15.3333 7.33333 15.3333H12.6667V20.6667C12.6667 21.0203 12.8071 21.3594 13.0572 21.6095C13.3072 21.8595 13.6464 22 14 22C14.3536 22 14.6928 21.8595 14.9428 21.6095C15.1929 21.3594 15.3333 21.0203 15.3333 20.6667V15.3333H20.6667C21.0203 15.3333 21.3594 15.1929 21.6095 14.9428C21.8595 14.6928 22 14.3536 22 14C22 13.6464 21.8595 13.3072 21.6095 13.0572C21.3594 12.8071 21.0203 12.6667 20.6667 12.6667H15.3333V7.33333Z" fill="white"/>
+                    <path fillRule="evenodd" clipRule="evenodd" d="M0.666992 14.0003C0.666992 6.63633 6.63633 0.666992 14.0003 0.666992C21.3643 0.666992 27.3337 6.63633 27.3337 14.0003C27.3337 21.3643 21.3643 27.3337 14.0003 27.3337C6.63633 27.3337 0.666992 21.3643 0.666992 14.0003ZM14.0003 3.33366C11.1713 3.33366 8.45824 4.45747 6.45785 6.45785C4.45747 8.45824 3.33366 11.1713 3.33366 14.0003C3.33366 16.8293 4.45747 19.5424 6.45785 21.5428C8.45824 23.5432 11.1713 24.667 14.0003 24.667C16.8293 24.667 19.5424 23.5432 21.5428 21.5428C23.5432 19.5424 24.667 16.8293 24.667 14.0003C24.667 11.1713 23.5432 8.45824 21.5428 6.45785C19.5424 4.45747 16.8293 3.33366 14.0003 3.33366Z" fill="white" />
+                    <path fillRule="evenodd" clipRule="evenodd" d="M15.3333 7.33333C15.3333 6.97971 15.1929 6.64057 14.9428 6.39052C14.6928 6.14048 14.3536 6 14 6C13.6464 6 13.3072 6.14048 13.0572 6.39052C12.8071 6.64057 12.6667 6.97971 12.6667 7.33333V12.6667H7.33333C6.97971 12.6667 6.64057 12.8071 6.39052 13.0572C6.14048 13.3072 6 13.6464 6 14C6 14.3536 6.14048 14.6928 6.39052 14.9428C6.64057 15.1929 6.97971 15.3333 7.33333 15.3333H12.6667V20.6667C12.6667 21.0203 12.8071 21.3594 13.0572 21.6095C13.3072 21.8595 13.6464 22 14 22C14.3536 22 14.6928 21.8595 14.9428 21.6095C15.1929 21.3594 15.3333 21.0203 15.3333 20.6667V15.3333H20.6667C21.0203 15.3333 21.3594 15.1929 21.6095 14.9428C21.8595 14.6928 22 14.3536 22 14C22 13.6464 21.8595 13.3072 21.6095 13.0572C21.3594 12.8071 21.0203 12.6667 20.6667 12.6667H15.3333V7.33333Z" fill="white" />
                   </svg>
                   <span>Add Book</span>
                 </span>
@@ -161,7 +173,7 @@ export default function TestPage() {
           </aside>
 
           {/* Right column - borrowed list */}
-          <main className="md:col-span-1">
+          <main className="md:col-span-1 !mb-10">
             <section className="borrowed-list">
               <h3>List of borrowed books</h3>
               <ul>
@@ -180,8 +192,8 @@ export default function TestPage() {
                       <p><strong className="label-strong">Name:</strong> {book.name}</p>
                       <p><strong className="label-strong">ID:</strong> {book.id}</p>
                       {book.nationalId && (
-                        <p style={{ color: '#B37E32', fontSize: '0.92em', margin: 0 }}>
-                          National ID: <span style={{ color: '#53311C' }}>{book.nationalId}</span>
+                        <p style={{ color: '#B37E32', fontSize: '0.92em', margin: 0 ,fontWeight:700}}>
+                          National ID: <span style={{ color: '#53311C' ,fontWeight:500}}>{book.nationalId}</span>
                         </p>
                       )}
                     </div>
@@ -204,6 +216,22 @@ export default function TestPage() {
                     <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
                       <button onClick={cancelDelete} className="modal-cancel-btn">Cancel</button>
                       <button onClick={confirmDelete} className="modal-delete-btn">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {confirmReturn && (
+                <div style={{
+                  position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+                  background: 'rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+                }}>
+                  <div style={{ background: '#fff', borderRadius: 10, padding: '1.1rem 1.3rem', boxShadow: '0 2px 16px rgba(0,0,0,0.15)', minWidth: 320, maxWidth: 400, fontSize: '0.98rem' }}>
+                    <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: 10 }}>Confirm Return</div>
+                    <div style={{ marginBottom: 16, fontSize: '0.95rem' }}>Are you sure you want to return this book?</div>
+                    <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+                      <button onClick={cancelReturn} className="modal-cancel-btn">Cancel</button>
+                      <button onClick={confirmReturnBook} className="modal-return-btn">Confirm</button>
                     </div>
                   </div>
                 </div>

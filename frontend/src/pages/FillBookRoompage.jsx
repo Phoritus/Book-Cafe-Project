@@ -122,20 +122,25 @@ const BookingConfirmPage = () => {
         {/* Header */}
         <div className="flex items-center justify-center relative">
           <button
-            className="absolute left-6 p-2 text-amber-800 hover:text-amber-900 transition-colors"
+            className="absolute left-6 !mt-30 !ml-10 p-2 text-amber-800 hover:text-amber-900 transition-colors"
             onClick={() => window.history.back()}
           >
             <ArrowLeft size={28} className="w-10 h-10 mr-5 color-[#86422A]" />
           </button>
-          <h1 className="text-4xl font-bold text-[#53311C] p-7 font-crimson justify-center">
-            Booking Room
-          </h1>
+
+          
         </div>
 
+        <div className="text-center mb-8 !mt-10">
+                  <h1 className="text-4xl !mt-30 font-bold text-[#53311C] p-7 font-crimson justify-center">
+            Booking Room
+          </h1>
+                </div>
+
         {/* Main Content */}
-        <div className="max-w-4xl mx-auto py-auto px-6 pb-20 font-sans">
-          <div className=" bg-[#FBFBFB] rounded-3xl shadow-lg overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[500px]">
+        <div className="max-w-4xl !w- mx-auto !h-50 py-auto px-6 pb-20 font-sans">
+          <div className=" bg-[#FBFBFB] rounded-3xl shadow-lg overflow-hidden !pl-8 !pr-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[440px]">
               {/* Left Side - Booking Details */}
               <div className="p-8 space-y-4">
                 <div>
@@ -229,7 +234,7 @@ const BookingConfirmPage = () => {
               </div>
 
               {/* Right Side - Room Image & Info */}
-              <div className="relative p-8 flex flex-col">
+              <div className="relative p-8 flex flex-col !mt-13  ">
                 {/* Room specific image and info */}
                 <div className="rounded-2xl flex items-center justify-center">
                   <div className="text-center text-amber-700">
