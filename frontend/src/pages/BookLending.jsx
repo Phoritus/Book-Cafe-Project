@@ -140,6 +140,7 @@ export default function BookLendingPage() {
   };
 
   // Delete book
+  const cancelReturn = () => setConfirmReturnRecord(null);
   const cancelDelete = () => setConfirmDeleteId(null);
   const confirmDelete = async () => {
     if (!confirmDeleteId) return;
