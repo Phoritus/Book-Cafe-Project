@@ -34,7 +34,7 @@ export async function updateBookMeta(book_id, { book_name, category }) {
     params.push(category === '' ? null : category);
   }
   if (!sets.length) return await getBook(book_id); // nothing to change
-  const sql = `UPDATE book SET ${sets.join(', ')}, updated_at = NOW() WHERE book_id = ?`;
+  const sql = `UPDATE book SET ${sets.join(', ')} WHERE book_id = ?`;
   params.push(book_id);
   await query(sql, params);
   return await getBook(book_id);
