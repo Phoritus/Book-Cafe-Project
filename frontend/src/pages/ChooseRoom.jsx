@@ -62,10 +62,13 @@ function ChooseRoom() {
         } catch (e) {
             // fallback silently
         }
-        // If admin -> go to check-in / management page (assumed /roombooking)
+        // Admin -> management schedule; User -> customer multi-select schedule
         if (user?.role === 'admin') {
             navigate('/roombooking');
+        } else if (user?.role === 'user') {
+            navigate('/roombookingcustomer');
         } else {
+            // fallback (unknown role) -> booking form
             navigate('/fill-book-room');
         }
     };

@@ -21,6 +21,7 @@ import ChangeEmail from './pages/ChangeEmail';
 import ChangePassword from './pages/ChangePassword';
 import CheckIn from './pages/CheckIn.jsx';
 import Checkout from './pages/Checkout.jsx';
+import RoomBookingCustomer from './pages/RoomBookingCustomer.jsx';
 
 function RequireRole({ role, children }) {
   // ถ้าคุณมี auth store ใช้แทน localStorage
@@ -59,6 +60,14 @@ function App() {
               {/* Public routes that don't require authentication */}
             <Route path="/choose-room" element={<ChooseRoom />} />
             <Route path="/fill-book-room" element={<FillBookRoompage />} />
+            <Route
+              path="/roombookingcustomer"
+              element={
+                <RequireRole role="user">
+                  <RoomBookingCustomer />
+                </RequireRole>
+              }
+            />
             <Route path="/upcoming" element={<Upcoming />} />
             {/* Strict admin feature routes */}
             <Route

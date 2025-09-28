@@ -29,9 +29,14 @@ const BookingConfirmPage = () => {
   const [bookingsToday,setBookingsToday]=useState([]);
   const [loading,setLoading]=useState(false); const [error,setError]=useState(null);
 
-  const [startTime,setStartTime]=useState('09:00');
-  const [endTime,setEndTime]=useState('12:00');
+  // Prefill from multi-select flow if present
+  const pendingStart = sessionStorage.getItem('pendingStart');
+  const pendingEnd = sessionStorage.getItem('pendingEnd');
+  const [startTime,setStartTime]=useState(pendingStart || '09:00');
+  const [endTime,setEndTime]=useState(pendingEnd || '12:00');
   const [showSuccessModal,setShowSuccessModal]=useState(false);
+  const pendingDate = sessionStorage.getItem('pendingDate');
+  const [bookingDate,setBookingDate]=useState(pendingDate || todayDateISO());
   const [submitting,setSubmitting]=useState(false);
 
   const roomConfig={
@@ -42,18 +47,24 @@ const BookingConfirmPage = () => {
   };
   const currentRoom = roomConfig[roomId] || roomConfig['Room 1'];
 
-  useEffect(()=>{ // fetch today's bookings for the room
+  useEffect(()=>{ // fetch bookings for the bookingDate (currently only used for conflict check if today)
     let cancel=false; (async()=>{
       setLoading(true); setError(null);
       try {
-        const res = await axios.post(`${API_BASE}/bookings`, { room_number: roomId });
-        const todayISO = todayDateISO();
-        const data = Array.isArray(res.data)?res.data:[];
-        const filtered = data.filter(b => (b.checkIn||'').startsWith(todayISO));
-        if(!cancel) setBookingsToday(filtered);
+        // NOTE: original code used POST /bookings incorrectly; adjust to GET /bookings?all=1 if admin; fallback keep previous style if API difference
+        // For minimal change keep prior pattern but we only care about today's conflicts; if bookingDate is tomorrow we skip conflict list
+        if(bookingDate === todayDateISO()){
+          const res = await axios.post(`${API_BASE}/bookings`, { room_number: roomId });
+          const todayISO = todayDateISO();
+          const data = Array.isArray(res.data)?res.data:[];
+          const filtered = data.filter(b => (b.checkIn||'').startsWith(todayISO));
+          if(!cancel) setBookingsToday(filtered);
+        } else {
+          if(!cancel) setBookingsToday([]);
+        }
       } catch(e){ if(!cancel) setError(e.response?.data?.message || e.message); } finally { if(!cancel) setLoading(false); }
     })(); return ()=>{cancel=true};
-  },[roomId]);
+  },[roomId, bookingDate]);
 
   // Build disabled maps
   const disabledStart = useMemo(()=>{
@@ -64,10 +75,12 @@ const BookingConfirmPage = () => {
       if(!b.startTime||!b.endTime) return; const bs=b.startTime.slice(0,5); const be=b.endTime.slice(0,5);
       HOURS_STARTS.forEach(s=>{ const e = String(hmToNum(s)+1).padStart(2,'0')+':00'; if(overlaps(s,e,bs,be)) map[s]=true; });
     });
-    // past hours
-    HOURS_STARTS.forEach(s=>{ const e = String(hmToNum(s)+1).padStart(2,'0')+':00'; if(nowHM >= e) map[s]=true; });
+    // past hours only if bookingDate is today
+    if(bookingDate === todayDateISO()) {
+      HOURS_STARTS.forEach(s=>{ const e = String(hmToNum(s)+1).padStart(2,'0')+':00'; if(nowHM >= e) map[s]=true; });
+    }
     return map;
-  },[bookingsToday]);
+  },[bookingsToday, bookingDate]);
 
   const disabledEnd = useMemo(()=>{
     const map={};
@@ -77,9 +90,11 @@ const BookingConfirmPage = () => {
       if(!b.startTime||!b.endTime) return; const bs=b.startTime.slice(0,5); const be=b.endTime.slice(0,5);
       HOURS_ENDS.forEach(e=>{ const s = String(hmToNum(e)-1).padStart(2,'0')+':00'; if(overlaps(s,e,bs,be)) map[e]=true; });
     });
-    HOURS_ENDS.forEach(e=>{ if(nowHM >= e) map[e]=true; });
+    if(bookingDate === todayDateISO()) {
+      HOURS_ENDS.forEach(e=>{ if(nowHM >= e) map[e]=true; });
+    }
     return map;
-  },[bookingsToday]);
+  },[bookingsToday, bookingDate]);
 
   // Adjust endTime if invalid
   useEffect(()=>{ if(hmToNum(endTime) <= hmToNum(startTime)) setEndTime(String(hmToNum(startTime)+1).padStart(2,'0')+':00'); },[startTime]);
@@ -99,13 +114,20 @@ const BookingConfirmPage = () => {
       if(!token){ alert('Please login first'); setSubmitting(false); return; }
       await axios.post(`${API_BASE}/bookings`, {
         room_number: roomId,
-        checkIn: todayDateISO(),
-        checkOut: todayDateISO(),
+        checkIn: bookingDate,
+        checkOut: bookingDate,
         startTime: startTime+':00',
         endTime: endTime+':00',
         totalPrice
       }, { headers: { Authorization: `Bearer ${token}` }});
       setShowSuccessModal(true);
+      // Clear pending session keys so next booking starts fresh
+      try {
+        sessionStorage.removeItem('pendingStart');
+        sessionStorage.removeItem('pendingEnd');
+        sessionStorage.removeItem('pendingDate');
+        sessionStorage.removeItem('selectedSlots');
+      } catch {}
     } catch(e){ alert(e.response?.data?.message || e.message); }
     finally { setSubmitting(false); setTimeout(()=>setShowSuccessModal(false),3000); }
   }
@@ -139,11 +161,9 @@ const BookingConfirmPage = () => {
               </svg>
             </div>
             <h2 className="text-xl font-bold text-amber-900 mb-2 font-crimson">
-              Booking Successful!
+              Booking Successful for {bookingDate}!
             </h2>
-            <p className="text-amber-700">
-              Your room has been reserved successfully.
-            </p>
+            <p className="text-amber-700">Your room has been reserved successfully.</p>
           </div>
         </>
       )}
@@ -179,7 +199,7 @@ const BookingConfirmPage = () => {
                     <div className="flex items-center gap-2 p-3 border-2 border-[#E9E0D8] rounded-xl bg-gray-50">
                       <Calendar size={16} className="text-[#c5bcb4]" />
                       <span className="text-[#a69f99] font-medium">
-                        {todayDateStrDisplay()}
+                        {new Date(bookingDate).toLocaleDateString('en-GB')}
                       </span>
                     </div>
                   </div>
