@@ -112,95 +112,167 @@ const BookingConfirmPage = () => {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet"
+      />
       {showSuccessModal && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={()=>setShowSuccessModal(false)} />
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setShowSuccessModal(false)}
+          />
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl w-80 p-8 z-50 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/></svg>
+              <svg
+                className="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
             </div>
-            <h2 className="text-xl font-bold text-amber-900 mb-2 font-crimson">Booking Successful!</h2>
-            <p className="text-amber-700">Your room has been reserved successfully.</p>
+            <h2 className="text-xl font-bold text-amber-900 mb-2 font-crimson">
+              Booking Successful!
+            </h2>
+            <p className="text-amber-700">
+              Your room has been reserved successfully.
+            </p>
           </div>
         </>
       )}
 
       <div className="min-h-screen bg-[#F6F3ED] font-inter">
         <div className="flex items-center justify-center relative">
-          <button className="absolute left-6 !mt-30 !ml-10 p-2 text-amber-800 hover:text-amber-900" onClick={() => window.history.back()}>
+          <button
+            className="absolute left-6 !mt-30 !ml-10 p-2 text-amber-800 hover:text-amber-900"
+            onClick={() => window.history.back()}
+          >
             <ArrowLeft size={28} className="w-10 h-10 mr-5 color-[#86422A]" />
           </button>
         </div>
         <div className="text-center mb-8 !mt-10">
-          <h1 className="text-4xl !mt-30 font-bold text-[#53311C] p-7 font-crimson">Booking Room</h1>
+          <h1 className="text-4xl !mt-30 font-bold text-[#53311C] p-7 font-crimson">
+            Booking Room
+          </h1>
         </div>
 
         <div className="max-w-4xl mx-auto px-6 pb-20 font-sans">
           <div className="bg-[#FBFBFB] rounded-3xl shadow-lg overflow-hidden p-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[440px] gap-8">
-
               <div className="space-y-6">
-                <h2 className="text-4xl font-semibold text-[#53311C]">{roomId}</h2>
+                <h2 className="text-4xl font-semibold text-[#53311C]">
+                  {roomId}
+                </h2>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#53311C] mb-2">Date</label>
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      Date
+                    </label>
                     <div className="flex items-center gap-2 p-3 border-2 border-[#E9E0D8] rounded-xl bg-gray-50">
                       <Calendar size={16} className="text-[#c5bcb4]" />
-                      <span className="text-[#a69f99] font-medium">{todayDateStrDisplay()}</span>
+                      <span className="text-[#a69f99] font-medium">
+                        {todayDateStrDisplay()}
+                      </span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#53311C] mb-2">Total Hours</label>
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      Total Hours
+                    </label>
                     <div className="flex items-center gap-2 p-3 border-2 border-[#E9E0D8] rounded-xl">
                       <Clock size={16} className="text-[#c5bcb4]" />
-                      <span className="text-[#a69f99] font-medium">{hours} hrs</span>
+                      <span className="text-[#a69f99] font-medium">
+                        {hours} hrs
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#53311C] mb-2">Start Time</label>
-                    <select value={startTime} onChange={(e)=>setStartTime(e.target.value)} className="w-full p-3 border-2 border-[#E9E0D8] rounded-xl bg-white font-medium focus:border-[#8b5a40]">
-                      {HOURS_STARTS.map(t=>{
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      Start Time
+                    </label>
+                    <select
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="w-full p-3 border-2 border-[#E9E0D8] rounded-xl bg-white font-medium focus:border-[#8b5a40]"
+                    >
+                      {HOURS_STARTS.map((t) => {
                         const disabled = disabledStart[t];
-                        return <option key={t} value={t} disabled={disabled}>{t}</option>;
+                        return (
+                          <option key={t} value={t} disabled={disabled}>
+                            {t}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#53311C] mb-2">End Time</label>
-                    <select value={endTime} onChange={(e)=>setEndTime(e.target.value)} className="w-full p-3 border-2 border-[#E9E0D8] rounded-xl bg-white font-medium focus:border-[#8b5a40]">
-                      {HOURS_ENDS.filter(e=>hmToNum(e)>hmToNum(startTime)).map(t=>{
+                    <label className="block text-sm font-medium text-[#53311C] mb-2">
+                      End Time
+                    </label>
+                    <select
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      className="w-full p-3 border-2 border-[#E9E0D8] rounded-xl bg-white font-medium focus:border-[#8b5a40]"
+                    >
+                      {HOURS_ENDS.filter(
+                        (e) => hmToNum(e) > hmToNum(startTime)
+                      ).map((t) => {
                         const disabled = disabledEnd[t];
-                        return <option key={t} value={t} disabled={disabled}>{t}</option>;
+                        return (
+                          <option key={t} value={t} disabled={disabled}>
+                            {t}
+                          </option>
+                        );
                       })}
                     </select>
                   </div>
                 </div>
 
                 <div className="flex justify-center items-center text-xl space-x-3">
-                  <span className="font-medium text-[#BB8F6E]">Total Price</span>
-                  <span className="font-medium text-[#53311C]">{totalPrice} THB</span>
+                  <span className="font-medium text-[#BB8F6E]">
+                    Total Price
+                  </span>
+                  <span className="font-medium text-[#53311C]">
+                    {totalPrice} THB
+                  </span>
                 </div>
 
-                <button onClick={handleConfirmBooking} disabled={hours<=0||submitting} className="w-full bg-gradient-to-r from-[#86422A] to-[#86422A] hover:from-[#53311C] hover:to-[#86422A] text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all disabled:opacity-50">
-                  {submitting ? 'Booking...' : 'Confirm Booking'}
+                <button
+                  onClick={handleConfirmBooking}
+                  disabled={hours <= 0 || submitting}
+                  className="w-full bg-gradient-to-r from-[#86422A] to-[#86422A] hover:from-[#53311C] hover:to-[#86422A] text-white py-4 px-6 rounded-xl font-semibold text-lg transition-all disabled:opacity-50"
+                >
+                  {submitting ? "Booking..." : "Confirm Booking"}
                 </button>
               </div>
 
               <div className="relative p-2 flex flex-col">
-                <div className="rounded-2xl flex items-center justify-center mb-4">
-                  <img src={currentRoom.image} alt={roomId} className="w-full object-cover rounded-xl" />
+                <div className="rounded-2xl flex items-center justify-center mb-2">
+                  <img
+                    src={currentRoom.image}
+                    alt={roomId}
+                    className="w-full object-cover rounded-xl"
+                  />
                 </div>
-                <div className="rounded-xl p-4 bg-white/60">
-                  <p className="text-sm font-medium text-amber-900 leading-relaxed">Select start and end times. Disabled times are already booked or in the past today.</p>
-                  <p className="text-xs mt-2 text-amber-700">Check in within 30 minutes of your start time.</p>
+                <div className="rounded-xl p-4">
+                  <ul className="list-disc pl-6 text-sm font-medium text-[#53311C] leading-relaxed">
+                    <li>Disabled times are already booked.</li>
+                    <li>Past times today apply to tomorrow’s booking.</li>
+                    <li>Check in within 30 minutes of your booking start, or your reservation will be cancelled.</li>
+                  </ul>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
