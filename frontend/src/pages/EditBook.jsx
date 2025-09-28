@@ -65,10 +65,10 @@ const AddBook = () => {
         <div className="relative !pb-10 z-10 text-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-fade-in">
             <img src={logo} alt="Logo" className="!h-28 !w-28 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
-            <h1 className="text-md font-crimson md:text-4xl font-display font-bold text-darkBrown-500 mb-4 text-shadow" >
+            <h1 className="text-md font-crimson md:text-4xl font-bold text-darkBrown-500 mb-4 text-shadow" >
               Edit Book
             </h1>
-            <p className="text-sm md:text-2xl text-brown-600 mb-4 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <p className="text-md text-brown-600 mb-4 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
               Select a category to get the Book ID
             </p>
 
@@ -129,7 +129,7 @@ const AddBook = () => {
                         <img
                           src={arrow}
                           alt="arrow"
-                          className={`h-5 w-5 transition-transform duration-200 ${isOpen ? "-rotate-90" : "rotate-0"}`}
+                          className={`h-4 w-4 transition-transform duration-200 ${isOpen ? "-rotate-90" : "rotate-0"}`}
                         />
                       </span>
                     </div>

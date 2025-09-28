@@ -358,7 +358,7 @@ function Login() {
             {/* Email/Phone Input */}
             <div className="form-group">
               <label htmlFor="email" className="form-label">
-                Email Address / Phone number
+                Email Address
               </label>
               <input
                 id="email"
