@@ -88,10 +88,9 @@ function ChangePassword() {
   const baseInputStyle = {
     width: '100%',
     padding: '16px 18px',
-    border: '2px solid #e8ddd4',
     borderRadius: '12px',
     fontSize: '1rem',
-    background: '#fefcfb',
+    background: '#ffff',
     color: '#4a3429',
     outline: 'none',
     fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
@@ -175,13 +174,13 @@ function ChangePassword() {
               fontSize: '1rem',
               margin: '0'
             }}>
-              Update your password securely
+              Don't forgot your password
             </p>
           </div>
 
           {/* Form */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: '#FBFBFB',
             backdropFilter: 'blur(10px)',
             borderRadius: '20px',
             boxShadow: '0 20px 40px rgba(139, 90, 64, 0.1)',
@@ -208,6 +207,7 @@ function ChangePassword() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter your current password"
+                  className="border-2 border-[#e8ddd4] focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] "
                   style={errors.currentPassword ? errorInputStyle : passwordInputStyle}
                 />
                 <button
@@ -268,6 +268,7 @@ function ChangePassword() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter your new password"
+                  className="border-2 border-[#e8ddd4] focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] "
                   style={errors.newPassword ? errorInputStyle : passwordInputStyle}
                 />
                 <button
@@ -328,6 +329,7 @@ function ChangePassword() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Enter your new password"
+                  className="border-2 border-[#e8ddd4] focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] "
                   style={errors.confirmPassword ? errorInputStyle : passwordInputStyle}
                 />
                 <button
@@ -405,7 +407,7 @@ function ChangePassword() {
                 transition: 'all 0.3s ease',
                 opacity: submitting ? 0.7 : 1
               }}
-              onMouseOver={(e) => { if (!submitting) { e.target.style.background = '#421f07'; e.target.style.transform = 'translateY(-1px)'; e.target.style.boxShadow = '0 6px 16px rgba(139, 90, 64, 0.4)'; } }}
+              onMouseOver={(e) => { if (!submitting) { e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 10px 25px -5px rgba(146, 64, 14, 0.3)' } }}
               onMouseOut={(e) => {
                 e.target.style.background = '#86422A';
                 e.target.style.transform = 'translateY(0)';

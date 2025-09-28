@@ -39,7 +39,7 @@ body {
 }
 
 .btn-primary:hover {
-  background: #7A3D11;
+  background: #8B4513;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
 }
