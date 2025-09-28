@@ -50,6 +50,12 @@ export async function listBookingsByRoom(room_number) {
   return rows;
 }
 
+export async function listBookingsToday(room_number) {
+  const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+  const [rows] = await query('SELECT * FROM booking_room WHERE room_number = ? AND checkIn = ?', [room_number, today]);
+  return rows;
+}
+
 // Get the nearest upcoming booking for a user (today or future),
 // ordering by checkIn date then (startTime if present else checkIn time columns) ascending.
 // Assumptions: checkIn stores the booking date (DATE), optional startTime/endTime are HH:MM:SS.
