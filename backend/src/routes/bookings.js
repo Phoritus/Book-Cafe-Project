@@ -5,8 +5,8 @@ import { validateCreateBooking } from '../middleware/validate.js';
 
 const router = express.Router();
 
-// POST /bookings
-router.post('/', auth, validateCreateBooking, createBookingHandler);
+// POST /bookings (public create – no auth token required)
+router.post('/', validateCreateBooking, createBookingHandler);
 
 // GET /bookings - all bookings of current user
 router.get('/', listBookingsTodayHandler);
