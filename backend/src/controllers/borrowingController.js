@@ -1,4 +1,4 @@
-import { borrowBook, returnBook, listBorrowingByCitizen } from '../models/borrowingModel.js';
+import { borrowBook, returnBook, listBorrowingByCitizen, listActiveBorrowings } from '../models/borrowingModel.js';
 
 export async function borrowHandler(req, res) {
   try {
@@ -33,4 +33,13 @@ export async function listBorrowingHandler(req, res) {
   }
 }
 
-export default { borrowHandler, returnHandler, listBorrowingHandler };
+export async function listActiveBorrowingsHandler(req, res) {
+  try {
+    const rows = await listActiveBorrowings();
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: true, message: e.message });
+  }
+}
+
+export default { borrowHandler, returnHandler, listBorrowingHandler, listActiveBorrowingsHandler };

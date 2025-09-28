@@ -83,6 +83,28 @@ export default function BookLendingPage() {
     }
   }, [API_BASE, authHeader, token]);
 
+  // All active (unreturned) borrowings across all citizens
+  const loadActiveBorrowings = useCallback(async () => {
+    try {
+      setBorrowLoading(true); setBorrowError('');
+      const { data } = await axios.get(`${API_BASE}/borrowing/active`);
+      setBorrowedList(data);
+    } catch (e) {
+      setBorrowError(e?.response?.data?.message || 'Failed to load active borrowings');
+    } finally {
+      setBorrowLoading(false);
+    }
+  }, [API_BASE]);
+
+  // Decide which list to refresh (filtered citizen vs global active)
+  const refreshBorrowList = useCallback(() => {
+    if (/^\d{13}$/.test(citizenId.trim())) {
+      loadBorrowingForCitizen(citizenId.trim());
+    } else {
+      loadActiveBorrowings();
+    }
+  }, [citizenId, loadBorrowingForCitizen, loadActiveBorrowings]);
+
   // Borrow book (no membership required)
   const handleBorrow = async () => {
     setCitizenError(''); setActionError(''); setActionMessage('');
@@ -96,7 +118,7 @@ export default function BookLendingPage() {
       await axios.post(`${API_BASE}/borrowing/borrow`, body, opt);
       setActionMessage('Borrowed successfully');
       await loadBooks();
-      await loadBorrowingForCitizen(citizenId.trim());
+      refreshBorrowList();
     } catch (e) {
       setActionError(e?.response?.data?.message || 'Borrow failed');
     }
@@ -111,7 +133,7 @@ export default function BookLendingPage() {
       setActionMessage('Returned successfully');
       setConfirmReturnRecord(null);
       await loadBooks();
-      await loadBorrowingForCitizen(citizenId.trim());
+      refreshBorrowList();
     } catch (e) {
       setActionError(e?.response?.data?.message || 'Return failed');
     }
@@ -136,8 +158,17 @@ export default function BookLendingPage() {
   const goAdd = () => navigate('/add-book');
   const goEdit = () => { if (selectedBook) navigate(`/edit-book?book_id=${selectedBook.book_id}`); };
 
-  // Watch citizenId to load list lazily when 13 digits
-  useEffect(() => { if (/^\d{13}$/.test(citizenId)) loadBorrowingForCitizen(citizenId); }, [citizenId, loadBorrowingForCitizen]);
+  // Initial load: show all active borrowings
+  useEffect(() => { loadActiveBorrowings(); }, [loadActiveBorrowings]);
+
+  // Watch citizenId: when 13 digits -> load that citizen's active borrowings; when cleared -> show all active
+  useEffect(() => {
+    if (/^\d{13}$/.test(citizenId)) {
+      loadBorrowingForCitizen(citizenId);
+    } else if (citizenId.trim() === '') {
+      loadActiveBorrowings();
+    }
+  }, [citizenId, loadBorrowingForCitizen, loadActiveBorrowings]);
 
   return (
     <div className="min-h-screen bg-[#f9f6f2] p-6 font-sans">
@@ -243,7 +274,9 @@ export default function BookLendingPage() {
           {/* Right column - borrowed list */}
           <main className="md:col-span-1 !mb-10">
             <section className="borrowed-list">
-              <h3>List of borrowed books</h3>
+              <h3>
+                {/^\d{13}$/.test(citizenId) ? `Borrowed books for ID ${citizenId}` : 'Currently borrowed books (all)'}
+              </h3>
               {borrowError && <div style={{ color:'#FF5656', fontSize:'0.8rem'}}>{borrowError}</div>}
               {borrowLoading && <div>Loading borrowing history...</div>}
               {!borrowLoading && borrowedList.length === 0 && <div className="text-sm text-gray-500">No records.</div>}
@@ -270,7 +303,7 @@ export default function BookLendingPage() {
                       <button
                         className={`return-btn${record.returnTime ? ' returned-disabled' : ''}`}
                         disabled={!!record.returnTime}
-                        onClick={() => { if (!record.returnTime) handleReturn(record); }}
+                        onClick={() => { if (!record.returnTime) setConfirmReturnRecord(record); }}
                       >
                         Return
                       </button>

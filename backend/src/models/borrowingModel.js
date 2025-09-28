@@ -60,3 +60,17 @@ export async function listBorrowingByCitizen(citizen_id) {
   const [rows] = await query(sql, [citizen_id]);
   return rows;
 }
+
+export async function listActiveBorrowings() {
+  const sql = `
+    SELECT br.record_id, br.book_id,
+           br.citizen_id AS citizen_id,
+           br.borrowTime,
+           b.book_name, b.book_status, b.category
+    FROM borrowing_record br
+    LEFT JOIN book b ON b.book_id = br.book_id
+    WHERE br.returnTime IS NULL
+    ORDER BY br.borrowTime DESC`;
+  const [rows] = await query(sql);
+  return rows;
+}
