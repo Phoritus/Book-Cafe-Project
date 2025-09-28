@@ -99,10 +99,9 @@ function ChangeEmail() {
   const baseInputStyle = {
     width: '100%',
     padding: '10px 18px',
-    border: '2px solid #e8ddd4',
     borderRadius: '12px',
     fontSize: '1rem',
-    background: '#fefcfb',
+    background: '#ffff',
     color: '#4a3429',
     outline: 'none',
     fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
@@ -189,7 +188,7 @@ function ChangeEmail() {
 
           {/* Form */}
           <div style={{
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: '#FBFBFB',
             backdropFilter: 'blur(10px)',
             borderRadius: '20px',
             boxShadow: '0 20px 40px rgba(139, 90, 64, 0.1)',
@@ -208,7 +207,7 @@ function ChangeEmail() {
                 Current Email Address *
               </label>
               <input
-                className="email-input"
+                className="email-input border-2 border-[#e8ddd4] focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] "
                 type="text"
                 value={currentEmail}
                 onChange={(e) => setCurrentEmail(e.target.value)}
@@ -238,7 +237,7 @@ function ChangeEmail() {
                 New Email Address *
               </label>
               <input
-                className="email-input"
+                className="email-input border-2 border-[#e8ddd4] focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] "
                 type="text"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
@@ -273,7 +272,7 @@ function ChangeEmail() {
                 display: 'flex'
               }}>
                 <input
-                  className="email-input"
+                  className="email-input border-2 border-[#e8ddd4] focus:border-[#8b5a40] focus:shadow-[0_0_0_2px_rgba(0,0,0,0.1)] "
                   type="text"
                   value={verifyCode}
                   onChange={(e) => setVerifyCode(e.target.value)}
@@ -365,14 +364,12 @@ function ChangeEmail() {
               }} className='font-sans'
               onMouseOver={(e) => {
                 if (!submitting) {
-                  e.target.style.background = '#421f07';
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 6px 16px rgba(139, 90, 64, 0.4)';
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 10px 25px -5px rgba(146, 64, 14, 0.3)';
                 }
               }}
               onMouseOut={(e) => {
                 if (!submitting) {
-                  e.target.style.background = '#86422A';
                   e.target.style.transform = 'translateY(0)';
                   e.target.style.boxShadow = '0 4px 12px rgba(139, 90, 64, 0.3)';
                 }

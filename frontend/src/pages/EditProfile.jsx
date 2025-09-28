@@ -59,7 +59,7 @@ function EditProfile() {
       <div className="min-h-screen " style={{ minHeight: '110vh' }}>
         {/* Back Button */}
         <div
-          className="absolute left-6 top-6 cursor-pointer left-30"
+          className="absolute top-6 cursor-pointer left-30"
           onClick={() => window.history.back()}
         >
           <ArrowLeft size={48} color="#86422A" />
@@ -70,7 +70,7 @@ function EditProfile() {
           <img src={Coffee} alt="Coffee icon" className="!h-20 !w-20 mx-auto text-brown-500 mb-6 animate-bounce-subtle" />
 
 
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-darkBrown-800 font-crimson" style={{ fontFamily: "'crimson text', sans-serif" }}>
+          <h2 className="text-4xl md:text-5xl font-bold text-darkBrown-800 font-crimson" style={{ fontFamily: "'crimson text', sans-serif" }}>
             Edit Profile
           </h2>
           <p className="mt-1 text-brown-600">Change your information</p>
@@ -82,7 +82,7 @@ function EditProfile() {
             <div className="flex gap-4">
               <div className="flex-1 max-w-[80px]">
                 <label className="block text-sm font-medium text-brown-600 mb-2">
-                  Title
+                  Title *
                 </label>
                 <div className="relative">
                   <select
@@ -113,7 +113,7 @@ function EditProfile() {
 
               <div className="flex-1">
                 <label className="block text-sm font-medium text-brown-600 mb-2">
-                  First Name
+                  First Name *
                 </label>
                 <input
                   type="text"
@@ -129,7 +129,7 @@ function EditProfile() {
 
               <div className="flex-1">
                 <label className="block text-sm font-medium text-brown-600 mb-2">
-                  Last Name
+                  Last Name *
                 </label>
                 <input
                   type="text"
@@ -146,7 +146,7 @@ function EditProfile() {
 
             <div>
               <label className="block text-sm font-medium text-brown-600 mb-2">
-                Date of Birth
+                Date of Birth *
               </label>
               <div className="relative">
                 <input
@@ -167,7 +167,7 @@ function EditProfile() {
 
             <div>
               <label className="block text-sm font-medium text-brown-600 mb-2">
-                National ID Number
+                National ID Number *
               </label>
               <input
                 type="text"
@@ -184,7 +184,7 @@ function EditProfile() {
 
             <div>
               <label className="block text-sm font-medium text-brown-600 mb-2">
-                Phone Number
+                Phone Number *
               </label>
               <input
                 type="text"
@@ -199,7 +199,7 @@ function EditProfile() {
               )}
             </div>
 
-            <div className="mt-8">
+            <div className="!mt-10 !mb-5">
               <button
                 type="submit"
                 className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"

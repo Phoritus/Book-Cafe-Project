@@ -68,7 +68,7 @@ const ProfileInformation = () => {
 
           <hr className="divider" />
 
-          <button className="edit-btn !mt-10" onClick={handleEditProfile}>
+          <button className="edit-btn !mt-7 !mb-7" onClick={handleEditProfile}>
             Edit Profile
           </button>
 
