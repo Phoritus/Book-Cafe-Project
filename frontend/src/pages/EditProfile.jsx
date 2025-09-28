@@ -120,7 +120,7 @@ export default function EditProfile() {
             className="!h-20 !w-20 mx-auto text-brown-500 mb-6 animate-bounce-subtle"
           />
           <h2
-            className="text-4xl md:text-5xl font-display font-bold text-darkBrown-800 font-crimson"
+            className="text-4xl md:text-5xl font-bold text-darkBrown-800 font-crimson"
             style={{ fontFamily: "'crimson text', sans-serif" }}
           >
             Edit Profile
