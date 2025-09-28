@@ -72,16 +72,18 @@ export default function BookLendingPage() {
     if (!cid) return;
     try {
       setBorrowLoading(true); setBorrowError('');
-      const { data } = await axios.get(`${API_BASE}/borrowing?citizen_id=${cid}`, { headers: authHeader() });
+      // Remove membership requirement: try with auth header only if token exists
+      const opt = token ? { headers: authHeader() } : undefined;
+      const { data } = await axios.get(`${API_BASE}/borrowing?citizen_id=${cid}`, opt);
       setBorrowedList(data);
     } catch (e) {
       setBorrowError(e?.response?.data?.message || 'Failed to load borrowed list');
     } finally {
       setBorrowLoading(false);
     }
-  }, [API_BASE, authHeader]);
+  }, [API_BASE, authHeader, token]);
 
-  // Borrow book
+  // Borrow book (no membership required)
   const handleBorrow = async () => {
     setCitizenError(''); setActionError(''); setActionMessage('');
     if (!selectedBook) { setActionError('No book selected'); return; }
@@ -89,7 +91,9 @@ export default function BookLendingPage() {
     if (!/^\d{13}$/.test(citizenId.trim())) { setCitizenError('Must be exactly 13 digits'); return; }
     if (selectedBook.book_status === 'borrowed') { setActionError('Book already borrowed'); return; }
     try {
-      await axios.post(`${API_BASE}/borrowing/borrow`, { book_id: selectedBook.book_id, citizen_id: citizenId.trim() }, { headers: authHeader() });
+      const body = { book_id: selectedBook.book_id, citizen_id: citizenId.trim() };
+      const opt = token ? { headers: authHeader() } : undefined;
+      await axios.post(`${API_BASE}/borrowing/borrow`, body, opt);
       setActionMessage('Borrowed successfully');
       await loadBooks();
       await loadBorrowingForCitizen(citizenId.trim());
@@ -98,13 +102,12 @@ export default function BookLendingPage() {
     }
   };
 
-  // Return book (confirm dialog sets record)
-  const handleReturn = (record) => setConfirmReturnRecord(record);
-  const cancelReturn = () => setConfirmReturnRecord(null);
+  // Return book (still optional auth; allow without login if backend permits)
   const confirmReturnBook = async () => {
     if (!confirmReturnRecord) return;
     try {
-      await axios.post(`${API_BASE}/borrowing/return`, { record_id: confirmReturnRecord.record_id }, { headers: authHeader() });
+      const opt = token ? { headers: authHeader() } : undefined;
+      await axios.post(`${API_BASE}/borrowing/return`, { record_id: confirmReturnRecord.record_id }, opt);
       setActionMessage('Returned successfully');
       setConfirmReturnRecord(null);
       await loadBooks();
