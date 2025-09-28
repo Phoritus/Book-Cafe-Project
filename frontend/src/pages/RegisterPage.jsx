@@ -148,7 +148,7 @@ export default function RegisterPage() {
           <div className="flex flex-col sm:flex-row sm:gap-4 w-full">
             {/* Title */}
             <Form.Item
-              name="title"
+              name="nameTitle"
               label={<label className="text-brown-700 font-sans font-semibold">Title *</label>}
               rules={[{ required: true, message: "Enter your title" }]}
               className="flex flex-col justify-end min-h-[90px] !w-20 sm:w-24"
@@ -273,6 +273,7 @@ export default function RegisterPage() {
               { min: 8, message: 'At least 8 characters' },
               { pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/, message: 'Need upper, lower, digit' }
             ]}
+            validateFirst={true}
           >
             <Input.Password
               placeholder="Enter your password"
