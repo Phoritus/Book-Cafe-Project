@@ -54,8 +54,15 @@ export async function listBookingsByRoom(room_number) {
 }
 
 export async function listBookingsToday(room_number) {
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  // Join person table to enrich booking with user identity details
+  // Correct Bangkok date calculation: using Intl with timeZone to avoid double UTC conversion
+  // Previous logic added +7h then used toISOString() (UTC) which converted back and produced the prior day early in the morning.
+  const today = new Intl.DateTimeFormat('en-CA', { // en-CA gives YYYY-MM-DD
+    timeZone: 'Asia/Bangkok',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+
   const sql = `SELECT 
       b.*, 
       p.firstname, 
