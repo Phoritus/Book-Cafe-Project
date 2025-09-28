@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import "./ResetPassword.css";
+import "./Resetpassword.css";
 import logo from "../assets/Coffee.svg";
 import { ArrowLeft } from 'lucide-react';
 import axios from "axios";
