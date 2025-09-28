@@ -25,8 +25,12 @@ const Navbar = () => {
 
   // consider profile and its sub-routes as "active"
   const isProfileActive = () =>
-    location.pathname === '/profile' ||
-    location.pathname.startsWith('/customer/profile');
+    role === 'user' && (
+      location.pathname === '/profile' ||
+      location.pathname.startsWith('/customer/profile')
+    );
+
+  const canViewProfile = isAuthenticated && role === 'user';
 
   // กลุ่มเส้นทาง (Room / Book) เพื่อให้ highlight เมื่ออยู่ในหน้าใดๆ ของหมวดนั้น
   const roomPaths = [
@@ -41,7 +45,8 @@ const Navbar = () => {
     '/bookborrowingdashboard'
   ];
 
-  const isRoomGroupActive = () => roomPaths.some(p => location.pathname.startsWith(p));
+  const isRoomGroupActive = () =>
+    roomPaths.some(p => location.pathname.startsWith(p));
   const isBookGroupActive = () => bookPaths.some(p => location.pathname.startsWith(p));
 
   // ฟังก์ชันสำหรับกำหนด home path ตาม role
@@ -97,14 +102,8 @@ const Navbar = () => {
             <HomeIcon className="h-4 w-4" /> Home
           </Link>
           <Link
-            to={isAuthenticated ? "/choose-room" : location.pathname}
-            onClick={(e) => {
-              if (!isAuthenticated) {
-                e.preventDefault();
-                toast.error("Please login first");
-              }
-            }}
-            className={getNavLinkClass("/choose-room", "flex items-center gap-1", 'room')}
+            to="/choose-room"
+            className={getNavLinkClass("/choose-room", "flex items-center gap-1", "room")}
           >
             <BookOpen className="h-4 w-4" /> Room
           </Link>
@@ -135,14 +134,24 @@ const Navbar = () => {
             </>
           ) : (
             <div className="flex items-center gap-6">
-              <Link
-                to="/customer/profile"
-                className={getNavLinkClass("/customer/profile", "flex items-center gap-2")}
-                title={user?.email || ""}
-              >
-                <User className="h-4 w-4 shrink-0" />
-                <span className="truncate text-[15px]" title={user?.email || ''}>{user?.email || ''}</span>
-              </Link>
+              {canViewProfile ? (
+                <Link
+                  to="/customer/profile"
+                  className={getNavLinkClass("/customer/profile", "flex items-center gap-2")}
+                  title={user?.email || ""}
+                >
+                  <User className="h-4 w-4 shrink-0" />
+                  <span className="truncate text-[15px]" title={user?.email || ''}>{user?.email || ''}</span>
+                </Link>
+              ) : (
+                <div
+                  className="flex items-center gap-2 px-4 py-2 text-brown-500/70 bg-brown-100/30 rounded-md cursor-not-allowed select-none"
+                  title="Admin ไม่มีหน้าโปรไฟล์"
+                >
+                  <User className="h-4 w-4 shrink-0" />
+                  <span className="truncate text-[15px]">{user?.email || ''}</span>
+                </div>
+              )}
               {/* Icon + text logout */}
               <div
                 role="button"
@@ -190,20 +199,13 @@ const Navbar = () => {
             Home
           </Link>
           <Link
-            to={isAuthenticated ? "/choose-room" : location.pathname}
+            to="/choose-room"
             className={`block mx-2 ${
               isRoomGroupActive()
                 ? 'bg-brown-500 text-white px-4 py-2 rounded-md'
                 : 'text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md'
             }`}
-            onClick={(e) => {
-              if (!isAuthenticated) {
-                e.preventDefault();
-                toast.error("Please login first");
-              } else {
-                closeMobileMenu();
-              }
-            }}
+            onClick={closeMobileMenu}
           >
             Room
           </Link>
@@ -250,16 +252,28 @@ const Navbar = () => {
           ) : (
             <>
               {/* User Info in Mobile */}
-              <Link
-                to="/customer/profile"
-                className={`block mx-2 ${isProfileActive() ? "bg-brown-500 text-white px-4 py-2 rounded-md" : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"}`}
-                onClick={closeMobileMenu}
-              >
-                <div className="flex items-center gap-2 px-4 py-2">
-                  <User className="h-4 w-4" />
-                  <span className="truncate">{user?.email || ""}</span>
+              {canViewProfile ? (
+                <Link
+                  to="/customer/profile"
+                  className={`block mx-2 ${isProfileActive() ? "bg-brown-500 text-white px-4 py-2 rounded-md" : "text-brown-600 hover:bg-brown-50 px-4 py-2 rounded-md"}`}
+                  onClick={closeMobileMenu}
+                >
+                  <div className="flex items-center gap-2 px-4 py-2">
+                    <User className="h-4 w-4" />
+                    <span className="truncate">{user?.email || ""}</span>
+                  </div>
+                </Link>
+              ) : (
+                <div
+                  className="block mx-2 bg-brown-100/40 text-brown-500/70 px-4 py-2 rounded-md cursor-not-allowed select-none"
+                  title="Admin ไม่มีหน้าโปรไฟล์"
+                >
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="truncate">{user?.email || ""}</span>
+                  </div>
                 </div>
-              </Link>
+              )}
               <button
                 type="button"
                 onClick={() => { handleLogout(); closeMobileMenu(); }}
