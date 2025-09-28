@@ -67,7 +67,7 @@ export async function listBookingsToday(room_number) {
       p.role
     FROM booking_room b
     JOIN person p ON p.person_id = b.person_id
-    WHERE b.room_number = ? AND b.checkIn = ?
+  WHERE b.room_number = ? AND b.checkIn = ? AND b.status <> 'CANCELLED'
     ORDER BY COALESCE(b.startTime,'00:00:00') ASC`;
   const [rows] = await query(sql, [room_number, today]);
   return rows;
