@@ -86,21 +86,23 @@ export async function getUpcomingBookingForUser(person_id) {
   const now = new Date();
   const today = now.toISOString().slice(0,10);
   const currentTime = now.toTimeString().slice(0,8);
+  // Only consider statuses that are still "live" for the user (BOOKED future or CHECKED_IN ongoing)
   const sql = `SELECT * FROM booking_room
-               WHERE person_id = ?
-                 AND (
-                       checkIn > ?
-                       OR (
-                           checkIn = ?
-                           AND (
-                                 startTime IS NULL
-                              OR endTime IS NULL
-                              OR endTime > ?
-                           )
-                       )
-                 )
-               ORDER BY checkIn ASC,
-                        COALESCE(startTime, '00:00:00') ASC`;
+       WHERE person_id = ?
+         AND status IN ('BOOKED','CHECKED_IN')
+         AND (
+           checkIn > ?
+           OR (
+           checkIn = ?
+           AND (
+             startTime IS NULL
+          OR endTime IS NULL
+          OR endTime > ?
+           )
+           )
+         )
+       ORDER BY checkIn ASC,
+        COALESCE(startTime, '00:00:00') ASC`;
   const params = [person_id, today, today, currentTime];
   const [rows] = await query(sql, params);
   return rows[0] || null;
