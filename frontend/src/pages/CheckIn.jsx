@@ -25,6 +25,16 @@ const CheckIn = () => {
   const parsedSlot = parseSlot(slot);
   const API_BASE = import.meta.env.VITE_API_BASE;
 
+  function formatNationalId(id) {
+    if (!id) return '-';
+    // ลบตัวอักษรหรือช่องว่างที่ไม่ใช่ตัวเลข
+    const digits = id.replace(/\D/g, '');
+    if (digits.length !== 13) return id; // ถ้าไม่ครบ 13 ตัว ให้คืนค่าเดิม
+
+    // แยกใส่ขีดตามรูปแบบ 1-2345-67890-12-3
+    return `${digits[0]}-${digits.slice(1, 5)}-${digits.slice(5, 10)}-${digits.slice(10, 12)}-${digits[12]}`;
+  }
+
   // Role guard (only admin)
   const user = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; } })();
   useEffect(() => { if (user && user.role !== 'admin') navigate('/', { replace:true }); }, [user, navigate]);
@@ -101,7 +111,7 @@ const CheckIn = () => {
     title: current.nameTitle || '-',
     firstName: current.firstname || '-',
     lastName: current.lastname || '-',
-    nationalId: current.citizen_id || '-',
+    nationalId: formatNationalId(current.citizen_id) || '-',
     email: current.email || '-',
     phone: current.phone || '-',
     date: todayDisplay,
@@ -174,7 +184,7 @@ const CheckIn = () => {
                 </div>
               </div>
               {/* Phone */}
-              <div className="flex items-center gap-10 p-4 !pb-4 border-cream-300">
+              <div className="flex items-center gap-10 p-4 !pb-4 border-b border-cream-300">
                 <Phone size={30} color="#C3A15E" className="mr-3 rotate-270" />
                 <div className="flex-1">
                   <div className="text-sm text-brown-600 mb-1">Phone</div>
