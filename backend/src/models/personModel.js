@@ -54,3 +54,24 @@ export async function updatePassword(person_id, newPlainPassword) {
   const hashed = await hashPassword(newPlainPassword);
   await query('UPDATE person SET password = ? WHERE person_id = ?', [hashed, person_id]);
 }
+
+// Dynamic profile update (only allowed fields). Returns updated row without password.
+export async function updatePersonProfile(person_id, fields) {
+  if (!fields || typeof fields !== 'object') return null;
+  const allowed = ['firstname','lastname','nameTitle','phone','dateOfBirth','citizen_id'];
+  const sets = [];
+  const params = [];
+  for (const key of allowed) {
+    if (fields[key] != null && fields[key] !== '') {
+      sets.push(`${key} = ?`);
+      params.push(fields[key]);
+    }
+  }
+  if (!sets.length) return null; // nothing to update
+  const sql = `UPDATE person SET ${sets.join(', ')} WHERE person_id = ?`;
+  params.push(person_id);
+  await query(sql, params);
+  // Return a safe subset of columns (exclude updated_at to avoid schema mismatch errors in some environments)
+  const [rows] = await query('SELECT person_id, firstname, lastname, nameTitle, phone, dateOfBirth, citizen_id, email, role FROM person WHERE person_id = ? LIMIT 1', [person_id]);
+  return rows[0] || null;
+}

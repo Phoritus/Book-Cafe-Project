@@ -1,4 +1,4 @@
-import { createBooking, listBookingsByPerson, deleteBooking, getBookingById, getUpcomingBookingForUser, updateBookingStatus, autoCheckoutExpired } from '../models/bookingModel.js';
+import { createBooking, listBookingsByPerson, deleteBooking, getBookingById, getUpcomingBookingForUser, updateBookingStatus, autoCheckoutExpired, listBookingsToday } from '../models/bookingModel.js';
 import { query } from '../config/db.js';
 
 export async function createBookingHandler(req, res) {
@@ -9,6 +9,7 @@ export async function createBookingHandler(req, res) {
       const rnd = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
       qrCode = `QR-${ts}-${rnd}`;
     }
+    // Auth required (route enforces auth) so req.user must exist
     const booking = await createBooking({
       person_id: req.user.id,
       room_number,
@@ -32,6 +33,21 @@ export async function listBookingsHandler(req, res) {
       return res.json(rows);
     }
     const rows = await listBookingsByPerson(req.user.id);
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: true, message: e.message });
+  }
+}
+
+// GET/POST today bookings for a room. Accepts room_number either as URL param or JSON body { room_number: "Room 1" }
+export async function listBookingsTodayHandler(req, res) {
+  try {
+    // Prefer JSON body, fallback to params for backward compatibility
+    const room_number = (req.body && req.body.room_number) || (req.params && req.params.room_number);
+    if (!room_number) {
+      return res.status(400).json({ error: true, message: 'room_number required (provide in JSON body or URL param)' });
+    }
+    const rows = await listBookingsToday(room_number);
     res.json(rows);
   } catch (e) {
     res.status(500).json({ error: true, message: e.message });
@@ -100,4 +116,4 @@ export async function checkInBookingHandler(req, res) {
   }
 }
 
-export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler };
+export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler, listBookingsTodayHandler };

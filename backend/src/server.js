@@ -8,6 +8,7 @@ import bookingRoutes from './routes/bookings.js';
 import bookRoutes from './routes/books.js';
 import borrowingRoutes from './routes/borrowing.js';
 import dashboardRoutes from './routes/dashboard.js';
+import profileRoutes from './routes/profile.js';
 import { corsOptions } from './config/corsOptionsControllers.js';
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/bookings', bookingRoutes);
 app.use('/books', bookRoutes);
 app.use('/borrowing', borrowingRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/profile', profileRoutes);
 
 // Simple 404
 app.use((req, res, next) => {

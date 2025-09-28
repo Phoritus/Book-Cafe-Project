@@ -50,25 +50,40 @@ export async function listBookingsByRoom(room_number) {
   return rows;
 }
 
+export async function listBookingsToday(room_number) {
+  const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+  const [rows] = await query('SELECT * FROM booking_room WHERE room_number = ? AND checkIn = ?', [room_number, today]);
+  return rows;
+}
+
 // Get the nearest upcoming booking for a user (today or future),
 // ordering by checkIn date then (startTime if present else checkIn time columns) ascending.
 // Assumptions: checkIn stores the booking date (DATE), optional startTime/endTime are HH:MM:SS.
 export async function getUpcomingBookingForUser(person_id) {
-  // We consider a booking upcoming if its date is today or later AND:
-  // - if date > today -> always upcoming
-  // - if date = today -> startTime is null OR startTime >= now (within day)
-  // We still return the next one even if within the 30 minute check-in window; frontend will handle messaging.
+  // Definition change: return the current active/ongoing booking (today, started, not ended) OR the next future one.
+  // Include cases:
+  //   1. checkIn > today (future)
+  //   2. checkIn = today AND ((startTime IS NULL) OR (endTime IS NULL) OR (endTime > now))
+  //      -> this covers bookings that have not finished yet (even if already started)
+  // Exclude bookings whose endTime <= now (already finished) unless endTime NULL (treat as still active today).
   const now = new Date();
-  const today = now.toISOString().slice(0,10); // YYYY-MM-DD
-  const currentTime = now.toTimeString().slice(0,8); // HH:MM:SS
+  const today = now.toISOString().slice(0,10);
+  const currentTime = now.toTimeString().slice(0,8);
   const sql = `SELECT * FROM booking_room
                WHERE person_id = ?
                  AND (
-                      checkIn > ?
-                      OR (checkIn = ? AND (startTime IS NULL OR startTime >= ?))
+                       checkIn > ?
+                       OR (
+                           checkIn = ?
+                           AND (
+                                 startTime IS NULL
+                              OR endTime IS NULL
+                              OR endTime > ?
+                           )
+                       )
                  )
-               ORDER BY checkIn ASC, COALESCE(startTime, '23:59:59') ASC
-               LIMIT 1`;
+               ORDER BY checkIn ASC,
+                        COALESCE(startTime, '00:00:00') ASC`;
   const params = [person_id, today, today, currentTime];
   const [rows] = await query(sql, params);
   return rows[0] || null;

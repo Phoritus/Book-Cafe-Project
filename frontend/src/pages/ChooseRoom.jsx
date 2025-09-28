@@ -27,9 +27,10 @@ function ChooseRoom() {
                 const mapped = (Array.isArray(data) ? data : []).map((r, idx) => {
                     const statusRaw = (r.room_status || '').toLowerCase();
                     const statusCap = statusRaw.charAt(0).toUpperCase() + statusRaw.slice(1);
+                    const roomName = r.room_number || `Room ${idx + 1}`;
                     return {
                         id: idx + 1,
-                        name: r.room_number || `Room ${idx + 1}`,
+                        name: roomName,
                         capacity: r.number_people ? `Fit for ${r.number_people} people` : '—',
                         price: r.price ? `${parseFloat(r.price).toFixed(0)} THB` : '—',
                         status: statusCap,
@@ -48,12 +49,17 @@ function ChooseRoom() {
         return () => { cancelled = true; };
     }, []);
 
-    const handleRoomSchedule = (roomId) => {
+    const handleRoomSchedule = (roomName) => {
         if (!isAuthenticated) {
             toast.error('Please login first');
             return;
         }
-        navigate('/fill-book-room', { state: { roomId } });
+        try {
+            sessionStorage.setItem('selectedRoom', roomName);
+        } catch (e) {
+            // fallback silently
+        }
+        navigate('/fill-book-room');
     };
 
     const getStatusIcon = (status) => {
@@ -141,7 +147,7 @@ function ChooseRoom() {
                                     className={`room-schedule-btn ${room.status.toLowerCase()}`}
                                     disabled={!room.available}
                                     aria-disabled={!room.available}
-                                    onClick={() => room.available && handleRoomSchedule(room.id)}
+                                    onClick={() => room.available && handleRoomSchedule(room.name)}
                                 >
                                     {room.name} Schedule
                                 </button>
