@@ -142,10 +142,10 @@ const Checkout = () => {
           <h1 className="text-4xl font-bold text-darkBrown-500 !mb-10 !-mt-30 text-center">{room}</h1>
 
           {loading && (
-            <div className="bg-white rounded-xl border border-amber-200 p-8 w-[450px] text-center text-amber-800">Loading...</div>
+            <div className="text-center text-[#86422A] font-sans text-base font-semibold">Loading...</div>
           )}
           {!loading && !current && (
-            <div className="bg-white rounded-xl border border-amber-200 p-8 w-[450px] text-center text-amber-800">No CHECKED_IN record for this slot.</div>
+            <div className="text-center text-[#86422A] font-sans text-base font-semibold">No CHECKED_IN record for this slot.</div>
           )}
 
           {!loading && ui && (

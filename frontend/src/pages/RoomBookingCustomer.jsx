@@ -186,12 +186,12 @@ const RoomBookingSchedule = () => {
                     type="button"
                     disabled={isBooked}
                     onClick={() => toggleTime(slot)}
-                    className={`!w-full !mt-2 rounded-xl border !h-15 text-sm transition-transform select-none
+                    className={`!w-full  !mt-2 rounded-xl border !h-15 text-sm transition-transform select-none
                       ${isBooked
-                        ? 'bg-[#F6F3ED] border border-amber-300 text-amber-700 cursor-not-allowed'
+                        ? 'bg-[#F6F3ED] border border-[#86422A] text-[#86422A] cursor-not-allowed'
                         : isSelected
                           ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105'
-                          : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50'}
+                          : 'bg-white border-[#86422A] text-[#86422A] hover:bg-amber-50'}
                     `}
                   >
                     {slot}
