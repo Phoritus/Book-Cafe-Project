@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CircleCheckBig, CircleX,UsersRound } from 'lucide-react';
 import './ChooseRoom.css';
 import roomImage from '../assets/10p_room.jpg'; // ใช้รูปภาพที่ส่งมา
+import roomImage2 from '../assets/6p_room.png';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import Clock from '../assets/Clock.svg';
 
 function ChooseRoom() {
     const navigate = useNavigate();
@@ -34,11 +36,18 @@ function ChooseRoom() {
                     return {
                         id: idx + 1,
                         name: roomName,
-                        capacity: r.number_people ? `Fit for ${r.number_people} people` : '—',
+                        capacity: r.number_people ? (
+                            <span className="flex items-center gap-2">
+                                <UsersRound size={20} color="#BD945C" />
+                                Up for {r.number_people} people
+                            </span>
+                        ) : (
+                            '—'
+                        ),
                         price: r.price ? `${parseFloat(r.price).toFixed(0)} THB` : '—',
                         status: statusCap,
                         available: statusRaw === 'available',
-                        image: roomImage
+                        image: idx < 2 ? roomImage2 : roomImage
                     };
                 });
                 setRooms(mapped);
@@ -56,7 +65,7 @@ function ChooseRoom() {
         if (!isAuthenticated) {
             toast.error('Please login first');
             // optional: remember where user wanted to go
-            try { sessionStorage.setItem('postLoginRoom', roomName); } catch {}
+            try { sessionStorage.setItem('postLoginRoom', roomName); } catch { }
             navigate(`/login?redirect=${encodeURIComponent('/choose-room')}`);
             return;
         }
@@ -78,33 +87,22 @@ function ChooseRoom() {
 
     const getStatusIcon = (status) => {
         switch (status.toLowerCase()) {
-            case 'available': 
+            case 'available':
                 return (
                     <div className="status-icon available">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                            <circle cx="8" cy="8" r="6" fill="#10B981"/>
-                            <path d="M5 8l2 2 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                        <CircleCheckBig color="#12D23B" />
                     </div>
                 );
-            case 'occupied': 
+            case 'occupied':
                 return (
                     <div className="status-icon occupied">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                            <circle cx="8" cy="8" r="6" fill="#EF4444"/>
-                            <circle cx="8" cy="8" r="2" fill="white"/>
-                        </svg>
+                        <CircleX color="#FF3C3C" />
                     </div>
                 );
-            case 'booked': 
+            case 'booked':
                 return (
                     <div className="status-icon booked">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                            <circle cx="8" cy="8" r="6" fill="#F59E0B"/>
-                            <rect x="5" y="4" width="6" height="7" rx="1" fill="white"/>
-                            <rect x="6" y="6" width="4" height="1" fill="#F59E0B"/>
-                            <rect x="6" y="8" width="4" height="1" fill="#F59E0B"/>
-                        </svg>
+                        <img src={Clock} alt="Clock icon" className="clock-icon  w-6 h-6" />
                     </div>
                 );
             default: return null;
@@ -114,7 +112,7 @@ function ChooseRoom() {
     return (
         <div className="choose-room-page">
             {/* Back Button */}
-            <button 
+            <button
                 onClick={() => window.history.back()}
                 className="back-arrow-btn"
             >
@@ -146,21 +144,21 @@ function ChooseRoom() {
                                     <span>{room.status}</span>
                                 </div>
                             </div>
-                            
+
                             <div className="room-info-section">
                                 <h3 className="room-name-text">{room.name}</h3>
                                 <p className="room-capacity-text">{room.capacity}</p>
-                                
+
                                 <div className="room-pricing-row">
                                     <span className="hourly-rate">Hourly Rate:</span>
                                     <span className="price-amount">{room.price}</span>
                                 </div>
-                                
+
                                 <button
                                     type="button"
                                     className={`room-schedule-btn ${room.status.toLowerCase()} ${!room.available ? 'force-clickable' : ''}`}
                                     onClick={() => handleRoomSchedule(room.name)}
-                                    title={!room.available ? 'Status: ' + room.status : ''}
+                                    title={!room.available ? 'Status: ' + room.sttus : ''}
                                 >
                                     {room.name} Schedule
                                 </button>
@@ -170,28 +168,28 @@ function ChooseRoom() {
                 </div>
 
                 {/* Status Legend */}
-                <div className="status-legend">
+                <div className="status-legend !mb-20">
                     <h3 className="legend-title">Room Status Legend</h3>
                     <div className="legend-items">
                         <div className="legend-item">
                             {getStatusIcon('available')}
                             <div className="legend-text">
-                                <span className="legend-name">Available</span>
-                                <span className="legend-desc">Ready for booking</span>
+                                <span className="legend-name" style={{ color: "#288F37" }}>Available</span>
+                                <span className="legend-desc" style={{ color: "#16BC39" }}>Ready for booking</span>
                             </div>
                         </div>
                         <div className="legend-item">
                             {getStatusIcon('occupied')}
                             <div className="legend-text">
-                                <span className="legend-name">Occupied</span>
-                                <span className="legend-desc">Currently in use</span>
+                                <span className="legend-name" style={{ color: "#CA2F2F" }}>Occupied</span>
+                                <span className="legend-desc" style={{ color: "#EB1A1A" }}>Currently in use</span>
                             </div>
                         </div>
                         <div className="legend-item">
                             {getStatusIcon('booked')}
                             <div className="legend-text">
-                                <span className="legend-name">Booked</span>
-                                <span className="legend-desc">Reserved for later</span>
+                                <span className="legend-name" style={{ color: "#B98117" }}>Booked</span>
+                                <span className="legend-desc" style={{ color: "#CB9F26" }}>Already booked</span>
                             </div>
                         </div>
                     </div>
