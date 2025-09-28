@@ -207,8 +207,23 @@ const RoomBookingSchedule = () => {
                 try { sessionStorage.setItem('checkInRoom', roomName); } catch {}
                 try { sessionStorage.setItem('checkInSlot', selectedSlot); } catch {}
                 if (role === 'admin') {
+                  // determine booking covering this slot
+                  const slotStart = selectedSlot.split('-')[0].trim();
+                  const slotEnd = selectedSlot.split('-')[1].trim();
+                  const match = bookings.find(b => {
+                    if (!b.startTime || !b.endTime) return false;
+                    const s = b.startTime.slice(0,5);
+                    const e = b.endTime.slice(0,5);
+                    return s <= slotStart && e >= slotEnd; // booking spans the slot
+                  });
                   const params = new URLSearchParams({ room: roomName, slot: selectedSlot });
-                  navigate(`/check-in?${params.toString()}`);
+                  if (match && match.status === 'CHECKED_IN') {
+                    params.set('bookingId', match.booking_id);
+                    navigate(`/checkout?${params.toString()}`);
+                  } else {
+                    if (match && match.booking_id) params.set('bookingId', match.booking_id);
+                    navigate(`/check-in?${params.toString()}`);
+                  }
                 }
               }}
               className={`!w-110 !mt-10 font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20 

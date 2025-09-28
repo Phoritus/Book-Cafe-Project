@@ -116,4 +116,21 @@ export async function checkInBookingHandler(req, res) {
   }
 }
 
-export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler, listBookingsTodayHandler };
+// POST /bookings/:id/check-out
+export async function checkOutBookingHandler(req, res) {
+  try {
+    const bookingId = parseInt(req.params.id, 10);
+    const booking = await getBookingById(bookingId);
+    if (!booking) return res.status(404).json({ error: true, message: 'Not found' });
+    if (booking.person_id !== req.user.id && req.user.role !== 'admin') return res.status(403).json({ error: true, message: 'Forbidden' });
+    if (booking.status !== 'CHECKED_IN') return res.status(400).json({ error: true, message: `Cannot check-out from status ${booking.status}` });
+    const nowStr = new Date().toISOString().slice(0,19).replace('T',' ');
+    await updateBookingStatus(bookingId, { status: 'CHECKED_OUT', actualCheckOut: nowStr });
+    const updated = await getBookingById(bookingId);
+    res.json({ success: true, booking: updated });
+  } catch (e) {
+    res.status(500).json({ error: true, message: e.message });
+  }
+}
+
+export default { createBookingHandler, listBookingsHandler, deleteBookingHandler, upcomingBookingHandler, checkInBookingHandler, listBookingsTodayHandler, checkOutBookingHandler };

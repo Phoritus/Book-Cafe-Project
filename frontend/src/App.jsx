@@ -20,6 +20,7 @@ import ProfileInformation from './pages/ProfileInformation.jsx';
 import ChangeEmail from './pages/ChangeEmail';
 import ChangePassword from './pages/ChangePassword';
 import CheckIn from './pages/CheckIn.jsx';
+import Checkout from './pages/Checkout.jsx';
 
 function RequireRole({ role, children }) {
   // ถ้าคุณมี auth store ใช้แทน localStorage
@@ -81,6 +82,14 @@ function App() {
               element={
                 <RequireRole role="admin">
                   <CheckIn />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <RequireRole role="admin">
+                  <Checkout />
                 </RequireRole>
               }
             />
