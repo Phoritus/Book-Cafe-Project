@@ -3,20 +3,15 @@ import { query } from '../config/db.js';
 
 export async function createBookingHandler(req, res) {
   try {
-    let { room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode, person_id } = req.body;
-
-    // If route is public (no bearer token), req.user may be undefined.
-    // Priority: explicit person_id in body > authenticated user > null (anonymous)
-    const resolvedPersonId = person_id != null ? person_id : (req.user ? req.user.id : null);
-
+    let { room_number, checkIn, checkOut, startTime, endTime, totalPrice, qrCode } = req.body;
     if (!qrCode) {
       const ts = Date.now().toString(36).toUpperCase();
       const rnd = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
       qrCode = `QR-${ts}-${rnd}`;
     }
-
+    // Auth required (route enforces auth) so req.user must exist
     const booking = await createBooking({
-      person_id: resolvedPersonId, // may be null if anonymous (DB column must allow NULL)
+      person_id: req.user.id,
       room_number,
       checkIn,
       checkOut,

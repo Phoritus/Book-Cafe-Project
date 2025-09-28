@@ -89,16 +89,22 @@ const BookingConfirmPage = () => {
 
   async function handleConfirmBooking(){
     if(hours<=0) { alert('Select valid range'); return; }
-    // validate no conflict again
     const conflict = bookingsToday.some(b=>{
       if(!b.startTime||!b.endTime) return false; const bs=b.startTime.slice(0,5); const be=b.endTime.slice(0,5); return overlaps(startTime,endTime,bs,be);
     });
     if(conflict){ alert('Time conflict'); return; }
     setSubmitting(true);
     try {
-      const payload={ room_number: roomId, checkIn: todayDateISO(), checkOut: todayDateISO(), startTime: startTime+':00', endTime: endTime+':00', totalPrice }; 
       const token = localStorage.getItem('accessToken');
-      await axios.post(`${API_BASE}/bookings/create`, payload, { headers:{ Authorization:`Bearer ${token}` }});
+      if(!token){ alert('Please login first'); setSubmitting(false); return; }
+      await axios.post(`${API_BASE}/bookings`, {
+        room_number: roomId,
+        checkIn: todayDateISO(),
+        checkOut: todayDateISO(),
+        startTime: startTime+':00',
+        endTime: endTime+':00',
+        totalPrice
+      }, { headers: { Authorization: `Bearer ${token}` }});
       setShowSuccessModal(true);
     } catch(e){ alert(e.response?.data?.message || e.message); }
     finally { setSubmitting(false); setTimeout(()=>setShowSuccessModal(false),3000); }
