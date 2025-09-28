@@ -1,6 +1,6 @@
 import { query } from '../config/db.js';
 
-export const REGISTRATION_DB_CODE_TTL_MS = 60 * 1000; // 60 seconds
+export const REGISTRATION_DB_CODE_TTL_MS = 5 * 60 * 1000; // 5 minute
 
 // NOTE: Table names normalized to lowercase snake_case.
 // This model manages transient registration verification codes.

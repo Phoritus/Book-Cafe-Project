@@ -7,7 +7,7 @@ import { deleteVerificationEntry } from '../models/registrationVerifyModel.js';
 // In-memory registration code store (email -> { code, expiresAt })
 // This replaces the previous Registration_Verify table to keep things simple.
 const registrationCodes = new Map();
-const REGISTRATION_CODE_TTL_MS = 60 * 1000; // 60 seconds
+const REGISTRATION_CODE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 function generateNumericCode(len = 6) {
   let c = '';
@@ -15,7 +15,7 @@ function generateNumericCode(len = 6) {
   return c;
 }
 
-function setRegistrationCode(email, code, ttlMs = REGISTRATION_CODE_TTL_MS) { // default 60 seconds
+function setRegistrationCode(email, code, ttlMs = REGISTRATION_CODE_TTL_MS) { // default 5 minutes
   registrationCodes.set(email, { code, expiresAt: Date.now() + ttlMs });
 }
 
@@ -136,10 +136,9 @@ export async function login(req, res) {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: true, message: 'Missing credentials' });
     const user = await findByEmail(email);
-    if (!user) return res.status(401).json({ error: true, message: 'Invalid email' });
-
+    if (!user) return res.status(401).json({ error: true, message: 'Invalid email,Please check and try again.' });
     const match = await comparePassword(password, user.password);
-    if (!match) return res.status(401).json({ error: true, message: 'Invalid password' });
+    if (!match) return res.status(401).json({ error: true, message: 'Invalid password,Please check and try again.' });
     const token = signAccessToken({ id: user.person_id, email: user.email, role: user.role });
     return res.json({ token, user: { id: user.person_id, email: user.email, role: user.role } });
   } catch (e) {
@@ -157,7 +156,7 @@ export async function sendRegisterCode(req, res) {
     const code = generateNumericCode();
   setRegistrationCode(email, code);
     await sendVerificationCode(email, code); // reuse same email template
-  return res.json({ success: true, message: 'Verification code sent (valid 60s)' });
+  return res.json({ success: true, message: 'Verification code sent (valid 5 minutes)' });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ error: true, message: 'Failed to send code' });
