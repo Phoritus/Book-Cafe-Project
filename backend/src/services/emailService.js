@@ -22,7 +22,7 @@ function fromAddress() {
 export async function sendVerificationCode(to, code) {
   const subject = 'Verification Code';
   const text = `Your verification code is: ${code}`;
-  const html = `<p>Your verification code is: <b>${code}</b></p><p>It is valid for <strong>5 minutes</strong>. If it expires, request a new one.</p>`;
+  const html = `<p>Your verification code is: <b>${code}</b></p><p>It is valid for <strong>60 seconds</strong>. If it expires, request a new one.</p>`;
   try {
     const info = await transporter.sendMail({ from: fromAddress(), to, subject, text, html });
     return info.messageId;

@@ -9,7 +9,12 @@ export async function borrowBook({ book_id, citizen_id }) {
     err.status = 404;
     throw err;
   }
-  if (book.book_status === 'borrowed') {
+
+  const [activeBorrow] = await query(
+    `SELECT 1 FROM borrowing_record WHERE book_id = ? AND returnTime IS NULL LIMIT 1`,
+    [book_id]
+  );
+  if (activeBorrow.length > 0) {
     const err = new Error('Book already borrowed');
     err.status = 409;
     throw err;
