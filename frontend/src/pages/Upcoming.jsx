@@ -51,8 +51,14 @@ function Upcoming() {
       }
       const { data } = await axios.get(ENDPOINT, { headers: { Authorization: `Bearer ${token}` } });
       if (data?.booking) {
-        setBooking(data.booking);
-        setWithin30(!!data.meta?.within30Minutes);
+        const b = data.booking;
+        // Hide if status indicates it's no longer an active upcoming booking
+        if (b.status === 'CHECKED_OUT' || b.status === 'CANCELLED') {
+          setBooking(null);
+        } else {
+          setBooking(b);
+          setWithin30(!!data.meta?.within30Minutes);
+        }
       } else {
         setBooking(null);
       }
