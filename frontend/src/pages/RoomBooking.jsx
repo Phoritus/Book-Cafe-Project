@@ -32,7 +32,7 @@ const RoomBookingSchedule = () => {
     const stored = (() => {
       try { return sessionStorage.getItem('selectedRoom'); } catch { return null; }
     })();
-  if (stored) { setRoomName(stored); setHasRoom(true); }
+    if (stored) { setRoomName(stored); setHasRoom(true); }
     // load user id
     try {
       const rawUser = localStorage.getItem('user');
@@ -43,7 +43,7 @@ const RoomBookingSchedule = () => {
           if (parsed.role) setRole(parsed.role);
         }
       }
-    } catch {}
+    } catch { }
     (async () => {
       try {
         const { data } = await axios.get(`${API_BASE}/rooms`);
@@ -85,10 +85,10 @@ const RoomBookingSchedule = () => {
   // Expand booking time range into 1-hour slot labels
   function expandToHourSlots(startTime, endTime) {
     if (!startTime || !endTime) return [];
-    const toMinutes = (t) => { const [hh, mm] = t.split(':'); return parseInt(hh,10)*60 + parseInt(mm,10); };
-    const fmt = (m) => `${String(Math.floor(m/60)).padStart(2,'0')}:00`;
-    const startMin = toMinutes(startTime.slice(0,5));
-    const endMin = toMinutes(endTime.slice(0,5));
+    const toMinutes = (t) => { const [hh, mm] = t.split(':'); return parseInt(hh, 10) * 60 + parseInt(mm, 10); };
+    const fmt = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:00`;
+    const startMin = toMinutes(startTime.slice(0, 5));
+    const endMin = toMinutes(endTime.slice(0, 5));
     const slots = [];
     for (let m = startMin; m < endMin; m += 60) {
       const s = fmt(m);
@@ -149,56 +149,57 @@ const RoomBookingSchedule = () => {
         )}
 
         {hasRoom && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
-          {/* Room Image */}
-          <div className="relative bg-gray-200 !h-60">
-            {/* Simple room mockup */}
-            <div className="absolute inset-0">
-              <img src={roomImage} alt="Room" className="!w-full !h-full object-cover object-[10%_90%]" />
-            </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+            {/* Room Image */}
+            <div className="relative bg-gray-200 !h-60">
+              {/* Simple room mockup */}
+              <div className="absolute inset-0">
+                <img src={roomImage} alt="Room" className="!w-full !h-full object-cover object-[10%_90%]" />
+              </div>
 
-            {/* Room info overlay */}
-            <div className="absolute !bottom-0 !left-0 !right-0 !bg-gradient-to-t !from-black/80 !to-transparent  !p-3">
-              <div className="flex justify-between items-end text-white">
-                <div>
-                  <h3 className="text-lg font-medium">{roomName}</h3>
-                  <div className="flex items-center gap-1 text-xs opacity-90">
-                    <Users className="w-3 h-3" />
-                    <span>{roomInfo.capacity}</span>
+              {/* Room info overlay */}
+              <div className="absolute !bottom-0 !left-0 !right-0 !bg-gradient-to-t !from-black/80 !to-transparent  !p-3">
+                <div className="flex justify-between items-end text-white">
+                  <div>
+                    <h3 className="text-lg font-medium">{roomName}</h3>
+                    <div className="flex items-center gap-1 text-xs opacity-90">
+                      <Users className="w-3 h-3" />
+                      <span>{roomInfo.capacity}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-lg font-semibold">{roomInfo.price}</div>
-                  <div className="text-xs opacity-75">/ Hour</div>
+                  <div className="text-right">
+                    <div className="text-lg font-semibold">{roomInfo.price}</div>
+                    <div className="text-xs opacity-75">/ Hour</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Time Slots */}
-          <div className="flex justify-center p-0 !mt-10 ">
-            <div className="grid grid-cols-3 gap-6 !w-130 !mb-10 ">
-              {timeSlots.map((slot) => {
-                const allowed = allowedSlots.has(slot);
-                const isSelected = allowed && selectedSlot === slot;
-                return (
-                  <button
-                    key={slot}
-                    type="button"
-                    disabled={!allowed}
-                    onClick={() => allowed && toggleTime(slot)}
-                    className={`!w-full !mt-2 rounded-xl border !h-15 text-sm transition-transform 
-                      ${allowed ? (isSelected ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105' : 'bg-white border-amber-200 text-amber-800 hover:bg-amber-50') : 'bg-[#F6F3ED] border border-amber-300 text-amber-700'}
+            {/* Time Slots */}
+            <div className="flex justify-center p-0 !mt-10 ">
+              <div className="grid grid-cols-3 gap-6 !w-130 !mb-10 ">
+                {timeSlots.map((slot) => {
+                  const allowed = allowedSlots.has(slot);
+                  const isSelected = allowed && selectedSlot === slot;
+                  return (
+                    <button
+                      key={slot}
+                      type="button"
+                      disabled={!allowed}
+                      onClick={() => allowed && toggleTime(slot)}
+                      className={`!w-full   !mt-2 rounded-xl border !h-15 text-sm transition-transform 
+                      ${allowed ? (isSelected ? 'bg-brown-600 text-white shadow-lg shadow-[#86422A] scale-105' : 'bg-white border-[#86422A] text-[#86422A] hover:bg-amber-50') : 'bg-[#F6F3ED] border-[#86422A]'}
                     `}
-                  >
-                    {slot}
-                  </button>
-                );
-              })}
+                    >
+
+                      {slot}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-  </div>
-  )}
+        )}
 
         {/* Continue Button */}
         {hasRoom && (
@@ -208,16 +209,16 @@ const RoomBookingSchedule = () => {
               onClick={() => {
                 if (!selectedSlot) return;
                 // store for later use
-                try { sessionStorage.setItem('checkInRoom', roomName); } catch {}
-                try { sessionStorage.setItem('checkInSlot', selectedSlot); } catch {}
+                try { sessionStorage.setItem('checkInRoom', roomName); } catch { }
+                try { sessionStorage.setItem('checkInSlot', selectedSlot); } catch { }
                 if (role === 'admin') {
                   // determine booking covering this slot
                   const slotStart = selectedSlot.split('-')[0].trim();
                   const slotEnd = selectedSlot.split('-')[1].trim();
                   const match = bookings.find(b => {
                     if (!b.startTime || !b.endTime) return false;
-                    const s = b.startTime.slice(0,5);
-                    const e = b.endTime.slice(0,5);
+                    const s = b.startTime.slice(0, 5);
+                    const e = b.endTime.slice(0, 5);
                     return s <= slotStart && e >= slotEnd; // booking spans the slot
                   });
                   const params = new URLSearchParams({ room: roomName, slot: selectedSlot });
