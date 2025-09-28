@@ -96,11 +96,10 @@ const Checkout = () => {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       await axios.post(`${API_BASE}/bookings/${current.booking_id}/check-out`, {}, { headers });
       setShowSuccess(true);
-      // Refresh list
-      const encoded = encodeURIComponent(room);
-      const { data } = await axios.get(`${API_BASE}/bookings/today/${encoded}`, { headers });
-      if (Array.isArray(data)) setBookings(data);
-      setTimeout(() => setShowSuccess(false), 2000);
+      // Ensure RoomBooking knows which room when we return
+      try { sessionStorage.setItem('selectedRoom', room); } catch {}
+      // Immediate redirect back to schedule
+      navigate('/roombooking', { replace: true });
     } catch (err) {
       alert(err.response?.data?.message || err.message);
     } finally {

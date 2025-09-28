@@ -98,10 +98,14 @@ const RoomBookingSchedule = () => {
     return slots;
   }
 
+  // Only allow selecting slots that still have an active booking (BOOKED or CHECKED_IN).
+  // After a booking is CHECKED_OUT its slots become disabled again.
   const allowedSlots = useMemo(() => {
+    const ACTIVE_STATUSES = new Set(['BOOKED', 'CHECKED_IN']);
     const set = new Set();
     bookings.forEach(b => {
       if (!b.startTime || !b.endTime) return;
+      if (!ACTIVE_STATUSES.has(b.status)) return; // ignore finished / other statuses
       if (role === 'admin' || (userId && b.person_id === userId)) {
         expandToHourSlots(b.startTime, b.endTime).forEach(lbl => set.add(lbl));
       }
