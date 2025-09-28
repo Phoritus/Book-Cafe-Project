@@ -68,7 +68,7 @@ export default function BookLendingPage() {
   };
 
   // Borrowing list for citizen
-  const loadBorrowingForCitizen = useCallback(async (cid) => {
+  /*const loadBorrowingForCitizen = useCallback(async (cid) => {
     if (!cid) return;
     try {
       setBorrowLoading(true); setBorrowError('');
@@ -81,7 +81,7 @@ export default function BookLendingPage() {
     } finally {
       setBorrowLoading(false);
     }
-  }, [API_BASE, authHeader, token]);
+  }, [API_BASE, authHeader, token]);*/
 
   // All active (unreturned) borrowings across all citizens
   const loadActiveBorrowings = useCallback(async () => {
@@ -99,11 +99,11 @@ export default function BookLendingPage() {
   // Decide which list to refresh (filtered citizen vs global active)
   const refreshBorrowList = useCallback(() => {
     if (/^\d{13}$/.test(citizenId.trim())) {
-      loadBorrowingForCitizen(citizenId.trim());
+      loadActiveBorrowings();
     } else {
       loadActiveBorrowings();
     }
-  }, [citizenId, loadBorrowingForCitizen, loadActiveBorrowings]);
+  }, [loadActiveBorrowings]);
 
   // Borrow book (no membership required)
   const handleBorrow = async () => {
@@ -163,13 +163,13 @@ export default function BookLendingPage() {
   useEffect(() => { loadActiveBorrowings(); }, [loadActiveBorrowings]);
 
   // Watch citizenId: when 13 digits -> load that citizen's active borrowings; when cleared -> show all active
-  useEffect(() => {
+  /*useEffect(() => {
     if (/^\d{13}$/.test(citizenId)) {
       loadBorrowingForCitizen(citizenId);
     } else if (citizenId.trim() === '') {
       loadActiveBorrowings();
     }
-  }, [citizenId, loadBorrowingForCitizen, loadActiveBorrowings]);
+  }, [citizenId, loadBorrowingForCitizen, loadActiveBorrowings]);*/
 
   return (
     <div className="min-h-screen bg-[#f9f6f2] p-6 font-sans">
@@ -277,8 +277,8 @@ export default function BookLendingPage() {
           {/* Right column - borrowed list */}
           <main className="md:col-span-1 !mb-10">
             <section className="borrowed-list">
-              <h3>
-                {/^\d{13}$/.test(citizenId) ? `Borrowed books for ID ${citizenId}` : 'Currently borrowed books (all)'}
+              <h3 className="font-sans font-semibold text-xl">
+                List of Borrowed Books
               </h3>
               {borrowError && <div style={{ color:'#FF5656', fontSize:'0.8rem'}}>{borrowError}</div>}
               {borrowLoading && <div>Loading borrowing history...</div>}
