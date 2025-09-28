@@ -5,11 +5,14 @@ import { validateCreateBooking } from '../middleware/validate.js';
 
 const router = express.Router();
 
-// POST /bookings (authenticated create)
+// POST /bookings (create booking)
 router.post('/', auth, validateCreateBooking, createBookingHandler);
 
-// GET /bookings - all bookings of current user
-router.get('/', listBookingsTodayHandler);
+// GET /bookings (current user's bookings) or admin with ?all=1
+router.get('/', auth, listBookingsHandler);
+
+// GET /bookings/today/:room_number - today's bookings for a room
+router.get('/today/:room_number', auth, listBookingsTodayHandler);
 
 // GET /bookings/upcoming - next upcoming booking of current user
 router.get('/upcoming', auth, upcomingBookingHandler);

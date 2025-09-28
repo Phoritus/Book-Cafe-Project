@@ -42,10 +42,10 @@ export async function listBookingsHandler(req, res) {
 // GET/POST today bookings for a room. Accepts room_number either as URL param or JSON body { room_number: "Room 1" }
 export async function listBookingsTodayHandler(req, res) {
   try {
-    // Prefer JSON body, fallback to params for backward compatibility
-    const room_number = (req.body && req.body.room_number) || (req.params && req.params.room_number);
+    // New REST path: /bookings/today/:room_number
+    const room_number = (req.params && req.params.room_number) || (req.body && req.body.room_number);
     if (!room_number) {
-      return res.status(400).json({ error: true, message: 'room_number required (provide in JSON body or URL param)' });
+      return res.status(400).json({ error: true, message: 'room_number required in URL parameter :room_number' });
     }
     const rows = await listBookingsToday(room_number);
     res.json(rows);
