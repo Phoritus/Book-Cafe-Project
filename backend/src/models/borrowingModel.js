@@ -25,7 +25,7 @@ export async function borrowBook({ book_id, citizen_id }) {
 
   // Insert record
   // NOTE: DB column appears misspelled as 'cibzen_id' (per screenshot). Try both.
-  const insertSql = `INSERT INTO borrowing_record (book_id) VALUES (?, ?)`;
+  const insertSql = `INSERT INTO borrowing_record (book_id, citizen_id) VALUES (?, ?)`;
   await query(insertSql, [book_id, citizen_id]);
   await updateBookStatus(book_id, 'borrowed');
   return await listBorrowingByCitizen(citizen_id);
