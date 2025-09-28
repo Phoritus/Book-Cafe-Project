@@ -9,15 +9,19 @@ import {
   CartesianGrid,
 } from "recharts";
 import { ArrowLeft } from "lucide-react";
+import arrow from '../assets/Arrowcategory.svg';
+
+
 
 const Dashboard = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [dailyData, setDailyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // ✅ แยก filter ของแต่ละกราฟ
   const [dailyFilter, setDailyFilter] = useState("today");
-  const [monthlyFilter, setMonthlyFilter] = useState("today");
+  const [monthlyFilter, setMonthlyFilter] = useState("month");
 
   const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -27,7 +31,7 @@ const Dashboard = () => {
 
       // --- Daily API ---
       // Backend expects a concrete date=YYYY-MM-DD. Our filter uses 'today' or 'month'. If not a date, fallback to today.
-      const todayStr = new Date().toISOString().slice(0,10);
+      const todayStr = new Date().toISOString().slice(0, 10);
       const dailyParam = dailyFilter === 'today' ? todayStr : todayStr; // simple fallback; extend later if you add a date picker
       const resDaily = await fetch(
         `${API_BASE}/dashboard/daily?date=${dailyParam}`
@@ -35,9 +39,9 @@ const Dashboard = () => {
       const dailyJson = await resDaily.json();
       const dailyRooms = Array.isArray(dailyJson.rooms)
         ? dailyJson.rooms.map(r => ({
-            name: r.room_name || r.room_number,
-            bookings: Number(r.bookings) || 0
-          }))
+          name: r.room_name || r.room_number,
+          bookings: Number(r.bookings) || 0
+        }))
         : [];
       setDailyData(dailyRooms);
 
@@ -48,9 +52,9 @@ const Dashboard = () => {
       const monthlyJson = await resMonthly.json();
       const monthlyRooms = Array.isArray(monthlyJson.rooms)
         ? monthlyJson.rooms.map(r => ({
-            name: r.room_name || r.room_number,
-            bookings: Number(r.bookings) || 0
-          }))
+          name: r.room_name || r.room_number,
+          bookings: Number(r.bookings) || 0
+        }))
         : [];
       setMonthlyData(monthlyRooms);
     } catch (err) {
@@ -71,11 +75,11 @@ const Dashboard = () => {
       <main className="flex-1 !ml-15 px-8 py-6 flex flex-col items-center gap-10">
         {/* Back Arrow */}
         <button
-                  onClick={() => window.history.back()}
-                  className="flex items-center text-[#7B3F00] font-medium hover:opacity-80 transition self-start"
-                >
-                  <ArrowLeft className="w-10 h-10 mr-5 color-[#86422A]" />
-                </button>
+          onClick={() => window.history.back()}
+          className="flex items-center text-[#7B3F00] font-medium hover:opacity-80 transition self-start"
+        >
+          <ArrowLeft className="w-10 h-10 mr-5 color-[#86422A]" />
+        </button>
 
         {/* Title */}
         <div className="text-center max-w-xl">
@@ -98,30 +102,7 @@ const Dashboard = () => {
                 <p className="text-sm text-[#86422A]">Number of bookings</p>
               </div>
               {/* Daily Filter */}
-              <div className="flex items-center space-x-2">
-                <label className="text-sm font-medium text-[#7B3F00]">
-                  Filter :
-                </label>
-                <div className="relative w-48">
-                  <select
-                    style={{ textIndent: "12px" }}
-                    value={dailyFilter}
-                    onChange={(e) => setDailyFilter(e.target.value)}
-                    className="appearance-none text-sm border border-[#C9A88D] rounded-lg px-3 py-2 w-full
-                               focus:outline-none focus:ring-2 focus:ring-[#7B3F00] 
-                               bg-white text-black cursor-pointer pr-8"
-                  >
-                    <option value="today">Today</option>
-                    <option value="month">This Month</option>
-                  </select>
-                  {/* custom arrow */}
-                  <div
-                    className="absolute right-3 top-1/2 -translate-y-1/2
-                               w-0 h-0 border-t-8 border-b-8 border-r-10
-                               border-t-transparent border-b-transparent border-r-[#7B3F00] pointer-events-none"
-                  />
-                </div>
-              </div>
+
             </div>
             <div className="w-full h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -142,7 +123,7 @@ const Dashboard = () => {
           </div>
 
           {/* Most booked room */}
-          <div className="bg-white rounded-xl shadow-md p-6 max-w-4xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md p-6 max-w-4xl mx-auto w-full !mb-20">
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h2 className="text-lg font-semibold text-[#53311C]">
@@ -160,20 +141,23 @@ const Dashboard = () => {
                     style={{ textIndent: "12px" }}
                     value={monthlyFilter}
                     onChange={(e) => setMonthlyFilter(e.target.value)}
+                    onFocus={() => setIsOpen(true)}
+                    onBlur={() => setIsOpen(false)}
                     className="appearance-none text-sm border border-[#C9A88D] rounded-lg px-3 py-2 w-full
                                focus:outline-none focus:ring-2 focus:ring-[#7B3F00] 
                                bg-white text-black cursor-pointer pr-8"
                   >
-                    <option value="today">Today</option>
                     <option value="month">This Month</option>
-                    
+                    <option value="today">Today</option>
                   </select>
                   {/* custom arrow */}
-                  <div
-                    className="absolute right-3 top-1/2 -translate-y-1/2
-                               w-0 h-0 border-t-8 border-b-8 border-r-10
-                               border-t-transparent border-b-transparent border-r-[#7B3F00] pointer-events-none"
-                  />
+                  <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-yellow-700 ">
+                    <img
+                      src={arrow}
+                      alt="arrow"
+                      className={`h-3.5 w-3.5 transition-transform duration-200 ${isOpen ? "-rotate-90" : "rotate-0"}`}
+                    />
+                  </span>
                 </div>
               </div>
             </div>

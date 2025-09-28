@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Users, Clock, DollarSign, Calendar } from 'lucide-react';
 import roomImage from '../assets/10p_room.jpg';
+import roomImage2 from '../assets/6p_room.png';
 
 const timeSlots = [
   '08:00 - 09:00',
@@ -26,6 +27,15 @@ const RoomBookingSchedule = () => {
   const [bookings, setBookings] = useState([]); // today's bookings for this room
   const [userId, setUserId] = useState(null);
   const [role, setRole] = useState(null);
+
+  const roomConfig = {
+    'Room 1': { image: roomImage2 },
+    'Room 2': { image: roomImage2 },
+    'Room 3': { image: roomImage },
+    'Room 4': { image: roomImage }
+  };
+  const currentRoom = roomConfig[roomName] || roomConfig['Room 1'];
+
   const API_BASE = import.meta.env.VITE_API_BASE;
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,7 +43,7 @@ const RoomBookingSchedule = () => {
     const stored = (() => {
       try { return sessionStorage.getItem('selectedRoom'); } catch { return null; }
     })();
-  if (stored) { setRoomName(stored); setHasRoom(true); }
+    if (stored) { setRoomName(stored); setHasRoom(true); }
     // load user id
     try {
       const rawUser = localStorage.getItem('user');
@@ -44,7 +54,7 @@ const RoomBookingSchedule = () => {
           if (parsed.role) setRole(parsed.role);
         }
       }
-    } catch {}
+    } catch { }
     (async () => {
       try {
         const { data } = await axios.get(`${API_BASE}/rooms`);
@@ -86,10 +96,10 @@ const RoomBookingSchedule = () => {
   // Expand booking time range into 1-hour slot labels
   function expandToHourSlots(startTime, endTime) {
     if (!startTime || !endTime) return [];
-    const toMinutes = (t) => { const [hh, mm] = t.split(':'); return parseInt(hh,10)*60 + parseInt(mm,10); };
-    const fmt = (m) => `${String(Math.floor(m/60)).padStart(2,'0')}:00`;
-    const startMin = toMinutes(startTime.slice(0,5));
-    const endMin = toMinutes(endTime.slice(0,5));
+    const toMinutes = (t) => { const [hh, mm] = t.split(':'); return parseInt(hh, 10) * 60 + parseInt(mm, 10); };
+    const fmt = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:00`;
+    const startMin = toMinutes(startTime.slice(0, 5));
+    const endMin = toMinutes(endTime.slice(0, 5));
     const slots = [];
     for (let m = startMin; m < endMin; m += 60) {
       const s = fmt(m);
@@ -101,7 +111,7 @@ const RoomBookingSchedule = () => {
 
   // Build set of booked (unavailable) slots (any active booking: BOOKED or CHECKED_IN)
   const bookedSlots = useMemo(() => {
-    const ACTIVE = new Set(['BOOKED','CHECKED_IN']);
+    const ACTIVE = new Set(['BOOKED', 'CHECKED_IN']);
     const set = new Set();
     bookings.forEach(b => {
       if (!b.startTime || !b.endTime) return;
@@ -113,7 +123,7 @@ const RoomBookingSchedule = () => {
 
   const toggleTime = (slot) => {
     if (bookedSlots.has(slot)) return; // safety
-    setSelectedSlots(prev => prev.includes(slot) ? prev.filter(s => s !== slot) : [...prev, slot].sort((a,b)=> a.localeCompare(b)));
+    setSelectedSlots(prev => prev.includes(slot) ? prev.filter(s => s !== slot) : [...prev, slot].sort((a, b) => a.localeCompare(b)));
   };
 
   return (
@@ -148,60 +158,60 @@ const RoomBookingSchedule = () => {
         )}
 
         {hasRoom && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
-          {/* Room Image */}
-          <div className="relative bg-gray-200 !h-60">
-            {/* Simple room mockup */}
-            <div className="absolute inset-0">
-              <img src={roomImage} alt="Room" className="!w-full !h-full object-cover object-[10%_90%]" />
-            </div>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+            {/* Room Image */}
+            <div className="relative bg-gray-200 !h-60">
+              {/* Simple room mockup */}
+              <div className="absolute inset-0">
+                <img src={currentRoom.image} alt="Room" className="!w-full !h-full object-cover object-[10%_90%]" />
+              </div>
 
-            {/* Room info overlay */}
-            <div className="absolute !bottom-0 !left-0 !right-0 !bg-gradient-to-t !from-black/80 !to-transparent  !p-3">
-              <div className="flex justify-between items-end text-white">
-                <div>
-                  <h3 className="text-lg font-medium">{roomName}</h3>
-                  <div className="flex items-center gap-1 text-xs opacity-90">
-                    <Users className="w-3 h-3" />
-                    <span>{roomInfo.capacity}</span>
+              {/* Room info overlay */}
+              <div className="absolute !bottom-0 !left-0 !right-0 !bg-gradient-to-t !from-black/80 !to-transparent  !p-3">
+                <div className="flex justify-between items-end text-white">
+                  <div>
+                    <h3 className="text-lg font-medium">{roomName}</h3>
+                    <div className="flex items-center gap-1 text-xs opacity-90">
+                      <Users className="w-3 h-3" />
+                      <span>{roomInfo.capacity}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-lg font-semibold">{roomInfo.price}</div>
-                  <div className="text-xs opacity-75">/ Hour</div>
+                  <div className="text-right">
+                    <div className="text-lg font-semibold">{roomInfo.price}</div>
+                    <div className="text-xs opacity-75">/ Hour</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Time Slots */}
-          <div className="flex justify-center p-0 !mt-10 ">
-            <div className="grid grid-cols-3 gap-6 !w-130 !mb-10 ">
-              {timeSlots.map((slot) => {
-                const isBooked = bookedSlots.has(slot);
-                const isSelected = !isBooked && selectedSlots.includes(slot);
-                return (
-                  <button
-                    key={slot}
-                    type="button"
-                    disabled={isBooked}
-                    onClick={() => toggleTime(slot)}
-                    className={`!w-full  !mt-2 rounded-xl border !h-15 text-sm transition-transform select-none
+            {/* Time Slots */}
+            <div className="flex justify-center p-0 !mt-10 ">
+              <div className="grid grid-cols-3 gap-6 !w-130 !mb-10 ">
+                {timeSlots.map((slot) => {
+                  const isBooked = bookedSlots.has(slot);
+                  const isSelected = !isBooked && selectedSlots.includes(slot);
+                  return (
+                    <button
+                      key={slot}
+                      type="button"
+                      disabled={isBooked}
+                      onClick={() => toggleTime(slot)}
+                      className={`!w-full  !mt-2 rounded-xl border !h-15 text-sm transition-transform select-none
                       ${isBooked
-                        ? 'bg-[#F6F3ED] border border-[#86422A] text-[#86422A] cursor-not-allowed'
-                        : isSelected
-                          ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105'
-                          : 'bg-white border-[#86422A] text-[#86422A] hover:bg-amber-50'}
+                          ? 'bg-[#F6F3ED] border border-[#86422A] text-[#86422A] cursor-not-allowed'
+                          : isSelected
+                            ? 'bg-brown-600 text-white shadow-lg shadow-amber-200 scale-105'
+                            : 'bg-white border-[#86422A] text-[#86422A] hover:bg-amber-50'}
                     `}
-                  >
-                    {slot}
-                  </button>
-                );
-              })}
+                    >
+                      {slot}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-  </div>
-  )}
+        )}
 
         {/* Continue Button */}
         {hasRoom && (
@@ -211,22 +221,22 @@ const RoomBookingSchedule = () => {
               onClick={() => {
                 if (!selectedSlots.length) return;
                 // Persist selection for next booking step
-                try { sessionStorage.setItem('selectedRoom', roomName); } catch {}
-                try { sessionStorage.setItem('selectedSlots', JSON.stringify(selectedSlots)); } catch {}
+                try { sessionStorage.setItem('selectedRoom', roomName); } catch { }
+                try { sessionStorage.setItem('selectedSlots', JSON.stringify(selectedSlots)); } catch { }
                 // Derive start/end for booking page
                 const starts = selectedSlots.map(s => s.split('-')[0].trim()).sort();
                 const ends = selectedSlots.map(s => s.split('-')[1].trim()).sort();
                 const rangeStart = starts[0];
                 const rangeEnd = ends[ends.length - 1];
-                try { sessionStorage.setItem('pendingStart', rangeStart); } catch {}
-                try { sessionStorage.setItem('pendingEnd', rangeEnd); } catch {}
+                try { sessionStorage.setItem('pendingStart', rangeStart); } catch { }
+                try { sessionStorage.setItem('pendingEnd', rangeEnd); } catch { }
                 // Decide booking date: if selected earliest start already passed now -> tomorrow
                 const now = new Date();
-                const nowHM = now.toTimeString().slice(0,5);
-                const todayISO = now.toISOString().slice(0,10);
-                const tomorrowISO = new Date(now.getTime()+86400000).toISOString().slice(0,10);
+                const nowHM = now.toTimeString().slice(0, 5);
+                const todayISO = now.toISOString().slice(0, 10);
+                const tomorrowISO = new Date(now.getTime() + 86400000).toISOString().slice(0, 10);
                 const bookingDate = (rangeStart <= nowHM) ? tomorrowISO : todayISO;
-                try { sessionStorage.setItem('pendingDate', bookingDate); } catch {}
+                try { sessionStorage.setItem('pendingDate', bookingDate); } catch { }
                 navigate('/fill-book-room');
               }}
               className={`!w-110 !mt-10 font-medium py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 !mb-20 
