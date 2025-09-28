@@ -1,16 +1,18 @@
 import express from 'express';
-import { auth } from '../middleware/auth.js';
-import { borrowHandler, returnHandler, listBorrowingHandler } from '../controllers/borrowingController.js';
+import { borrowHandler, returnHandler, listBorrowingHandler, listActiveBorrowingsHandler } from '../controllers/borrowingController.js';
 
 const router = express.Router();
 
 // POST /borrowing/borrow
-router.post('/borrow', auth, borrowHandler);
+router.post('/borrow', borrowHandler);
 
 // POST /borrowing/return
-router.post('/return', auth, returnHandler);
+router.post('/return', returnHandler);
 
 // GET /borrowing?citizen_id=xxxx (if admin maybe allow any citizen)
-router.get('/', auth, listBorrowingHandler);
+router.get('/', listBorrowingHandler);
+
+// GET /borrowing/active - list all currently borrowed (not yet returned)
+router.get('/active', listActiveBorrowingsHandler);
 
 export default router;
